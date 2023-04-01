@@ -146,7 +146,10 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Icon(Icons.menu),
+                      child: Icon(
+                        Icons.menu,
+                        color: ProjectColors.firefly,
+                      ),
                       // child: SvgPicture.asset(
                       //   "assets/svg/menu.svg",
                       //   height: 24,
