@@ -1,0 +1,65 @@
+name: pdf_report_scope
+description: PDF Report for the Scope App and Website
+version: 0.0.1
+homepage: https://github.com/syedmehtabali/pdf_report_scope
+
+environment:
+  sdk: '>=2.18.5 <3.0.0'
+  flutter: ">=1.17.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.2
+  flutter_svg: ^1.0.3
+  shared_preferences: ^2.0.17
+  intl: ^0.18.0
+  flutter_staggered_grid_view: ^0.6.2
+  dio: ^5.0.3
+  carousel_slider: ^4.2.1
+  sizer: ^2.0.15
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter packages.
+flutter:
+
+  # To add assets to your package, add an assets section, like this:
+  assets:
+    - assets/svg/
+    - assets/images/
+    - assets/data/
+  # For details regarding assets in packages, see
+  # https://flutter.dev/assets-and-images/#from-packages
+  #
+  # An image asset can refer to one or more resolution-specific "variants", see
+  # https://flutter.dev/assets-and-images/#resolution-aware
+
+  # To add custom fonts to your package, add a fonts section here,
+  # in this "flutter" section. Each entry in this list should have a
+  # "family" key with the font family name, and a "fonts" key with a
+  # list giving the asset and other descriptors for the font. For
+  # example:
+  # fonts:
+  fonts:
+    - family: jost-light
+      fonts:
+        - asset: assets/fonts/Jost-Light.ttf
+    - family: jost-Medium
+      fonts:
+        - asset: assets/fonts/Jost-Medium.ttf
+    - family: jost-regular
+      fonts:
+        - asset: assets/fonts/Jost-Regular.ttf
+    - family: jost-semiBold
+      fonts:
+        - asset: assets/fonts/Jost-SemiBold.ttf
+
+  # For details regarding fonts in packages, see
+  # https://flutter.dev/custom-fonts/#from-packages
