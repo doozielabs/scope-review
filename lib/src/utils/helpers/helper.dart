@@ -471,13 +471,13 @@ extension CommentTypeExtension on CommentType? {
 
   bool get needService => set == CommentType.deficiency;
 
-  String get svg => _data(
-        info: "assets/svg/icons/info.svg",
-        saf: "assets/svg/icons/sheild.svg",
-        acct: "assets/svg/icons/check.svg",
-        def: "assets/svg/icons/deficiency.svg",
-        notIns: "assets/svg/icons/question_mark_round.svg",
-      );
+  // String get svg => _data(
+  //       info: "assets/svg/icons/info.svg",
+  //       saf: "assets/svg/icons/sheild.svg",
+  //       acct: "assets/svg/icons/check.svg",
+  //       def: "assets/svg/icons/deficiency.svg",
+  //       notIns: "assets/svg/icons/question_mark_round.svg",
+  //     );
 
   // Color get color => _data(
   //       info: LightColors.primary,
