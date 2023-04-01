@@ -49,7 +49,7 @@ class SectionCommentCard extends StatelessWidget {
                   ),
                 ),
                 SvgPicture.asset(
-                    "lib/src/assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg")
+                    " assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg")
               ],
             ),
             const SizedBox(height: 14),
@@ -107,7 +107,7 @@ class SectionCommentCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           SvgPicture.asset(
-                            "lib/src/assets/svg/up.svg",
+                            " assets/svg/up.svg",
                             color: ProjectColors.firefly,
                             height: 18.5,
                           )

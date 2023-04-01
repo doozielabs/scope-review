@@ -15,7 +15,7 @@ class HeaderInfoItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        SvgPicture.asset("lib/src/assets/svg/$iconName.svg"),
+        SvgPicture.asset(" assets/svg/$iconName.svg"),
         const SizedBox(width: 10),
         Text(
           text,
