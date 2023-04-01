@@ -12,6 +12,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_header.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_summary.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/template_sections.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
 import 'package:sizer/sizer.dart';
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 
@@ -124,6 +125,35 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         if (constraints.maxWidth < 1230) {
           return SafeArea(
             child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Text(
+                  "Report Review",
+                  style: h1.copyWith(color: ProjectColors.black),
+                ),
+                actions: [
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SectionEyeShotForMobileAndTablet(
+                                isWeb: false,
+                                inspection: widget.inspection,
+                                isExpanded: isExpanded);
+                          });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SvgPicture.asset(
+                        "assets/svg/menu.svg",
+                        height: 24,
+                      ),
+                    ),
+                  )
+                ],
+              ),
               body: SingleChildScrollView(
                 child: Column(
                   children: [
