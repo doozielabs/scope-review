@@ -31,10 +31,6 @@ dev_dependencies:
 flutter:
 
   # To add assets to your package, add an assets section, like this:
-  assets:
-    - lib/src/assets/svg/
-    - lib/src/assets/images/
-    - lib/src/assets/data/
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages
   #
