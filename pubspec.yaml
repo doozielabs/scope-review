@@ -1,6 +1,6 @@
 name: pdf_report_scope
 description: PDF Report for the Scope App and Website
-version: 0.0.1
+version: 0.0.2
 homepage: https://github.com/syedmehtabali/pdf_report_scope
 
 environment:
