@@ -72,7 +72,7 @@ class ReportHeaderWeb extends StatelessWidget {
                               Row(
                                 children: [
                                   SvgPicture.asset(
-                                      "packages/pdf_report_scope/assets/svg/location.svg"),
+                                      "packages/pdf_report_scope/lib/assets/svg/location.svg"),
                                   const SizedBox(width: 10),
                                   Expanded(
                                     child: Text(

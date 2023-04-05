@@ -49,7 +49,7 @@ class SectionCommentCard extends StatelessWidget {
                   ),
                 ),
                 SvgPicture.asset(
-                    "packages/pdf_report_scope/assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg")
+                    "packages/pdf_report_scope/lib/assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg")
               ],
             ),
             const SizedBox(height: 14),
@@ -107,7 +107,7 @@ class SectionCommentCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           SvgPicture.asset(
-                            "packages/pdf_report_scope/assets/svg/up.svg",
+                            "packages/pdf_report_scope/lib/assets/svg/up.svg",
                             color: ProjectColors.firefly,
                             height: 18.5,
                           )
