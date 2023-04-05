@@ -31,29 +31,9 @@ dev_dependencies:
 flutter:
 
   assets:
-    - packages/pdf_report_scope/assets/svg/location.svg
-    - packages/pdf_report_scope/assets/svg/expand_withoutbackground.svg
-    - packages/pdf_report_scope/assets/svg/unexpand_withoutbackground.svg
-    - packages/pdf_report_scope/assets/svg/deficiency.svg
-    - packages/pdf_report_scope/assets/svg/comments.svg
-    - packages/pdf_report_scope/assets/svg/up.svg
-    - packages/pdf_report_scope/assets/svg/expand.svg
-    - packages/pdf_report_scope/assets/svg/unexpand.svg
-    - packages/pdf_report_scope/assets/svg/logo.svg
-    - packages/pdf_report_scope/assets/svg/menu.svg
-    - packages/pdf_report_scope/assets/svg/clock_icon.svg
-    - packages/pdf_report_scope/assets/svg/icon-user.svg
-    - packages/pdf_report_scope/assets/svg/icon-mail.svg
-    - packages/pdf_report_scope/assets/svg/icon-cell.svg
-    - packages/pdf_report_scope/assets/svg/icon-company.svg
-    - packages/pdf_report_scope/assets/svg/calendar_icon.svg
-    - packages/pdf_report_scope/assets/svg/info.svg
-    - packages/pdf_report_scope/assets/svg/not_inspected.svg
-    # - packages/pdf_report_scope/assets/svg/icon-mail.svg
-    # - packages/pdf_report_scope/assets/svg/icon-mail.svg
-    # - packages/pdf_report_scope/assets/svg/icon-mail.svg
-    # - packages/pdf_report_scope/assets/svg/icon-mail.svg
-    # - packages/pdf_report_scope/assets/svg/icon-mail.svg
+    - assets/svg/
+    - assets/fonts/
+    - assets/images/
     
 
   # To add assets to your package, add an assets section, like this:
@@ -81,7 +61,7 @@ flutter:
         - asset: assets/fonts/Jost-Regular.ttf
     - family: jost-semiBold
       fonts:
-        - asset: packages/pdf_report_scope/lib/assets/fonts/Jost-SemiBold.ttf
+        - asset: assets/fonts/Jost-SemiBold.ttf
 
   # For details regarding fonts in packages, see
   # https://flutter.dev/custom-fonts/#from-packages

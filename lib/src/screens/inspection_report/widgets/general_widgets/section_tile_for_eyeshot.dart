@@ -38,7 +38,7 @@ class SectionTile extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SvgPicture.asset(
-              "packages/pdf_report_scope/assets/svg/comments.svg",
+              "assets/svg/comments.svg",
               package: "pdf_report_scope",
               width: 12,
               height: 12,
@@ -52,7 +52,7 @@ class SectionTile extends StatelessWidget {
             ),
             const SizedBox(width: 7.17),
             SvgPicture.asset(
-              "packages/pdf_report_scope/assets/svg/deficiency.svg",
+              "assets/svg/deficiency.svg",
               package: "pdf_report_scope",
               width: 12,
               height: 12,
@@ -76,7 +76,7 @@ class SectionTile extends StatelessWidget {
             hasSubsections ? const SizedBox(width: 12) : const SizedBox(),
             hasSubsections
                 ? SvgPicture.asset(
-                    "packages/pdf_report_scope/assets/svg/${isExpanded[sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
+                    "assets/svg/${isExpanded[sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
                     package: "pdf_report_scope",
                   )
                 : const SizedBox()

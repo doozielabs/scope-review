@@ -71,7 +71,7 @@ class ReportHeaderMobile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SvgPicture.asset(
-                        "packages/pdf_report_scope/assets/svg/location.svg",
+                        "assets/svg/location.svg",
                         package: "pdf_report_scope",
                       ),
                       const SizedBox(width: 10),

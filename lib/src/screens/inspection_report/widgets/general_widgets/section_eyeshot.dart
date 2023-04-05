@@ -80,7 +80,7 @@ class _SectionEyeShotForMobileState
             child: GestureDetector(
                 onTap: () => Navigator.pop(context),
                 child: SvgPicture.asset(
-                  "packages/pdf_report_scope/assets/svg/close.svg",
+                  "assets/svg/close.svg",
                   package: "pdf_report_scope",
                 )),
           ),

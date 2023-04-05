@@ -86,7 +86,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                         color: ProjectColors.pickledBluewood)),
                 const SizedBox(width: 8),
                 SvgPicture.asset(
-                  "packages/pdf_report_scope/assets/svg/${expandAllSections ? "expand" : "unexpand"}.svg",
+                  "assets/svg/${expandAllSections ? "expand" : "unexpand"}.svg",
                   package: "pdf_report_scope",
                   width: 21,
                   height: 21,
@@ -165,7 +165,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: SvgPicture.asset(
-                                        "packages/pdf_report_scope/assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg",
+                                        "assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg",
                                         package: "pdf_report_scope",
                                       ),
                                     )

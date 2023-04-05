@@ -22,7 +22,7 @@ class LegendItem extends StatelessWidget {
         Column(
           children: [
             SvgPicture.asset(
-              "packages/pdf_report_scope/assets/svg/$iconName.svg",
+              "assets/svg/$iconName.svg",
               package: "pdf_report_scope",
             )
           ],
