@@ -14,7 +14,7 @@ const TextStyle primaryHeadingTextStyle = TextStyle(
 const TextStyle secondryHeadingTextStyle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    fontFamily: fontFamilyJostRegular,
+    fontFamily: "jost-Light",
     color: ProjectColors.white);
 
 //Headings
@@ -84,29 +84,29 @@ const TextStyle b5Medium = TextStyle(
 const TextStyle b1Regular = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w400,
-  fontFamily: fontFamilyJostRegular,
+  fontFamily: "jost-Light",
 );
 
 const TextStyle b2Regular = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w400,
-  fontFamily: fontFamilyJostRegular,
+  fontFamily: "jost-Light",
 );
 
 const TextStyle b3Regular = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.w400,
-  fontFamily: fontFamilyJostRegular,
+  fontFamily: "jost-Light",
 );
 
 const TextStyle b4Regular = TextStyle(
   fontSize: 12,
   fontWeight: FontWeight.w400,
-  fontFamily: fontFamilyJostRegular,
+  fontFamily: "jost-Light",
 );
 
 const TextStyle b5Regular = TextStyle(
   fontSize: 10,
   fontWeight: FontWeight.w400,
-  fontFamily: fontFamilyJostRegular,
+  fontFamily: "jost-Light",
 );
