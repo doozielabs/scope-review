@@ -151,50 +151,48 @@ class SectionItem extends StatelessWidget {
             //Item value
             _getItemValue(),
             const SizedBox(height: 14),
-            item.images.isNotEmpty
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 14.0, bottom: 21.0),
-                    child: Wrap(
-                      direction: Axis.horizontal,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 5.0, bottom: 5.0),
-                          child: GeneralHelper.displayMediaList(
-                              item.images, media!, 2, ImageType.itemImage),
-                        ),
-                        // ...List.generate(
-                        //   item.images.length,
-                        //   (index) {
-                        //     return Padding(
-                        //       padding:
-                        //           const EdgeInsets.only(left: 5.0, bottom: 5.0),
-                        //           child: item.images.length == 1
-                        //           ? ImageWithRoundedCorners(
-                        //               imageUrl: isWeb
-                        //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300" //"${item.images[0]}"//"https://picsum.photos/seed/picsum/200/300"
-                        //                   : GeneralHelper.getMediaObj(item.images, media!), //"assets/images/house.jpeg",
-                        //               width: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[0],
-                        //               height: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[1],
-                        //             )
-                        //           : ImageWithRoundedCorners(
-                        //               imageUrl: isWeb
-                        //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300"
-                        //                   : GeneralHelper.getMediaObj(item.images, media!),  //"assets/images/house.jpeg",
-                        //               width: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[0],
-                        //               height: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[1],
-                        //             ),
-                        //     );
-                        //   },
-                        // )
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
+            // item.images.isNotEmpty
+            //     ? Padding(
+            //         padding: const EdgeInsets.only(top: 14.0, bottom: 21.0),
+            //         child: Wrap(
+            //           direction: Axis.horizontal,
+            //           children: [
+            //              Padding(
+            //                   padding: const EdgeInsets.only(left: 5.0, bottom: 5.0),
+            //              child: GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),
+            //              ),
+            //             // ...List.generate(
+            //             //   item.images.length,
+            //             //   (index) {
+            //             //     return Padding(
+            //             //       padding:
+            //             //           const EdgeInsets.only(left: 5.0, bottom: 5.0),
+            //             //           child: item.images.length == 1
+            //             //           ? ImageWithRoundedCorners(
+            //             //               imageUrl: isWeb
+            //             //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300" //"${item.images[0]}"//"https://picsum.photos/seed/picsum/200/300"
+            //             //                   : GeneralHelper.getMediaObj(item.images, media!), //"assets/images/house.jpeg",
+            //             //               width: getImageWidthHeight(
+            //             //                   ImageType.itemImage, item.images)[0],
+            //             //               height: getImageWidthHeight(
+            //             //                   ImageType.itemImage, item.images)[1],
+            //             //             )
+            //             //           : ImageWithRoundedCorners(
+            //             //               imageUrl: isWeb
+            //             //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300"
+            //             //                   : GeneralHelper.getMediaObj(item.images, media!),  //"assets/images/house.jpeg",
+            //             //               width: getImageWidthHeight(
+            //             //                   ImageType.itemImage, item.images)[0],
+            //             //               height: getImageWidthHeight(
+            //             //                   ImageType.itemImage, item.images)[1],
+            //             //             ),
+            //             //     );
+            //             //   },
+            //             // )
+            //           ],
+            //         ),
+            //       )
+            //     : const SizedBox(),
           ],
         ),
       ),

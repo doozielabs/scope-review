@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:pdf_report_scope/pdf_report_scope.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
-import 'package:pdf_report_scope/src/main.dart';
-import 'package:sizer/sizer.dart';
 
 const baseUrlLive = 'https://api.scopeinspectapp.com';
 const baseUrlStaging = 'https://staging.scopeinspectapp.com';
@@ -13,6 +12,15 @@ const defaultHeaderImage = "assets/images/house.jpeg";
 const double kMobileMaxWidth = 550.0;
 const double kTabletMaxWidth = 959.0;
 const double kDesktopMinWidth = 960.0;
+const double headerHeight = 5000;
+
+final ScrollController mainListviewController = ScrollController();
+final ScrollController sectionsListviewController = ScrollController();
+final ScrollController sectionCommentsController = ScrollController();
+final ScrollController subSectionsListviewController = ScrollController();
+final ScrollController subSectionCommentsController = ScrollController();
+
+Map<int, GlobalKey> itemKeys = {};
 
 enum DeviceTypeForWeb {
   mobile,
@@ -50,6 +58,28 @@ enum ImageType {
   commentImage,
   sectionImage,
   itemImage,
+}
+
+Future<double> getItemHeight(int index) async {
+  await Future.delayed(Duration.zero);
+  final RenderBox? renderBox =
+      itemKeys[index]?.currentContext?.findRenderObject() as RenderBox?;
+  if (renderBox != null) {
+    print("Height:${renderBox.size.height}");
+    return renderBox.size.height;
+  } else {
+    return 0.0; // or any default value you want to return
+  }
+}
+
+Future<double> getHeightOfWidget(int index) async {
+  double height = 0;
+  for (var i = 0; i < index; i++) {
+    double temp = await getItemHeight(i);
+    height += temp;
+    print("Height:$height");
+  }
+  return height;
 }
 
 List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {

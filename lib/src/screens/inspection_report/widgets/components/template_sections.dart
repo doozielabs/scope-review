@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+// import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
+import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/secondary_heading_text_with_background.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comments.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item_comments.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item_details.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/template_subsections.dart';
-import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class TemplateSections extends StatefulWidget {
   final Inspection inspection;
@@ -42,7 +45,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
       inspection.template!.sections.length,
-      (index) => false,
+      (index) => true,
     );
   }
 
@@ -84,6 +87,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                 const SizedBox(width: 8),
                 SvgPicture.asset(
                   "packages/pdf_report_scope/assets/svg/${expandAllSections ? "expand" : "unexpand"}.svg",
+                  package: "pdf_report_scope",
                   width: 21,
                   height: 21,
                 ),
@@ -103,6 +107,11 @@ class _TemplateSectionsState extends State<TemplateSections> {
                 children: [
                   ...List.generate(inspection.template!.sections.length,
                       (sectionIndex) {
+                    if (itemKeys[sectionIndex] == null) {
+                      itemKeys[sectionIndex] = GlobalKey();
+
+                      getItemHeight(sectionIndex);
+                    }
                     bool hasSectionItemComments = inspection
                         .template!.sections[sectionIndex].items
                         .any((item) => item.comments.isNotEmpty);
@@ -110,168 +119,192 @@ class _TemplateSectionsState extends State<TemplateSections> {
                         .template!.sections[sectionIndex].images.isNotEmpty;
                     bool hasSectionComments = inspection
                         .template!.sections[sectionIndex].comments.isNotEmpty;
-
                     bool hasSectionItems = inspection
                         .template!.sections[sectionIndex].items.isNotEmpty;
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                isExpanded[sectionIndex] =
-                                    !isExpanded[sectionIndex];
-                              });
-                            },
-                            child: Container(
-                              height: 37.0,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                color: ProjectColors.primary,
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Center(
-                                  child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    inspection
-                                        .template!.sections[sectionIndex].name!
-                                        .toUpperCase(),
-                                    style: primaryHeadingTextStyle.copyWith(
-                                        letterSpacing: 2,
-                                        color: ProjectColors.white,
-                                        fontFamily: fontFamilyJostMedium),
-                                  ),
-                                  SvgPicture.asset(
-                                      "packages/pdf_report_scope/assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg")
-                                ],
-                              )),
-                            ),
-                          ),
-                          isExpanded[sectionIndex]
-                              ? ListView(
-                                  shrinkWrap: true,
+                    bool hasSubSections = inspection.template!
+                        .sections[sectionIndex].subSections.isNotEmpty;
+                    if (hasSectionItems ||
+                        hasSectionComments ||
+                        hasSectionImages ||
+                        hasSectionItemComments) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  isExpanded[sectionIndex] =
+                                      !isExpanded[sectionIndex];
+                                });
+                              },
+                              child: Container(
+                                height: 37.0,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  color: ProjectColors.primary,
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                child: Center(
+                                    child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    //=========================== Section Items Start ===========================
-                                    hasSectionItems
-                                        ? const Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 14, bottom: 14),
-                                            child:
-                                                SecondaryHeadingTextWithBackground(
-                                              headingText: "Items Details",
-                                              backgroundColor:
-                                                  ProjectColors.firefly,
-                                            ),
-                                          )
-                                        : const SizedBox(),
-                                    SectionItemDetails(
-                                      inspection: inspection,
-                                      media: media!,
-                                      sectionIndex: sectionIndex,
+                                    Expanded(
+                                      child: Text(
+                                        inspection.template!
+                                            .sections[sectionIndex].name!
+                                            .toUpperCase(),
+                                        style: primaryHeadingTextStyle.copyWith(
+                                            letterSpacing: 2,
+                                            color: ProjectColors.white,
+                                            fontFamily: fontFamilyJostMedium),
+                                        textAlign: TextAlign.center,
+                                      ),
                                     ),
-                                    //=========================== Section Items End ===========================
-                                    //
-                                    //
-                                    //
-                                    //
-                                    //
-                                    //=========================== Section Images Start ===========================
-                                    hasSectionImages
-                                        ? const Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 19.0, bottom: 10),
-                                            child: Text(
-                                              "Section Images",
-                                              style: b1Regular,
-                                            ),
-                                          )
-                                        : const SizedBox(),
-                                    SectionImages(
-                                      inspection: inspection,
-                                      media: media!,
-                                      sectionIndex: sectionIndex,
-                                    ),
-                                    //=========================== Section Images End ===========================
-                                    //
-                                    //
-                                    //
-                                    //
-                                    //
-                                    //=========================== Section Comments Start ===========================
-                                    hasSectionComments
-                                        ? const Padding(
-                                            padding: EdgeInsets.only(top: 8.0),
-                                            child: HorizontalDividerWidget(
-                                              color: ProjectColors.firefly,
-                                            ),
-                                          )
-                                        : const SizedBox(),
-
-                                    hasSectionComments
-                                        ? const Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 14, bottom: 14),
-                                            child:
-                                                SecondaryHeadingTextWithBackground(
-                                              headingText: "Section Comments",
-                                              backgroundColor:
-                                                  ProjectColors.pictonBlue,
-                                            ),
-                                          )
-                                        : const SizedBox(),
-                                    SectionComments(
-                                      inspection: inspection,
-                                      media: media!,
-                                      sectionIndex: sectionIndex,
-                                    ),
-                                    //=========================== Section Comments End ===========================
-                                    //
-                                    //
-                                    //
-                                    //
-                                    //
-                                    //=========================== Section Item Comments Start ===========================
-                                    const HorizontalDividerWidget(
-                                        color: ProjectColors.firefly),
-                                    hasSectionItemComments
-                                        ? const Padding(
-                                            padding: EdgeInsets.only(
-                                                top: 14, bottom: 14),
-                                            child:
-                                                SecondaryHeadingTextWithBackground(
-                                              headingText:
-                                                  "Section Item Comments",
-                                              backgroundColor:
-                                                  ProjectColors.pictonBlue,
-                                            ),
-                                          )
-                                        : const SizedBox(),
-                                    SectionItemComments(
-                                      inspection: inspection,
-                                      media: media!,
-                                      sectionIndex: sectionIndex,
-                                    ),
-                                    const Padding(
-                                      padding: EdgeInsets.only(
-                                          top: 14.0, bottom: 14),
-                                      child: HorizontalDividerWidget(
-                                          color: ProjectColors.firefly),
-                                    ),
-                                    TemplateSubSection(
-                                      inspection: inspection,
-                                      media: media!,
-                                      sectionIndex: sectionIndex,
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: SvgPicture.asset(
+                                        "packages/pdf_report_scope/assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg",
+                                        package: "pdf_report_scope",
+                                      ),
                                     )
-                                    //=========================== Section Item Comments End ===========================
                                   ],
-                                )
-                              : const SizedBox(),
-                        ],
-                      ),
-                    );
+                                )),
+                              ),
+                            ),
+                            isExpanded[sectionIndex]
+                                ? ListView(
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    shrinkWrap: true,
+                                    children: [
+                                      //=========================== Section Items Start ===========================
+                                      hasSectionItems
+                                          ? const Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 14, bottom: 14),
+                                              child:
+                                                  SecondaryHeadingTextWithBackground(
+                                                headingText: "Items Details",
+                                                backgroundColor:
+                                                    ProjectColors.firefly,
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      SectionItemDetails(
+                                        inspection: inspection,
+                                        media: media!,
+                                        sectionIndex: sectionIndex,
+                                      ),
+                                      //=========================== Section Items End ===========================
+                                      //
+                                      //
+                                      //
+                                      //
+                                      //
+                                      //=========================== Section Images Start ===========================
+                                      hasSectionImages
+                                          ? const Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 19.0, bottom: 10),
+                                              child: Text(
+                                                "Section Images",
+                                                style: b1Regular,
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      SectionImages(
+                                        inspection: inspection,
+                                        media: media!,
+                                        sectionIndex: sectionIndex,
+                                      ),
+                                      //=========================== Section Images End ===========================
+                                      //
+                                      //
+                                      //
+                                      //
+                                      //
+                                      //=========================== Section Comments Start ===========================
+                                      hasSectionComments
+                                          ? const Padding(
+                                              padding:
+                                                  EdgeInsets.only(top: 8.0),
+                                              child: HorizontalDividerWidget(
+                                                color: ProjectColors.firefly,
+                                              ),
+                                            )
+                                          : const SizedBox(),
+
+                                      hasSectionComments
+                                          ? const Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 14, bottom: 14),
+                                              child:
+                                                  SecondaryHeadingTextWithBackground(
+                                                headingText: "Section Comments",
+                                                backgroundColor:
+                                                    ProjectColors.pictonBlue,
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      SectionComments(
+                                        inspection: inspection,
+                                        media: media!,
+                                        sectionIndex: sectionIndex,
+                                      ),
+                                      //=========================== Section Comments End ===========================
+                                      //
+                                      //
+                                      //
+                                      //
+                                      //
+                                      //=========================== Section Item Comments Start ===========================
+                                      hasSectionItemComments
+                                          ? const HorizontalDividerWidget(
+                                              color: ProjectColors.firefly)
+                                          : const SizedBox(),
+                                      hasSectionItemComments
+                                          ? const Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 14, bottom: 14),
+                                              child:
+                                                  SecondaryHeadingTextWithBackground(
+                                                headingText:
+                                                    "Section Item Comments",
+                                                backgroundColor:
+                                                    ProjectColors.pictonBlue,
+                                              ),
+                                            )
+                                          : const SizedBox(),
+                                      SectionItemComments(
+                                        inspection: inspection,
+                                        media: media!,
+                                        sectionIndex: sectionIndex,
+                                      ),
+                                      hasSubSections
+                                          ? const Padding(
+                                              padding: EdgeInsets.only(
+                                                  top: 14.0, bottom: 14),
+                                              child: HorizontalDividerWidget(
+                                                  color: ProjectColors.firefly),
+                                            )
+                                          : const SizedBox(),
+                                      TemplateSubSection(
+                                        inspection: inspection,
+                                        media: media!,
+                                        sectionIndex: sectionIndex,
+                                      )
+                                      //=========================== Section Item Comments End ===========================
+                                    ],
+                                  )
+                                : const SizedBox(),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
                   })
                 ],
               ),

@@ -8,6 +8,7 @@ import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/report_header_item.dart';
+import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ReportHeaderMobile extends StatelessWidget {
@@ -70,7 +71,9 @@ class ReportHeaderMobile extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       SvgPicture.asset(
-                          "packages/pdf_report_scope/assets/svg/location.svg"),
+                        "packages/pdf_report_scope/assets/svg/location.svg",
+                        package: "pdf_report_scope",
+                      ),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(

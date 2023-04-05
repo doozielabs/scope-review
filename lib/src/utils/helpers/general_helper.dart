@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:intl/intl.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
@@ -10,6 +8,9 @@ import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
+// import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
+import 'package:intl/intl.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 import '../../core/constant/globals.dart';
 import '../../screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';

@@ -1,18 +1,19 @@
-import 'dart:convert';
-import 'dart:io';
-import 'dart:math' as math;
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
+import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/general_models.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
+import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
-
-import '../../data/models/enum_types.dart';
-import '../../data/models/template_subsection.dart';
+import 'package:path/path.dart' as trail;
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'dart:math';
+import 'dart:io';
+import 'package:intl/intl.dart';
+import 'dart:math' as math;
 
 extension BoolExtension on bool? {
   bool get force => this ?? false;
@@ -117,9 +118,9 @@ extension BuilContextExtension on BuildContext {
 
 extension StringExtension on String? {
   String get set => this ?? "";
-  // String get removeExtension => trail.withoutExtension(set);
-  // String get fileName => trail.basename(set);
-  // String get nameWithoutExtension => trail.basenameWithoutExtension(set);
+  String get removeExtension => trail.withoutExtension(set);
+  String get fileName => trail.basename(set);
+  String get nameWithoutExtension => trail.basenameWithoutExtension(set);
   // bool get isHgui => set.contains(Constants.hguiKey);
   bool match(String val) =>
       set.toLowerCase().contains(val.toString().toLowerCase());
@@ -229,12 +230,12 @@ extension TemplateSubSectionExtension on TemplateSubSection {
 
   TemplateSubSection get clone => TemplateSubSection.fromJson(toJson());
 
-  // List<Comment> remarks() {
-  //   List<Comment> _comments = [];
-  //   _comments.addAll(comments);
-  //   items.asMap().forEach((_index, _item) => _comments.addAll(_item.comments));
-  //   return _comments;
-  // }
+  List<Comment> remarks() {
+    List<Comment> _comments = [];
+    _comments.addAll(comments);
+    items.asMap().forEach((_index, _item) => _comments.addAll(_item.comments));
+    return _comments;
+  }
 }
 
 extension TemplateItemExtension on TemplateItem {
@@ -318,6 +319,170 @@ extension NumExtension on num {
   double percentOf(num number) => isZero ? 0 : (number / this) * 100;
   List<num> stairs(int quantity) =>
       List.generate(quantity + 1, (_) => (this / quantity) * _);
+}
+
+extension ListOfCommentExtension on List<Comment> {
+  Future<List<String>> get media async {
+    List<String> _images = [];
+    await Future.forEach(this, (comment) {
+      comment as Comment;
+      _images.addAll(comment.images);
+    });
+    return _images;
+  }
+
+  Future<List<Comment>> indentification(Id id) async {
+    await Future.forEach(this, (comment) async {
+      comment as Comment;
+      id.comment = indexOf(comment).inc;
+      comment.id = id.id();
+    });
+    return this;
+  }
+}
+
+extension TemplateSectionExtension on TemplateSection {
+  // Future updateImages() async {
+  //   try {
+  //     images = await _updateMedia(images);
+  //     await Future.forEach(items, (TemplateItem _) async => _.updateImages());
+  //     await Future.forEach(
+  //       comments,
+  //       (Comment _) async => _.images = await _updateMedia(_.images),
+  //     );
+  //     await Future.forEach(
+  //       subSections,
+  //       (TemplateSubSection _) async => _.updateImages(),
+  //     );
+  //   } catch (error) {
+  //     throw (error);
+  //   }
+  // }
+
+  // Future dowloadImages() async {
+  //   images = await _downloadMedia(images);
+  //   print("Images: $images");
+  //   await Future.forEach(items, (TemplateItem _) async => _.downloadMedia());
+  //   await Future.forEach(
+  //     comments,
+  //     (Comment _) async => _.images = await _downloadMedia(_.images),
+  //   );
+  //   await Future.forEach(
+  //     subSections,
+  //     (TemplateSubSection _) async => _.downloadMedia(),
+  //   );
+  // }
+
+  // Future<List<String>> get media async {
+  //   List<String> _images = [];
+  //   _images.addAll(images);
+  //   _images.addAll(await items.media);
+  //   // _images.addAll(await comments.media);
+  //   await Future.forEach(
+  //     subSections,
+  //     (TemplateSubSection _) async => _images.addAll(await _.media),
+  //   );
+  //   return _images;
+  // }
+
+  Future<List<String>> names([bool withItems = false]) async {
+    List<String> _names = [];
+    _names.add(name ?? "");
+    if (withItems) _names.addAll(items.map((_) => _.label ?? ""));
+    await Future.forEach(subSections, (_) {
+      _ as TemplateSubSection;
+      _names.add(_.name ?? "");
+      if (withItems) _names.addAll((_.items).map((_) => _.label ?? ""));
+    });
+    return _names;
+  }
+
+  TemplateSection get clone => TemplateSection.fromJson(toJson());
+  // List<Comment> remarks({
+  //   bool section = true,
+  //   bool visiblesOnly = false,
+  // }) {
+  //   List<Comment> _comments = [];
+  //   _comments.addAll(comments);
+  //   items.asMap().forEach((_, _item) => _comments.addAll(_item.comments));
+  //   if (section) {
+  //     (visiblesOnly ? subSections.visibles : subSections).asMap().forEach(
+  //       (_, subSections) {
+  //         _comments.addAll(subSections.remarks());
+  //       },
+  //     );
+  //   }
+  //   return _comments;
+  // }
+
+  // List<TemplateItem> get whollyItems {
+  //   List<TemplateItem> _item = [];
+  //   _item.addAll(this.items);
+  //   (this.subSections).forEach((sec) => _item.addAll(sec.items));
+  //   return _item;
+  // }
+
+  // Future remove() async {
+  //   await Boxes.deleteMedia(images);
+  //   await Future.forEach(comments, (Comment _) async => _.remove());
+  //   await Future.forEach(items, (TemplateItem _) async => _.remove());
+  //   await Future.forEach(
+  //     subSections,
+  //     (TemplateSubSection _) async => _.remove(),
+  //   );
+  // }
+
+  bool hasImages() {
+    for (int i = 0; i < items.length; i++) {
+      if (items[i].images.length > 0) {
+        return true;
+      } else if (items[i].type == TemplateItemType.signature) {
+        if (items[i].images.length > 0) {
+          return true;
+        }
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  int getLength() {
+    int len = 0;
+    for (int i = 0; i < items.length; i++) {
+      for (int j = 0; j < items[i].images.length; j++) {
+        len++;
+      }
+    }
+    return len;
+  }
+}
+
+extension ListOfTemplateSectionExtension on List<TemplateSection>? {
+  List<TemplateSection> get set => this ?? [];
+
+  Future<List<List<String>>> names([bool withItems = false]) async {
+    List<List<String>> _names = [];
+    await Future.forEach(
+      set,
+      (TemplateSection _) async => _names.add(await _.names(withItems)),
+    );
+    return _names;
+  }
+
+  List<TemplateSection> get visibles =>
+      (this ?? []).where((_) => _.visibility ?? true).toList();
+
+  Future<List<TemplateSection>> filter(
+    String keyword, {
+    bool withItems = false,
+  }) async {
+    var _names = await set.names(withItems);
+    return set.where((_) {
+      var _labels = _names[set.indexOf(_)];
+      return _labels.where((_) => _.match(keyword)).isNotEmpty;
+    }).toList();
+  }
 }
 
 extension DateTimeExtension on DateTime {

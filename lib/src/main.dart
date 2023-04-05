@@ -12,7 +12,8 @@ class NavigationService {
 }
 
 class PDFReport extends StatefulWidget {
-  const PDFReport({Key? key}) : super(key: key);
+  final bool showDialogue;
+  const PDFReport({Key? key, required this.showDialogue}) : super(key: key);
 
   @override
   State<PDFReport> createState() => _PDFReportState();
@@ -47,7 +48,10 @@ class _PDFReportState extends State<PDFReport> {
                   ? const CupertinoActivityIndicator(
                       color: ProjectColors.firefly)
                   : InspectionReportScreen(
-                      inspection: inspection!, media: media!),
+                      inspection: inspection!,
+                      media: media!,
+                      showDialogue: widget.showDialogue,
+                    ),
             )));
   }
 }

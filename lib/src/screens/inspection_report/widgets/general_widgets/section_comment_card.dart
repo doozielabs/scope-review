@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/comment_info_card.dart';
-import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 
 class SectionCommentCard extends StatelessWidget {
   final String commentTitle;
@@ -49,7 +50,9 @@ class SectionCommentCard extends StatelessWidget {
                   ),
                 ),
                 SvgPicture.asset(
-                    "packages/pdf_report_scope/assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg")
+                  "packages/pdf_report_scope/assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg",
+                  package: "pdf_report_scope",
+                )
               ],
             ),
             const SizedBox(height: 14),
@@ -108,6 +111,7 @@ class SectionCommentCard extends StatelessWidget {
                           const SizedBox(width: 5),
                           SvgPicture.asset(
                             "packages/pdf_report_scope/assets/svg/up.svg",
+                            package: "pdf_report_scope",
                             color: ProjectColors.firefly,
                             height: 18.5,
                           )

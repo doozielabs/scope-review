@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
+import 'package:pdf_report_scope/src/core/constant/constants.dart';
+import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/primary_heading_text_with_background.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/sub_heading_of_condition_terms.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/sub_heading_of_inspection_description.dart';
+
 import '../../../../utils/helpers/general_helper.dart';
 
 class InspectionDescription extends StatelessWidget {

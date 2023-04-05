@@ -7,20 +7,27 @@ import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/inspection_description.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/legend.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_header.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_summary.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/template_sections.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
+import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
+
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 
 class InspectionReportScreen extends StatefulWidget {
   final Inspection inspection;
   final List<ImageShape> media;
+  final bool showDialogue;
   const InspectionReportScreen(
-      {Key? key, required this.inspection, required this.media})
+      {Key? key,
+      required this.inspection,
+      required this.media,
+      required this.showDialogue})
       : super(key: key);
 
   @override
@@ -30,11 +37,17 @@ class InspectionReportScreen extends StatefulWidget {
 class _InspectionReportScreenState extends State<InspectionReportScreen> {
   bool isLoading = false;
   List<bool> isExpanded = [];
+  late List<TemplateSection> sections = widget.inspection.template!.sections;
 
   @override
   void initState() {
     isExpandedForAllSections();
     super.initState();
+  }
+
+  _search(text) async {
+    sections = await widget.inspection.template!.sections.filter(text);
+    setState(() {});
   }
 
   isExpandedForAllSections() {
@@ -68,18 +81,45 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         //Mobile
         return SafeArea(
           child: Scaffold(
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ReportHeader(
-                      inspection: widget.inspection, media: widget.media),
-                  InspectionDescription(inspection: widget.inspection),
-                  ReportSummary(
-                      inspection: widget.inspection, media: widget.media),
-                  TemplateSections(
-                      inspection: widget.inspection, media: widget.media)
-                ],
-              ),
+            body: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isLoading = true;
+                            });
+                          },
+                          icon: const Icon(Icons.ac_unit)),
+                      ReportHeader(
+                          inspection: widget.inspection, media: widget.media),
+                      InspectionDescription(inspection: widget.inspection),
+                      ReportSummary(
+                          inspection: widget.inspection, media: widget.media),
+                      TemplateSections(
+                          inspection: widget.inspection, media: widget.media)
+                    ],
+                  ),
+                ),
+                if (isLoading)
+                  Positioned.fill(child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SectionEyeShotForMobileAndTablet(
+                                inspection: widget.inspection,
+                                isExpanded: isExpanded);
+                          });
+                      setState(() {
+                        isLoading = false;
+                      });
+                    },
+                  ))
+              ],
             ),
           ),
         );
@@ -132,27 +172,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                   "Report Review",
                   style: h1.copyWith(color: ProjectColors.black),
                 ),
-                actions: [
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SectionEyeShotForMobileAndTablet(
-                                isWeb: false,
-                                inspection: widget.inspection,
-                                isExpanded: isExpanded);
-                          });
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: SvgPicture.asset(
-                        "packages/pdf_report_scope/assets/svg/menu.svg",
-                        height: 24,
-                      ),
-                    ),
-                  )
-                ],
               ),
               body: SingleChildScrollView(
                 child: Column(
@@ -170,7 +189,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
             ),
           );
         } else {
-          print("Cons:${constraints.maxWidth}");
           return SafeArea(
             child: Scaffold(
               body: SingleChildScrollView(
@@ -182,6 +200,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                       padding: const EdgeInsets.all(18.0),
                       child: SvgPicture.asset(
                         "packages/pdf_report_scope/assets/svg/logo.svg",
+                        package: "pdf_report_scope",
                         width: 50,
                         height: 50,
                       ),
@@ -221,150 +240,262 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                       children: [
                                         const Text(
                                           "Jump To Sections",
-                                          style: b2Medium,
+                                          style: h1,
+                                        ),
+                                        const SizedBox(height: 18),
+                                        TextField(
+                                          onChanged: _search,
+                                          decoration: InputDecoration(
+                                            prefixIcon:
+                                                const Icon(Icons.search),
+                                            hintText: 'Search',
+                                            border: OutlineInputBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              borderSide: BorderSide.none,
+                                            ),
+                                            filled: true,
+                                            fillColor: Colors.grey[200],
+                                            contentPadding:
+                                                const EdgeInsets.symmetric(
+                                                    horizontal: 16.0),
+                                          ),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.all(20.0),
                                           child: Column(
                                             children: [
                                               ...List.generate(
-                                                widget.inspection.template!
-                                                    .sections.length,
+                                                sections.length,
                                                 (sectionIndex) {
                                                   final bool hasSubSections =
-                                                      widget
-                                                          .inspection
-                                                          .template!
-                                                          .sections[
-                                                              sectionIndex]
+                                                      sections[sectionIndex]
                                                           .subSections
                                                           .isNotEmpty;
-                                                  final section = widget
-                                                      .inspection
-                                                      .template!
-                                                      .sections[sectionIndex];
-                                                  return Container(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                            top: 30,
-                                                            bottom: 30),
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                            .size
-                                                            .width,
-                                                    decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              10.0),
-                                                    ),
-                                                    child: Column(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            setState(() {
-                                                              isExpanded[
-                                                                      sectionIndex] =
-                                                                  isExpanded[
-                                                                      sectionIndex];
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            width:
-                                                                MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color:
-                                                                  ProjectColors
-                                                                      .white,
+                                                  bool hasSectionComments =
+                                                      sections[sectionIndex]
+                                                          .comments
+                                                          .isNotEmpty;
+                                                  final section =
+                                                      sections[sectionIndex];
+                                                  bool hasSectionItemComments =
+                                                      sections[sectionIndex]
+                                                          .items
+                                                          .any((item) => item
+                                                              .comments
+                                                              .isNotEmpty);
+                                                  bool hasSectionImages =
+                                                      sections[sectionIndex]
+                                                          .images
+                                                          .isNotEmpty;
+
+                                                  bool hasSectionItems =
+                                                      sections[sectionIndex]
+                                                          .items
+                                                          .isNotEmpty;
+
+                                                  if (hasSectionItems ||
+                                                      hasSectionComments ||
+                                                      hasSectionImages ||
+                                                      hasSectionItemComments) {
+                                                    return Container(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              top: 30,
+                                                              bottom: 30),
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                              .size
+                                                              .width,
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                      ),
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                isExpanded[
+                                                                        sectionIndex] =
+                                                                    !isExpanded[
+                                                                        sectionIndex];
+                                                              });
+                                                            },
+                                                            child: Container(
+                                                              width:
+                                                                  MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width,
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                color:
+                                                                    ProjectColors
+                                                                        .white,
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0),
+                                                              ),
+                                                              child:
+                                                                  SectionTile(
+                                                                diffencyCount:
+                                                                    numberOfDiffencyCommentsInSection(
+                                                                        sections[
+                                                                            sectionIndex]),
+                                                                totalComments:
+                                                                    section
+                                                                        .comments
+                                                                        .length,
+                                                                isExpanded:
+                                                                    isExpanded,
+                                                                hasSubsections:
+                                                                    hasSubSections,
+                                                                section:
+                                                                    section,
+                                                                sectionIndex:
+                                                                    sectionIndex,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          isExpanded[
+                                                                  sectionIndex]
+                                                              ? Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    section.subSections
+                                                                            .isNotEmpty
+                                                                        ? Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(top: 25.0, bottom: 12),
+                                                                            child:
+                                                                                Text(
+                                                                              "Subsections of ${section.name!}",
+                                                                              style: b4Regular,
+                                                                            ),
+                                                                          )
+                                                                        : const SizedBox(),
+                                                                    MasonryGridView.count(
+                                                                        physics: const NeverScrollableScrollPhysics(),
+                                                                        shrinkWrap: true,
+                                                                        itemCount: section.subSections.length,
+                                                                        crossAxisCount: 1,
+                                                                        itemBuilder: (context, subSectionIndex) {
+                                                                          final subSection =
+                                                                              sections[sectionIndex].subSections[subSectionIndex];
+                                                                          return Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.only(top: 13.0, bottom: 13.0),
+                                                                            child:
+                                                                                SectionTile(
+                                                                              section: subSection,
+                                                                              isExpanded: isExpanded,
+                                                                              sectionIndex: sectionIndex,
+                                                                              hasSubsections: false,
+                                                                              totalComments: subSection.comments.length,
+                                                                              diffencyCount: numberOfDiffencyCommentsInSection(subSection),
+                                                                            ),
+                                                                          );
+                                                                        }),
+                                                                  ],
+                                                                )
+                                                              : const SizedBox(),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    return const SizedBox();
+                                                  }
+                                                },
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      // add your onPressed function here
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            shape:
+                                                                RoundedRectangleBorder(
                                                               borderRadius:
                                                                   BorderRadius
                                                                       .circular(
                                                                           10.0),
                                                             ),
-                                                            child: SectionTile(
-                                                              diffencyCount: numberOfDiffencyCommentsInSection(widget
-                                                                      .inspection
-                                                                      .template!
-                                                                      .sections[
-                                                                  sectionIndex]),
-                                                              totalComments:
-                                                                  section
-                                                                      .comments
-                                                                      .length,
-                                                              isExpanded:
-                                                                  isExpanded,
-                                                              hasSubsections:
-                                                                  hasSubSections,
-                                                              section: section,
-                                                              sectionIndex:
-                                                                  sectionIndex,
-                                                            ),
+                                                            primary:
+                                                                ProjectColors
+                                                                    .firefly),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              12.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: const [
+                                                          Icon(Icons.print),
+                                                          SizedBox(
+                                                            width: 10,
                                                           ),
-                                                        ),
-                                                        isExpanded[sectionIndex]
-                                                            ? Column(
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  section.subSections
-                                                                          .isNotEmpty
-                                                                      ? Padding(
-                                                                          padding: const EdgeInsets.only(
-                                                                              top: 25.0,
-                                                                              bottom: 12),
-                                                                          child:
-                                                                              Text(
-                                                                            "Subsections of ${section.name}",
-                                                                            style:
-                                                                                b4Regular,
-                                                                          ),
-                                                                        )
-                                                                      : const SizedBox(),
-                                                                  MasonryGridView
-                                                                      .count(
-                                                                          physics:
-                                                                              const NeverScrollableScrollPhysics(),
-                                                                          shrinkWrap:
-                                                                              true,
-                                                                          itemCount: section
-                                                                              .subSections
-                                                                              .length,
-                                                                          crossAxisCount:
-                                                                              1,
-                                                                          itemBuilder:
-                                                                              (context, subSectionIndex) {
-                                                                            final subSection =
-                                                                                widget.inspection.template!.sections[sectionIndex].subSections[subSectionIndex];
-                                                                            return Padding(
-                                                                              padding: const EdgeInsets.only(top: 13.0, bottom: 13.0),
-                                                                              child: SectionTile(
-                                                                                section: subSection,
-                                                                                isExpanded: isExpanded,
-                                                                                sectionIndex: sectionIndex,
-                                                                                hasSubsections: false,
-                                                                                totalComments: subSection.comments.length,
-                                                                                diffencyCount: numberOfDiffencyCommentsInSection(subSection),
-                                                                              ),
-                                                                            );
-                                                                          }),
-                                                                ],
-                                                              )
-                                                            : const SizedBox(),
-                                                      ],
+                                                          Text('Print',
+                                                              style: b2Medium),
+                                                        ],
+                                                      ),
                                                     ),
-                                                  );
-                                                },
-                                              ),
+                                                  ),
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      // add your onPressed function here
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            shape:
+                                                                RoundedRectangleBorder(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10.0),
+                                                            ),
+                                                            primary:
+                                                                ProjectColors
+                                                                    .primary),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.all(
+                                                              12.0),
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: const [
+                                                          Icon(Icons
+                                                              .cloud_download),
+                                                          SizedBox(
+                                                            width: 10,
+                                                          ),
+                                                          Text('Download PDF',
+                                                              style: b2Medium),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
                                             ],
                                           ),
                                         ),

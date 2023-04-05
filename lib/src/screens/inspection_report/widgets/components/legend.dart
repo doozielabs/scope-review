@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/constants.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/legend_item.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/primary_heading_text_with_background.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/legend_item.dart';
 
 class Legends extends StatelessWidget {
   const Legends({Key? key}) : super(key: key);

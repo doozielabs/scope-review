@@ -34,6 +34,15 @@ class TemplateSubSection extends StatelessWidget {
         itemCount: subSections.length,
         crossAxisCount: 1,
         itemBuilder: (context, subSectionIndex) {
+          bool hasSubSectionItems =
+              subSections[subSectionIndex].items.isNotEmpty;
+          bool hasSubSectionImages =
+              subSections[subSectionIndex].images.isNotEmpty;
+          bool hasSubSectionComments =
+              subSections[subSectionIndex].comments.isNotEmpty;
+          bool hasSectionItemComments = subSections[subSectionIndex]
+              .items
+              .any((item) => item.comments.isNotEmpty);
           return Column(
             children: [
               Padding(
@@ -43,191 +52,202 @@ class TemplateSubSection extends StatelessWidget {
                         "${inspection.template!.sections[sectionIndex].name}: ${subSections[subSectionIndex].name!}",
                     backgroundColor: ProjectColors.firefly),
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: ProjectColors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: ProjectColors.firefly.withOpacity(0.15),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: SecondaryHeadingTextWithBackground(
-                            headingText: "Subsection Items Details",
-                            backgroundColor:
-                                ProjectColors.firefly.withOpacity(0.2),
-                            textColor: ProjectColors.firefly,
+              hasSubSectionItems
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 14.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: ProjectColors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: ProjectColors.firefly.withOpacity(0.15),
+                              width: 1.5,
+                            ),
                           ),
-                        ),
-                        //Section Items
-                        MasonryGridView.count(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: subSections[subSectionIndex].items.length,
-                          crossAxisCount: isMobile
-                              ? 1
-                              : isTablet
-                                  ? 2
-                                  : 3,
-                          mainAxisSpacing: 14,
-                          crossAxisSpacing: 14,
-                          itemBuilder: (context, itemIndex) {
-                            return SectionItem(
-                              isSubsectionItem: true,
-                              item:
-                                  subSections[subSectionIndex].items[itemIndex],
-                            );
-                          },
-                        ),
-                      ]),
-                    )),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: ProjectColors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: ProjectColors.firefly.withOpacity(0.15),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(children: [
-                        Column(
-                          children: [
-                            subSections[subSectionIndex].images.isNotEmpty
-                                ? SecondaryHeadingTextWithBackground(
-                                    headingText: "Subsection Images",
-                                    textColor: ProjectColors.firefly,
-                                    backgroundColor:
-                                        ProjectColors.mariner.withOpacity(0.20))
-                                : const SizedBox(),
-                            const SizedBox(height: 14),
-                            MasonryGridView.count(
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(children: [
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0),
+                                child: SecondaryHeadingTextWithBackground(
+                                  headingText: "Subsection Items Details",
+                                  backgroundColor:
+                                      ProjectColors.firefly.withOpacity(0.2),
+                                  textColor: ProjectColors.firefly,
+                                ),
+                              ),
+                              //Section Items
+                              MasonryGridView.count(
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount:
-                                    subSections[subSectionIndex].images.length,
-                                crossAxisCount: (isMobile || isTablet) ? 2 : 4,
-                                mainAxisSpacing: 4,
-                                crossAxisSpacing: 4,
-                                itemBuilder: (context, subSectionImageIndex) {
-                                  return ImageWithRoundedCorners(
-                                    imageUrl: isWeb
-                                        ? GeneralHelper.getMediaObj(
-                                            subSections[subSectionIndex].images,
-                                            media) //"https://picsum.photos/seed/picsum/200/300"
-                                        : GeneralHelper.getMediaObj(
-                                            subSections[subSectionIndex].images,
-                                            media),
-                                    height: getImageWidthHeight(
-                                        ImageType.sectionImage,
-                                        subSections[subSectionIndex].images)[1],
-                                    width: getImageWidthHeight(
-                                        ImageType.sectionImage,
-                                        subSections[subSectionIndex].images)[0],
+                                    subSections[subSectionIndex].items.length,
+                                crossAxisCount: isMobile
+                                    ? 1
+                                    : isTablet
+                                        ? 2
+                                        : 3,
+                                mainAxisSpacing: 14,
+                                crossAxisSpacing: 14,
+                                itemBuilder: (context, itemIndex) {
+                                  return SectionItem(
+                                    isSubsectionItem: true,
+                                    item: subSections[subSectionIndex]
+                                        .items[itemIndex],
                                   );
-                                }),
-                          ],
-                        ),
-                      ]),
-                    )),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: ProjectColors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: ProjectColors.firefly.withOpacity(0.15),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: Column(children: [
-                        Column(children: [
-                          subSections[subSectionIndex].images.isNotEmpty
-                              ? SecondaryHeadingTextWithBackground(
-                                  headingText: "Subsection Comments",
-                                  textColor: ProjectColors.firefly,
-                                  backgroundColor:
-                                      ProjectColors.mariner.withOpacity(0.20))
-                              : const SizedBox(),
-                          const SizedBox(height: 14),
-                          MasonryGridView.count(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount:
-                                subSections[subSectionIndex].comments.length,
-                            crossAxisCount: isMobile
-                                ? 1
-                                : isTablet
-                                    ? 2
-                                    : 2,
-                            mainAxisSpacing: 4,
-                            crossAxisSpacing: 4,
-                            itemBuilder: (context, sectionCommentIndex) {
-                              return SectionCommentCard(
-                                  comment: subSections[subSectionIndex]
-                                      .comments[sectionCommentIndex],
-                                  commentTitle:
-                                      'Comment ( ${subSections[subSectionIndex].name} )',
-                                  media: media);
-                            },
+                                },
+                              ),
+                            ]),
+                          )),
+                    )
+                  : const SizedBox(),
+              hasSubSectionImages
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 14.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: ProjectColors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: ProjectColors.firefly.withOpacity(0.15),
+                              width: 1.5,
+                            ),
                           ),
-                        ]),
-                        const SizedBox(height: 14),
-                      ]),
-                    )),
-              ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(children: [
+                              Column(
+                                children: [
+                                  subSections[subSectionIndex].images.isNotEmpty
+                                      ? SecondaryHeadingTextWithBackground(
+                                          headingText: "Subsection Images",
+                                          textColor: ProjectColors.firefly,
+                                          backgroundColor: ProjectColors.mariner
+                                              .withOpacity(0.20))
+                                      : const SizedBox(),
+                                  const SizedBox(height: 14),
+                                  MasonryGridView.count(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      itemCount: subSections[subSectionIndex]
+                                          .images
+                                          .length,
+                                      crossAxisCount:
+                                          (isMobile || isTablet) ? 2 : 4,
+                                      mainAxisSpacing: 4,
+                                      crossAxisSpacing: 4,
+                                      itemBuilder:
+                                          (context, subSectionImageIndex) {
+                                        return ImageWithRoundedCorners(
+                                          imageUrl: isWeb
+                                              ? GeneralHelper.getMediaObj(
+                                                  subSections[subSectionIndex]
+                                                      .images,
+                                                  media) //"https://picsum.photos/seed/picsum/200/300"
+                                              : GeneralHelper.getMediaObj(
+                                                  subSections[subSectionIndex]
+                                                      .images,
+                                                  media),
+                                          height: getImageWidthHeight(
+                                              ImageType.sectionImage,
+                                              subSections[subSectionIndex]
+                                                  .images)[1],
+                                          width: getImageWidthHeight(
+                                              ImageType.sectionImage,
+                                              subSections[subSectionIndex]
+                                                  .images)[0],
+                                        );
+                                      }),
+                                ],
+                              ),
+                            ]),
+                          )),
+                    )
+                  : const SizedBox(),
+              hasSubSectionComments
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 14.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: ProjectColors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: ProjectColors.firefly.withOpacity(0.15),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(children: [
+                              Column(children: [
+                                subSections[subSectionIndex].images.isNotEmpty
+                                    ? SecondaryHeadingTextWithBackground(
+                                        headingText: "Subsection Comments",
+                                        textColor: ProjectColors.firefly,
+                                        backgroundColor: ProjectColors.mariner
+                                            .withOpacity(0.20))
+                                    : const SizedBox(),
+                                const SizedBox(height: 14),
+                                MasonryGridView.count(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: subSections[subSectionIndex]
+                                      .comments
+                                      .length,
+                                  crossAxisCount: isMobile
+                                      ? 1
+                                      : isTablet
+                                          ? 2
+                                          : 2,
+                                  mainAxisSpacing: 4,
+                                  crossAxisSpacing: 4,
+                                  itemBuilder: (context, sectionCommentIndex) {
+                                    return SectionCommentCard(
+                                        comment: subSections[subSectionIndex]
+                                            .comments[sectionCommentIndex],
+                                        commentTitle:
+                                            'Comment ( ${subSections[subSectionIndex].name} )',
+                                        media: media);
+                                  },
+                                ),
+                              ]),
+                              const SizedBox(height: 14),
+                            ]),
+                          )),
+                    )
+                  : const SizedBox(),
               //Subsection item Comments
-              Padding(
-                padding: const EdgeInsets.only(bottom: 14.0),
-                child: Container(
-                    decoration: BoxDecoration(
-                      color: ProjectColors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(
-                        color: ProjectColors.firefly.withOpacity(0.15),
-                        width: 1.5,
-                      ),
-                    ),
-                    child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Column(children: [
-                          subSections[subSectionIndex].images.isNotEmpty
-                              ? SecondaryHeadingTextWithBackground(
-                                  headingText: "Subsection Items Comments",
-                                  textColor: ProjectColors.firefly,
-                                  backgroundColor:
-                                      ProjectColors.mariner.withOpacity(0.20))
-                              : const SizedBox(),
-                          const SizedBox(height: 14),
-                          ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: subSections.length,
-                              itemBuilder: (context, subSectionIndex) {
-                                return SubSectionItemComments(
-                                    sectionIndex: sectionIndex,
-                                    inspection: inspection,
-                                    subSectionIndex: subSectionIndex,
-                                    media: media);
-                              }),
-                        ]))),
-              ),
+              hasSectionItemComments
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: 14.0),
+                      child: Container(
+                          decoration: BoxDecoration(
+                            color: ProjectColors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                              color: ProjectColors.firefly.withOpacity(0.15),
+                              width: 1.5,
+                            ),
+                          ),
+                          child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(children: [
+                                SecondaryHeadingTextWithBackground(
+                                    headingText: "Subsection Items Comments",
+                                    textColor: ProjectColors.firefly,
+                                    backgroundColor: ProjectColors.mariner
+                                        .withOpacity(0.20)),
+                                const SizedBox(height: 14),
+                                SubSectionItemComments(
+                                  sectionIndex: sectionIndex,
+                                  inspection: inspection,
+                                  subSectionIndex: subSectionIndex,
+                                  media: media,
+                                )
+                              ]))),
+                    )
+                  : const SizedBox(),
             ],
           );
         });
