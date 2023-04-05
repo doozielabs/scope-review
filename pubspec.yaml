@@ -1,6 +1,6 @@
 name: pdf_report_scope
 description: PDF Report for the Scope App and Website
-version: 0.0.2
+version: 0.0.3
 homepage: https://github.com/syedmehtabali/pdf_report_scope
 
 environment:
@@ -31,9 +31,9 @@ dev_dependencies:
 flutter:
 
   assets:
-    - assets/svg/
-    - assets/images/
-    - assets/data/
+    - packages/pdf_report_scope/assets/svg/
+    - packages/pdf_report_scope/assets/images/
+    - packages/pdf_report_scope/assets/fonts/
 
   # To add assets to your package, add an assets section, like this:
   # For details regarding assets in packages, see
@@ -51,16 +51,16 @@ flutter:
   fonts:
     - family: jost-light
       fonts:
-        - asset: assets/fonts/Jost-Light.ttf
+        - asset: packages/pdf_report_scope/assets/fonts/Jost-Light.ttf
     - family: jost-Medium
       fonts:
-        - asset: assets/fonts/Jost-Medium.ttf
+        - asset: packages/pdf_report_scope/assets/fonts/Jost-Medium.ttf
     - family: jost-regular
       fonts:
-        - asset: assets/fonts/Jost-Regular.ttf
+        - asset: packages/pdf_report_scope/assets/fonts/Jost-Regular.ttf
     - family: jost-semiBold
       fonts:
-        - asset: assets/fonts/Jost-SemiBold.ttf
+        - asset: packages/pdf_report_scope/assets/fonts/Jost-SemiBold.ttf
 
   # For details regarding fonts in packages, see
   # https://flutter.dev/custom-fonts/#from-packages

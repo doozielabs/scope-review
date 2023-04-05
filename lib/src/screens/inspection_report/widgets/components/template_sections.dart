@@ -83,7 +83,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                         color: ProjectColors.pickledBluewood)),
                 const SizedBox(width: 8),
                 SvgPicture.asset(
-                  "assets/svg/${expandAllSections ? "expand" : "unexpand"}.svg",
+                  "packages/pdf_report_scope/assets/svg/${expandAllSections ? "expand" : "unexpand"}.svg",
                   width: 21,
                   height: 21,
                 ),
@@ -145,7 +145,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         fontFamily: fontFamilyJostMedium),
                                   ),
                                   SvgPicture.asset(
-                                      "assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg")
+                                      "packages/pdf_report_scope/assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg")
                                 ],
                               )),
                             ),

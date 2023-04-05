@@ -67,7 +67,8 @@ class ReportHeaderTablet extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              SvgPicture.asset("assets/svg/location.svg"),
+                              SvgPicture.asset(
+                                  "packages/pdf_report_scope/assets/svg/location.svg"),
                               const SizedBox(width: 10),
                               Expanded(
                                 child: Text(

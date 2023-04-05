@@ -20,7 +20,10 @@ class LegendItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Column(
-          children: [SvgPicture.asset("assets/svg/$iconName.svg")],
+          children: [
+            SvgPicture.asset(
+                "packages/pdf_report_scope/assets/svg/$iconName.svg")
+          ],
         ),
         const SizedBox(width: 11),
         Expanded(

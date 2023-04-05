@@ -653,10 +653,10 @@ extension TemplateExtension on Template {
     if (_id.haveSection()) {
       _section = sections[_id.section.dec];
       _setSection(_id.haveSubSection()
-          ? _section?.subSections[_id.subSection.dec]
+          ? _section.subSections[_id.subSection.dec]
           : _section);
       if (_id.haveSubSection()) {
-        _subSection = _section?.subSections[_id.subSection.dec];
+        _subSection = _section.subSections[_id.subSection.dec];
       }
     }
 

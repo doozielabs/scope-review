@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 
-const String fontFamilyJostLight = "assets/font/jost-Light";
-const String fontFamilyJostRegular = "assets/font/jost-Regular";
-const String fontFamilyJostMedium = "assets/font/jost-Medium";
-const String fontFamilyJostSemiBold = "assets/font/jost-semiBold";
+const String fontFamilyJostLight =
+    "packages/pdf_report_scope/assets/font/jost-Light";
+const String fontFamilyJostRegular =
+    "packages/pdf_report_scope/assets/font/jost-Regular";
+const String fontFamilyJostMedium =
+    "packages/pdf_report_scope/assets/font/jost-Medium";
+const String fontFamilyJostSemiBold =
+    "packages/pdf_report_scope/assets/font/jost-semiBold";
 
 const TextStyle primaryHeadingTextStyle = TextStyle(
   fontSize: 16,
