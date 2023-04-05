@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 
-const String fontFamilyJostLight = "jost-Light";
-const String fontFamilyJostRegular = "jost-Regular";
-const String fontFamilyJostMedium = "jost-Medium";
-const String fontFamilyJostSemiBold = "jost-semiBold";
+const String fontFamilyJostLight = "assets/font/jost-Light";
+const String fontFamilyJostRegular = "assets/font/jost-Regular";
+const String fontFamilyJostMedium = "assets/font/jost-Medium";
+const String fontFamilyJostSemiBold = "assets/font/jost-semiBold";
 
 const TextStyle primaryHeadingTextStyle = TextStyle(
   fontSize: 16,
@@ -14,7 +14,7 @@ const TextStyle primaryHeadingTextStyle = TextStyle(
 const TextStyle secondryHeadingTextStyle = TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.w400,
-    fontFamily: "jost-Light",
+    fontFamily: fontFamilyJostRegular,
     color: ProjectColors.white);
 
 //Headings
@@ -84,29 +84,29 @@ const TextStyle b5Medium = TextStyle(
 const TextStyle b1Regular = TextStyle(
   fontSize: 18,
   fontWeight: FontWeight.w400,
-  fontFamily: "jost-Light",
+  fontFamily: fontFamilyJostRegular,
 );
 
 const TextStyle b2Regular = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w400,
-  fontFamily: "jost-Light",
+  fontFamily: fontFamilyJostRegular,
 );
 
 const TextStyle b3Regular = TextStyle(
   fontSize: 14,
   fontWeight: FontWeight.w400,
-  fontFamily: "jost-Light",
+  fontFamily: fontFamilyJostRegular,
 );
 
 const TextStyle b4Regular = TextStyle(
   fontSize: 12,
   fontWeight: FontWeight.w400,
-  fontFamily: "jost-Light",
+  fontFamily: fontFamilyJostRegular,
 );
 
 const TextStyle b5Regular = TextStyle(
   fontSize: 10,
   fontWeight: FontWeight.w400,
-  fontFamily: "jost-Light",
+  fontFamily: fontFamilyJostRegular,
 );

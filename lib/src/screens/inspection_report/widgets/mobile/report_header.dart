@@ -64,7 +64,7 @@ class ReportHeaderMobile extends StatelessWidget {
                 children: [
                   const Text(
                     "Site Address:",
-                    style: secondryHeadingTextStyle,
+                    // style: secondryHeadingTextStyle,
                   ),
                   const SizedBox(height: 10),
                   Row(
@@ -80,10 +80,10 @@ class ReportHeaderMobile extends StatelessWidget {
                           GeneralHelper.getInspectionAddress(
                               inspection.address),
                           overflow: TextOverflow.visible,
-                          style: secondryHeadingTextStyle.copyWith(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 16,
-                          ),
+                          // style: secondryHeadingTextStyle.copyWith(
+                          //   fontWeight: FontWeight.w500,
+                          //   fontSize: 16,
+                          // ),
                         ),
                       )
                     ],
@@ -100,7 +100,7 @@ class ReportHeaderMobile extends StatelessWidget {
                 children: [
                   const Text(
                     "Start Inspection Date",
-                    style: secondryHeadingTextStyle,
+                    // style: secondryHeadingTextStyle,
                   ),
                   const SizedBox(height: 10),
                   Row(
@@ -115,7 +115,7 @@ class ReportHeaderMobile extends StatelessWidget {
                   const SizedBox(height: 20),
                   const Text(
                     "End Inspection Date",
-                    style: secondryHeadingTextStyle,
+                    // style: secondryHeadingTextStyle,
                   ),
                   const SizedBox(height: 10),
                   Row(
@@ -139,7 +139,7 @@ class ReportHeaderMobile extends StatelessWidget {
                 children: [
                   Text(
                     "Home Buyer:",
-                    style: secondryHeadingTextStyle,
+                    // style: secondryHeadingTextStyle,
                   ),
                   SizedBox(height: 10),
                   HeaderInfoItem(
@@ -171,7 +171,7 @@ class ReportHeaderMobile extends StatelessWidget {
                 children: [
                   Text(
                     "Inspected by:",
-                    style: secondryHeadingTextStyle,
+                    // style: secondryHeadingTextStyle,
                   ),
                   SizedBox(height: 10),
                   HeaderInfoItem(
