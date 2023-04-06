@@ -78,15 +78,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         builder: (BuildContext context, BoxConstraints constraints) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         //Mobile
-        if (widget.showDialogue) {
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (BuildContext context) {
-                return SectionEyeShotForMobileAndTablet(
-                    inspection: widget.inspection, isExpanded: isExpanded);
-              });
-        }
         return SafeArea(
           child: Scaffold(
             body: Stack(
