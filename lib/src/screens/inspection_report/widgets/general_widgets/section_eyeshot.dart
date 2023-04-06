@@ -11,7 +11,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<bool> isExpanded;
   const SectionEyeShotForMobileAndTablet({
     Key? key,

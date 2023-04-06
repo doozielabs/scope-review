@@ -226,7 +226,7 @@ class GeneralHelper {
 
   static bool isTypeTemplate(val) => val is Template;
 
-  static bool isTypeInspection(val) => val is Inspection;
+  static bool isTypeInspection(val) => val is InspectionModel;
 
   static bool isTypeSection(val) => val is TemplateSection;
 
@@ -264,7 +264,7 @@ class GeneralHelper {
     );
   }
 
-  List<Comment> getDeficiencyCommetsFromInspection(Inspection inspection) {
+  List<Comment> getDeficiencyCommetsFromInspection(InspectionModel inspection) {
     List<Comment> deficiencyCommets = [];
     final sections = inspection.template!.sections;
     //Looping the sections

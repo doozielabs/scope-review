@@ -11,7 +11,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ReportSummary extends StatelessWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape>? media;
   const ReportSummary({Key? key, required this.inspection, required this.media})
       : super(key: key);

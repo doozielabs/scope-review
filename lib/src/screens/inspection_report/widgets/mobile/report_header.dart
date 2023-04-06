@@ -10,7 +10,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ReportHeaderMobile extends StatelessWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape>? media;
   const ReportHeaderMobile(
       {Key? key, required this.inspection, required this.media})

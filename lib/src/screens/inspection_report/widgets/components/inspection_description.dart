@@ -10,7 +10,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import '../../../../utils/helpers/general_helper.dart';
 
 class InspectionDescription extends StatelessWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   const InspectionDescription({Key? key, required this.inspection})
       : super(key: key);
 

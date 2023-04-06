@@ -20,7 +20,7 @@ import 'package:sizer/sizer.dart';
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 
 class InspectionReportScreen extends StatefulWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape> media;
   final bool showDialogue;
   const InspectionReportScreen(

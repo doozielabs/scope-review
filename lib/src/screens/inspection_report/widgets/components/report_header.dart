@@ -7,7 +7,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/tablet/re
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/web/report_header.dart';
 
 class ReportHeader extends StatelessWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape>? media;
   const ReportHeader({Key? key, required this.inspection, required this.media})
       : super(key: key);

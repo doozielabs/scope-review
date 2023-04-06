@@ -12,7 +12,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/vertical_divider.dart';
 
 class ReportHeaderWeb extends StatelessWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape>? media;
   const ReportHeaderWeb(
       {Key? key, required this.inspection, required this.media})

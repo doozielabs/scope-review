@@ -13,7 +13,7 @@ class SectionItemDetails extends StatelessWidget {
     required this.sectionIndex,
   }) : super(key: key);
 
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape> media;
   final int sectionIndex;
 

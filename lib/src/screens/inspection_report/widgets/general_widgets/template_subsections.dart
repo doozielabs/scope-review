@@ -21,7 +21,7 @@ class TemplateSubSection extends StatelessWidget {
     required this.sectionIndex,
   }) : super(key: key);
 
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape> media;
   final int sectionIndex;
 
@@ -263,7 +263,7 @@ class SubSectionItemComments extends StatelessWidget {
     required this.sectionIndex,
   }) : super(key: key);
 
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape> media;
   final int subSectionIndex;
   final int sectionIndex;

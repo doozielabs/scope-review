@@ -18,7 +18,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/template_subsections.dart';
 
 class TemplateSections extends StatefulWidget {
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape> media;
   const TemplateSections(
       {Key? key, required this.inspection, required this.media})
@@ -31,7 +31,7 @@ class TemplateSections extends StatefulWidget {
 class _TemplateSectionsState extends State<TemplateSections> {
   List<bool> isExpanded = [];
   bool expandAllSections = false;
-  Inspection inspection = Inspection();
+  InspectionModel inspection = InspectionModel();
   List<ImageShape>? media;
 
   @override
@@ -322,7 +322,7 @@ class SectionImages extends StatelessWidget {
     required this.sectionIndex,
   }) : super(key: key);
 
-  final Inspection inspection;
+  final InspectionModel inspection;
   final List<ImageShape> media;
   final int sectionIndex;
 

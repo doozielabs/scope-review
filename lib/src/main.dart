@@ -13,7 +13,7 @@ class NavigationService {
 
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
-  final Inspection inspection;
+  final InspectionModel inspection;
   const PDFReport(
       {Key? key, required this.showDialogue, required this.inspection})
       : super(key: key);
@@ -23,7 +23,7 @@ class PDFReport extends StatefulWidget {
 }
 
 class _PDFReportState extends State<PDFReport> {
-  Inspection? inspection;
+  InspectionModel? inspection;
   bool isLoading = false;
   List<ImageShape>? media;
   @override

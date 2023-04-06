@@ -7,7 +7,7 @@ import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
-class Inspection {
+class InspectionModel {
   late String name;
   late int endDate;
   late num totalFee;
@@ -33,7 +33,7 @@ class Inspection {
   late int? lastModified;
   late User? user;
   late Map<String, String> inspectionHashMap;
-  Inspection(
+  InspectionModel(
       {this.id,
       this.client,
       this.address,
@@ -60,7 +60,7 @@ class Inspection {
       this.inspectionHashMap = const {}})
       : photos = [];
 
-  Inspection.fromJson(Map<String, dynamic> json) {
+  InspectionModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     serverTimestamp = json['serverTimestamp'] ?? 0;
     lastModified = json['lastModified'] ?? 0;
@@ -106,8 +106,8 @@ class Inspection {
   }
 
   get cordinate => null;
-  static List<Inspection> fromListJson(List list) =>
-      list.map((inspection) => Inspection.fromJson(inspection)).toList();
+  static List<InspectionModel> fromListJson(List list) =>
+      list.map((inspection) => InspectionModel.fromJson(inspection)).toList();
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -152,8 +152,8 @@ class Inspection {
     return data;
   }
 
-  Inspection.update(
-      Inspection originalInspection, Inspection updatedInspection) {
+  InspectionModel.update(
+      InspectionModel originalInspection, InspectionModel updatedInspection) {
     //Inspection id
     originalInspection.id = updatedInspection.id;
     //Inspection name
