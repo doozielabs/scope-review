@@ -7,14 +7,14 @@ class InspectionProvider {
     try {
       // final response  = await Api.get("get/inspections/report/6333fadd9942f208f96c591b");
       final response = await Api.get("/inspection/6333fadd9942f208f96c591b");
-      Inspection inspection = Inspection.fromJson(response.data);
+      InspectionModel inspection = InspectionModel.fromJson(response.data);
       return inspection;
     } catch (e) {
       return null;
     }
   }
 
-  Future<List<dynamic>> getPhotoByIds(Inspection report) async {
+  Future<List<dynamic>> getPhotoByIds(InspectionModel report) async {
     List<ImageShape> _imageShape = [];
     try {
       var inspectionImages = report.inspectionImages;
