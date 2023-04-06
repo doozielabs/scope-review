@@ -79,47 +79,29 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         builder: (BuildContext context, BoxConstraints constraints) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         //Mobile
+        if (widget.showDialogue) {
+          showDialog(
+              barrierDismissible: false,
+              context: context,
+              builder: (BuildContext context) {
+                return SectionEyeShotForMobileAndTablet(
+                    inspection: widget.inspection, isExpanded: isExpanded);
+              });
+        }
         return SafeArea(
           child: Scaffold(
-            body: Stack(
-              children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isLoading = true;
-                            });
-                          },
-                          icon: const Icon(Icons.ac_unit)),
-                      ReportHeader(
-                          inspection: widget.inspection, media: widget.media),
-                      InspectionDescription(inspection: widget.inspection),
-                      ReportSummary(
-                          inspection: widget.inspection, media: widget.media),
-                      TemplateSections(
-                          inspection: widget.inspection, media: widget.media)
-                    ],
-                  ),
-                ),
-                if (isLoading)
-                  Positioned.fill(child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SectionEyeShotForMobileAndTablet(
-                                inspection: widget.inspection,
-                                isExpanded: isExpanded);
-                          });
-                      setState(() {
-                        isLoading = false;
-                      });
-                    },
-                  ))
-              ],
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  ReportHeader(
+                      inspection: widget.inspection, media: widget.media),
+                  InspectionDescription(inspection: widget.inspection),
+                  ReportSummary(
+                      inspection: widget.inspection, media: widget.media),
+                  TemplateSections(
+                      inspection: widget.inspection, media: widget.media)
+                ],
+              ),
             ),
           ),
         );
