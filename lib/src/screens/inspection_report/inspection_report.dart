@@ -35,7 +35,6 @@ class InspectionReportScreen extends StatefulWidget {
 }
 
 class _InspectionReportScreenState extends State<InspectionReportScreen> {
-  bool isLoading = false;
   List<bool> isExpanded = [];
   late List<TemplateSection> sections = widget.inspection.template!.sections;
 
@@ -90,18 +89,38 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         }
         return SafeArea(
           child: Scaffold(
-            body: SingleChildScrollView(
-              child: Column(
-                children: [
-                  ReportHeader(
-                      inspection: widget.inspection, media: widget.media),
-                  InspectionDescription(inspection: widget.inspection),
-                  ReportSummary(
-                      inspection: widget.inspection, media: widget.media),
-                  TemplateSections(
-                      inspection: widget.inspection, media: widget.media)
-                ],
-              ),
+            body: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      ReportHeader(
+                          inspection: widget.inspection, media: widget.media),
+                      InspectionDescription(inspection: widget.inspection),
+                      ReportSummary(
+                          inspection: widget.inspection, media: widget.media),
+                      TemplateSections(
+                          inspection: widget.inspection, media: widget.media)
+                    ],
+                  ),
+                ),
+                if (widget.showDialogue)
+                  Positioned.fill(child: GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SectionEyeShotForMobileAndTablet(
+                                inspection: widget.inspection,
+                                isExpanded: isExpanded);
+                          });
+                      setState(() {
+                        // widget.showDialogue = false;
+                      });
+                    },
+                  ))
+              ],
             ),
           ),
         );
