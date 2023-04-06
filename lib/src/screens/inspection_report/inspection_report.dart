@@ -95,22 +95,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                     ],
                   ),
                 ),
-                if (widget.showDialogue)
-                  Positioned.fill(child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (BuildContext context) {
-                            return SectionEyeShotForMobileAndTablet(
-                                inspection: widget.inspection,
-                                isExpanded: isExpanded);
-                          });
-                      setState(() {
-                        // widget.showDialogue = false;
-                      });
-                    },
-                  ))
               ],
             ),
           ),
