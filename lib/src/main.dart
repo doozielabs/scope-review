@@ -13,10 +13,11 @@ class NavigationService {
 
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
-  final InspectionModel inspection;
-  const PDFReport(
-      {Key? key, required this.showDialogue, required this.inspection})
-      : super(key: key);
+  // final InspectionModel inspection;
+  const PDFReport({
+    Key? key,
+    required this.showDialogue,
+  }) : super(key: key);
 
   @override
   State<PDFReport> createState() => _PDFReportState();
@@ -30,7 +31,7 @@ class _PDFReportState extends State<PDFReport> {
   void initState() {
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
-      // inspection = await InspectionProvider().getInspection();
+      inspection = await InspectionProvider().getInspection();
 
       media = await InspectionProvider().getPhotoByIds(inspection!)
           as List<ImageShape>;
@@ -51,7 +52,7 @@ class _PDFReportState extends State<PDFReport> {
                   ? const CupertinoActivityIndicator(
                       color: ProjectColors.firefly)
                   : InspectionReportScreen(
-                      inspection: widget.inspection,
+                      inspection: inspection!,
                       media: media!,
                       showDialogue: widget.showDialogue,
                     ),
