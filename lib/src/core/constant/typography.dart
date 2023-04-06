@@ -10,12 +10,15 @@ const TextStyle primaryHeadingTextStyle = TextStyle(
   fontSize: 16,
   fontWeight: FontWeight.w600,
   fontFamily: fontFamilyJostMedium,
+  package: "pdf_report_scope",
 );
 const TextStyle secondryHeadingTextStyle = TextStyle(
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    fontFamily: fontFamilyJostRegular,
-    color: ProjectColors.white);
+  fontSize: 14,
+  fontWeight: FontWeight.w400,
+  fontFamily: fontFamilyJostRegular,
+  color: ProjectColors.white,
+  package: "pdf_report_scope",
+);
 
 //Headings
 
