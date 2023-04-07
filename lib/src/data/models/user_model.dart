@@ -80,31 +80,31 @@ class User {
     address = json["address"];
     phone = json["phone"];
     // logo = json["logo"] == null ? null : ImageShape.fromJson(json["logo"]);
-    reportLimits = json["reportLimits"];
+    // reportLimits = json["reportLimits"];
     // accessToken = json["accessToken"];
-    expireAt = json["expireAt"];
-    planMode = GeneralHelper.getType(
-      PlanType.values,
-      "PlanType",
-      json["planMode"],
-    );
-    userType = GeneralHelper.getType(
-      UserType.values,
-      "UserType",
-      json["userType"],
-    );
+    // expireAt = json["expireAt"];
+    // planMode = GeneralHelper.getType(
+    //   PlanType.values,
+    //   "PlanType",
+    //   json["planMode"],
+    // );
+    // userType = GeneralHelper.getType(
+    //   UserType.values,
+    //   "UserType",
+    //   json["userType"],
+    // );
     // photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
-    website = json["website"];
+    // website = json["website"];
     organization = json["organization"];
-    location = json["location"];
+    // location = json["location"];
     // signature = json["signature"] == null
     //     ? null
     //     : ImageShape.fromJson(json["signature"]);
-    licenseNumber = json["licenseNumber"] ?? "";
-    licenseIssueDate = json["licenseIssueDate"] ?? 0;
-    licenseExpirationDate = json["licenseExpirationDate"] ?? 0;
-    stripeConnectId = json["stripeConnectId"] ?? "";
-    stripeOnboarded = json["stripeOnboarded"] ?? 0;
+    // licenseNumber = json["licenseNumber"] ?? "";
+    // licenseIssueDate = json["licenseIssueDate"] ?? 0;
+    // licenseExpirationDate = json["licenseExpirationDate"] ?? 0;
+    // stripeConnectId = json["stripeConnectId"] ?? "";
+    // stripeOnboarded = json["stripeOnboarded"] ?? 0;
   }
 
   Map<String, dynamic> toJson([bool deep = true]) {
