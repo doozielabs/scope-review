@@ -12,7 +12,7 @@ class ShowMenuDialogue {
   void showMenu(BuildContext context, dynamic inspection) {
     InspectionModel inspectionModel =
         InspectionModel.fromJson(jsonDecode(inspection));
-    print("Inspection json:$inspection && inspectionModel:$inspectionModel");
+    print("inspectionModel:$inspectionModel");
     if (_showDialog) {
       // Show the dialog
       showDialog(
