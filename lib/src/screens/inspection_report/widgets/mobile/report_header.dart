@@ -182,11 +182,12 @@ class ReportHeaderMobile extends StatelessWidget {
                           ? "Unspecified"
                           : "${inspection.client?.phone}"),
                   const SizedBox(height: 10),
-                  HeaderInfoItem(
-                      iconName: "icon-company",
-                      text: inspection.user?.organization == ''
-                          ? "Unspecified"
-                          : "${inspection.user?.organization}")
+                  //TODO: Uncomment after testing
+                  // HeaderInfoItem(
+                  //     iconName: "icon-company",
+                  //     text: inspection.user?.organization == ''
+                  //         ? "Unspecified"
+                  //         : "${inspection.user?.organization}")
                 ],
               ),
             ),

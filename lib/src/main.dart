@@ -32,8 +32,8 @@ class _PDFReportState extends State<PDFReport> {
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
       // inspection = await InspectionProvider().getInspection();
-      inspection = InspectionModel.fromJson(json.decode(widget.inspection));
-      print("mainins:${widget.inspection}  && inspection:$inspection");
+      print("mainins:${widget.inspection} ");
+      inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
       media = await InspectionProvider().getPhotoByIds(inspection!)
           as List<ImageShape>;
       // print('img si $media');
