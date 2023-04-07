@@ -13,11 +13,9 @@ class NavigationService {
 
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
-  // final InspectionModel inspection;
-  const PDFReport({
-    Key? key,
-    required this.showDialogue,
-  }) : super(key: key);
+  final dynamic inspection;
+  const PDFReport({Key? key, required this.showDialogue, this.inspection})
+      : super(key: key);
 
   @override
   State<PDFReport> createState() => _PDFReportState();
@@ -31,8 +29,8 @@ class _PDFReportState extends State<PDFReport> {
   void initState() {
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
-      inspection = await InspectionProvider().getInspection();
-
+      // inspection = await InspectionProvider().getInspection();
+      inspection = InspectionModel.fromJson(widget.inspection);
       media = await InspectionProvider().getPhotoByIds(inspection!)
           as List<ImageShape>;
       // print('img si $media');
