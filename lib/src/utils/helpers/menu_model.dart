@@ -12,11 +12,11 @@ class ShowMenuDialogue {
   void showMenu(BuildContext context, dynamic inspection) {
     InspectionModel inspectionModel =
         InspectionModel.fromJson(jsonDecode(inspection));
-    print("inspectionModel:$inspectionModel");
+    print("inspectionModel:${inspectionModel.name}");
     if (_showDialog) {
       // Show the dialog
       showDialog(
-          barrierDismissible: false,
+          // barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return SectionEyeShotForMobileAndTablet(inspection: inspection);
