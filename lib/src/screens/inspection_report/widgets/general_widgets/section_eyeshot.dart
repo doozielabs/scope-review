@@ -12,11 +12,11 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final InspectionModel inspection;
-  final List<bool> isExpanded;
+  // final List<bool> isExpanded;
   const SectionEyeShotForMobileAndTablet({
     Key? key,
     required this.inspection,
-    required this.isExpanded,
+    // required this.isExpanded,
   }) : super(key: key);
 
   @override
@@ -27,6 +27,16 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
   late List<TemplateSection> sections = widget.inspection.template!.sections;
+
+  List<bool> isExpanded = [];
+
+  isExpandedForAllSections() {
+    isExpanded = List<bool>.generate(
+      widget.inspection.template!.sections.length,
+      (index) => true,
+    );
+  }
+
   _search(text) async {
     sections = await widget.inspection.template!.sections.filter(text);
     setState(() {});
@@ -40,6 +50,12 @@ class _SectionEyeShotForMobileState
       }
     }
     return diffencyCount;
+  }
+
+  @override
+  void initState() {
+    isExpandedForAllSections();
+    super.initState();
   }
 
   @override
@@ -124,21 +140,21 @@ class _SectionEyeShotForMobileState
                           onTap: () {
                             setState(() {
                               controllerStream.add(sectionIndex);
-                              widget.isExpanded[sectionIndex] =
-                                  !widget.isExpanded[sectionIndex];
+                              isExpanded[sectionIndex] =
+                                  !isExpanded[sectionIndex];
                             });
                           },
                           child: SectionTile(
                             diffencyCount: numberOfDiffencyCommentsInSection(
                                 sections[sectionIndex]),
                             totalComments: section.comments.length,
-                            isExpanded: widget.isExpanded,
+                            isExpanded: isExpanded,
                             hasSubsections: hasSubSections,
                             section: section,
                             sectionIndex: sectionIndex,
                           ),
                         ),
-                        widget.isExpanded[sectionIndex]
+                        isExpanded[sectionIndex]
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -171,7 +187,7 @@ class _SectionEyeShotForMobileState
                                             },
                                             child: SectionTile(
                                               section: subSection,
-                                              isExpanded: widget.isExpanded,
+                                              isExpanded: isExpanded,
                                               sectionIndex: sectionIndex,
                                               hasSubsections: false,
                                               totalComments:
