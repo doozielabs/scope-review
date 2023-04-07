@@ -115,22 +115,23 @@ class User {
     data["email"] = email;
     data["address"] = address;
     data["phone"] = phone;
-    data["reportLimits"] = reportLimits;
+    // data["reportLimits"] = reportLimits;
     // data["accessToken"] = accessToken;
-    data["expireAt"] = expireAt;
-    data["planMode"] = GeneralHelper.typeValue(PlanType);
-    data["userType"] = GeneralHelper.typeValue(UserType);
-    data["website"] = website;
-    data["photo"] = photo?.toJson();
+    // data["expireAt"] = expireAt;
+    // data["planMode"] = GeneralHelper.typeValue(PlanType);
+    // data["userType"] = GeneralHelper.typeValue(UserType);
+    // data["website"] = website;
+    // data["photo"] = photo?.toJson();
     data["organization"] = organization;
     // data["location"] = location;
     // data["logo"] = !deep ? logo?.id : logo?.toJson();
     // data["signature"] = !deep ? signature?.id : signature?.toJson();
-    data["licenseNumber"] = licenseNumber;
-    data["licenseIssueDate"] = licenseIssueDate;
-    data["licenseExpirationDate"] = licenseExpirationDate;
-    data["stripeConnectId"] = stripeConnectId;
-    data["stripeOnboarded"] = stripeOnboarded;
+    // data["licenseNumber"] = licenseNumber;
+    // data["licenseIssueDate"] = licenseIssueDate;
+    // data["licenseExpirationDate"] = licenseExpirationDate;
+    // data["stripeConnectId"] = stripeConnectId;
+    // data["stripeOnboarded"] = stripeOnboarded;
+    print("user data:$data");
     return data;
   }
 }
