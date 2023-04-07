@@ -35,7 +35,7 @@ class _SectionEyeShotForMobileState
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
       widget.inspection.template!.sections.length,
-      (index) => true,
+      (index) => false,
     );
   }
 
