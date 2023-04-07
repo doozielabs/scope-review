@@ -19,7 +19,8 @@ class ShowMenuDialogue {
           // barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
-            return SectionEyeShotForMobileAndTablet(inspection: inspection);
+            return SectionEyeShotForMobileAndTablet(
+                inspection: inspectionModel);
           });
       // showDialog(
       //   context: context,
