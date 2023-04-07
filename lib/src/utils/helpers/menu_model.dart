@@ -11,33 +11,33 @@ class ShowMenuDialogue {
 
   void showMenu(BuildContext context, dynamic inspection) {
     InspectionModel inspectionModel =
-        InspectionModel.fromJson(json.decode(inspection));
+        InspectionModel.fromJson(jsonDecode(inspection));
     print("Inspection json:$inspection && inspectionModel:$inspectionModel");
     if (_showDialog) {
       // Show the dialog
-      // showDialog(
-      //     barrierDismissible: false,
-      //     context: context,
-      //     builder: (BuildContext context) {
-      //       return SectionEyeShotForMobileAndTablet(inspection: inspection);
-      //     });
       showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text("Alert Dialog"),
-            content: Text("Dialog Content"),
-            actions: [
-              TextButton(
-                child: Text("Close"),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              )
-            ],
-          );
-        },
-      );
+          barrierDismissible: false,
+          context: context,
+          builder: (BuildContext context) {
+            return SectionEyeShotForMobileAndTablet(inspection: inspection);
+          });
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return AlertDialog(
+      //       title: Text("Alert Dialog"),
+      //       content: Text("Dialog Content"),
+      //       actions: [
+      //         TextButton(
+      //           child: Text("Close"),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //           },
+      //         )
+      //       ],
+      //     );
+      //   },
+      // );
     }
   }
 }
