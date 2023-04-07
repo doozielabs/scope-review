@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/pdf_report_scope.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
@@ -8,8 +10,9 @@ class ShowMenuDialogue {
   ShowMenuDialogue(this._showDialog);
 
   void showMenu(BuildContext context, dynamic inspection) {
-    // InspectionModel inspectionModel = InspectionModel.fromJson(inspection);
-    print("Inspection json:$inspection ");
+    InspectionModel inspectionModel =
+        InspectionModel.fromJson(json.decode(inspection));
+    print("Inspection json:$inspection && inspectionModel:$inspectionModel");
     if (_showDialog) {
       // Show the dialog
       // showDialog(

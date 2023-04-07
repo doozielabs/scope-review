@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
@@ -29,9 +31,9 @@ class _PDFReportState extends State<PDFReport> {
   void initState() {
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
-      inspection = await InspectionProvider().getInspection();
-      // inspection = InspectionModel.fromJson(widget.inspection);
-      print("mainins:${widget.inspection}");
+      // inspection = await InspectionProvider().getInspection();
+      inspection = InspectionModel.fromJson(json.decode(widget.inspection));
+      print("mainins:${widget.inspection}  && inspection:$inspection");
       media = await InspectionProvider().getPhotoByIds(inspection!)
           as List<ImageShape>;
       // print('img si $media');
