@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
-// import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
-import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/secondary_heading_text_with_background.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comments.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item_comments.dart';
@@ -23,7 +19,6 @@ class TemplateSections extends StatefulWidget {
   const TemplateSections(
       {Key? key, required this.inspection, required this.media})
       : super(key: key);
-
   @override
   State<TemplateSections> createState() => _TemplateSectionsState();
 }
@@ -38,6 +33,11 @@ class _TemplateSectionsState extends State<TemplateSections> {
   void initState() {
     inspection = widget.inspection;
     media = widget.media;
+    controllerStream.stream.listen((index) {
+      setState(() {
+        isExpanded[index] = true;
+      });
+    });
     isExpandedForAllSections();
     super.initState();
   }
@@ -87,7 +87,6 @@ class _TemplateSectionsState extends State<TemplateSections> {
                 const SizedBox(width: 8),
                 SvgPicture.asset(
                   "assets/svg/${expandAllSections ? "expand" : "unexpand"}.svg",
-                  package: "pdf_report_scope",
                   width: 21,
                   height: 21,
                 ),
@@ -107,10 +106,11 @@ class _TemplateSectionsState extends State<TemplateSections> {
                 children: [
                   ...List.generate(inspection.template!.sections.length,
                       (sectionIndex) {
-                    if (itemKeys[sectionIndex] == null) {
-                      itemKeys[sectionIndex] = GlobalKey();
-
-                      getItemHeight(sectionIndex);
+                    if (itemKeys[
+                            inspection.template!.sections[sectionIndex].uid] ==
+                        null) {
+                      itemKeys[inspection
+                          .template!.sections[sectionIndex].uid!] = GlobalKey();
                     }
                     bool hasSectionItemComments = inspection
                         .template!.sections[sectionIndex].items
@@ -155,6 +155,8 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         inspection.template!
                                             .sections[sectionIndex].name!
                                             .toUpperCase(),
+                                        key: itemKeys[inspection.template!
+                                            .sections[sectionIndex].uid],
                                         style: primaryHeadingTextStyle.copyWith(
                                             letterSpacing: 2,
                                             color: ProjectColors.white,
@@ -165,9 +167,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                     Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: SvgPicture.asset(
-                                        "assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg",
-                                        package: "pdf_report_scope",
-                                      ),
+                                          "assets/svg/${isExpanded[sectionIndex] ? "expand" : "unexpand"}.svg"),
                                     )
                                   ],
                                 )),

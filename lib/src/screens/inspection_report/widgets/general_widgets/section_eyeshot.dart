@@ -12,9 +12,11 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final InspectionModel inspection;
+  final List<bool> isExpanded;
   const SectionEyeShotForMobileAndTablet({
     Key? key,
     required this.inspection,
+    required this.isExpanded,
   }) : super(key: key);
 
   @override
@@ -25,18 +27,9 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
   late List<TemplateSection> sections = widget.inspection.template!.sections;
-  List<bool> isExpanded = [];
-
   _search(text) async {
     sections = await widget.inspection.template!.sections.filter(text);
     setState(() {});
-  }
-
-  isExpandedForAllSections() {
-    isExpanded = List<bool>.generate(
-      widget.inspection.template!.sections.length,
-      (index) => false,
-    );
   }
 
   int numberOfDiffencyCommentsInSection(dynamic section) {
@@ -47,18 +40,6 @@ class _SectionEyeShotForMobileState
       }
     }
     return diffencyCount;
-  }
-
-  @override
-  void initState() {
-    isExpandedForAllSections();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    isExpanded.clear();
-    super.dispose();
   }
 
   @override
@@ -98,10 +79,7 @@ class _SectionEyeShotForMobileState
             right: 0,
             child: GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: SvgPicture.asset(
-                  "assets/svg/close.svg",
-                  package: "pdf_report_scope",
-                )),
+                child: SvgPicture.asset("assets/svg/close.svg")),
           ),
         ],
       ),
@@ -145,21 +123,22 @@ class _SectionEyeShotForMobileState
                         GestureDetector(
                           onTap: () {
                             setState(() {
-                              isExpanded[sectionIndex] =
-                                  isExpanded[sectionIndex];
+                              controllerStream.add(sectionIndex);
+                              widget.isExpanded[sectionIndex] =
+                                  !widget.isExpanded[sectionIndex];
                             });
                           },
                           child: SectionTile(
                             diffencyCount: numberOfDiffencyCommentsInSection(
                                 sections[sectionIndex]),
                             totalComments: section.comments.length,
-                            isExpanded: isExpanded,
+                            isExpanded: widget.isExpanded,
                             hasSubsections: hasSubSections,
                             section: section,
                             sectionIndex: sectionIndex,
                           ),
                         ),
-                        isExpanded[sectionIndex]
+                        widget.isExpanded[sectionIndex]
                             ? Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -192,7 +171,7 @@ class _SectionEyeShotForMobileState
                                             },
                                             child: SectionTile(
                                               section: subSection,
-                                              isExpanded: isExpanded,
+                                              isExpanded: widget.isExpanded,
                                               sectionIndex: sectionIndex,
                                               hasSubsections: false,
                                               totalComments:

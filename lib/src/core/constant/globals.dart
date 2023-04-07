@@ -1,13 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/pdf_report_scope.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 
-const baseUrlLive = 'https://api.scopeinspectapp.com';
-const baseUrlStaging = 'https://staging.scopeinspectapp.com';
+const baseUrlLive = 'https://api.scopeinspectapp.com/';
+const baseUrlStaging = 'https://staging.scopeinspectapp.com/';
 const baseUrlLocal = 'http://localhost:1337/';
-const defaultHeaderImage1 = 'assets/images/inspection_placeholder.png';
-const defaultHeaderImage = "assets/images/house.jpeg";
+const defaultHeaderImage1 = 'images/inspection_placeholder.png';
+const defaultHeaderImage = "images/house.jpeg";
 
 const double kMobileMaxWidth = 550.0;
 const double kTabletMaxWidth = 959.0;
@@ -20,7 +22,8 @@ final ScrollController sectionCommentsController = ScrollController();
 final ScrollController subSectionsListviewController = ScrollController();
 final ScrollController subSectionCommentsController = ScrollController();
 
-Map<int, GlobalKey> itemKeys = {};
+Map<String, GlobalKey> itemKeys = {};
+StreamController<int> controllerStream = StreamController<int>();
 
 enum DeviceTypeForWeb {
   mobile,
@@ -191,3 +194,8 @@ List getColorAndIconForComment(CommentType commentType) {
       return [ProjectColors.firefly, "not_inspected"];
   }
 }
+
+// void expandedScrollToSections(index) {
+//     print("expandedScrollToSections $index");
+//      isExpanded[index] = !isExpanded[index];
+// }

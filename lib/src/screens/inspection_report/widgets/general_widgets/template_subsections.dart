@@ -7,7 +7,6 @@ import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/primary_heading_text_with_background.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/secondary_heading_text_with_background.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comment_card.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item.dart';
@@ -34,6 +33,13 @@ class TemplateSubSection extends StatelessWidget {
         itemCount: subSections.length,
         crossAxisCount: 1,
         itemBuilder: (context, subSectionIndex) {
+          if (itemKeys[inspection.template!.sections[sectionIndex]
+                  .subSections[subSectionIndex].uid] ==
+              null) {
+            itemKeys[inspection.template!.sections[sectionIndex]
+                .subSections[subSectionIndex].uid!] = GlobalKey();
+          }
+
           bool hasSubSectionItems =
               subSections[subSectionIndex].items.isNotEmpty;
           bool hasSubSectionImages =
@@ -48,6 +54,8 @@ class TemplateSubSection extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(bottom: 14.0),
                 child: PrimaryHeadingTextWithBackground(
+                    key: itemKeys[inspection.template!.sections[sectionIndex]
+                        .subSections[subSectionIndex].uid!],
                     headingText:
                         "${inspection.template!.sections[sectionIndex].name}: ${subSections[subSectionIndex].name!}",
                     backgroundColor: ProjectColors.firefly),
@@ -126,39 +134,44 @@ class TemplateSubSection extends StatelessWidget {
                                               .withOpacity(0.20))
                                       : const SizedBox(),
                                   const SizedBox(height: 14),
-                                  MasonryGridView.count(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: subSections[subSectionIndex]
-                                          .images
-                                          .length,
-                                      crossAxisCount:
-                                          (isMobile || isTablet) ? 2 : 4,
-                                      mainAxisSpacing: 4,
-                                      crossAxisSpacing: 4,
-                                      itemBuilder:
-                                          (context, subSectionImageIndex) {
-                                        return ImageWithRoundedCorners(
-                                          imageUrl: isWeb
-                                              ? GeneralHelper.getMediaObj(
-                                                  subSections[subSectionIndex]
-                                                      .images,
-                                                  media) //"https://picsum.photos/seed/picsum/200/300"
-                                              : GeneralHelper.getMediaObj(
-                                                  subSections[subSectionIndex]
-                                                      .images,
-                                                  media),
-                                          height: getImageWidthHeight(
-                                              ImageType.sectionImage,
-                                              subSections[subSectionIndex]
-                                                  .images)[1],
-                                          width: getImageWidthHeight(
-                                              ImageType.sectionImage,
-                                              subSections[subSectionIndex]
-                                                  .images)[0],
-                                        );
-                                      }),
+                                  GeneralHelper.displayMediaList(
+                                      subSections[subSectionIndex].images,
+                                      media,
+                                      4,
+                                      ImageType.sectionImage),
+                                  // MasonryGridView.count(
+                                  //     physics:
+                                  //         const NeverScrollableScrollPhysics(),
+                                  //     shrinkWrap: true,
+                                  //     itemCount: subSections[subSectionIndex]
+                                  //         .images
+                                  //         .length,
+                                  //     crossAxisCount:
+                                  //         (isMobile || isTablet) ? 2 : 4,
+                                  //     mainAxisSpacing: 4,
+                                  //     crossAxisSpacing: 4,
+                                  //     itemBuilder:
+                                  //         (context, subSectionImageIndex) {
+                                  //       return ImageWithRoundedCorners(
+                                  //         imageUrl: isWeb
+                                  //             ? GeneralHelper.getMediaObj(
+                                  //                 subSections[subSectionIndex]
+                                  //                     .images,
+                                  //                 media) //"https://picsum.photos/seed/picsum/200/300"
+                                  //             : GeneralHelper.getMediaObj(
+                                  //                 subSections[subSectionIndex]
+                                  //                     .images,
+                                  //                 media),
+                                  //         height: getImageWidthHeight(
+                                  //             ImageType.sectionImage,
+                                  //             subSections[subSectionIndex]
+                                  //                 .images)[1],
+                                  //         width: getImageWidthHeight(
+                                  //             ImageType.sectionImage,
+                                  //             subSections[subSectionIndex]
+                                  //                 .images)[0],
+                                  //       );
+                                  //     }),
                                 ],
                               ),
                             ]),
@@ -203,7 +216,19 @@ class TemplateSubSection extends StatelessWidget {
                                   mainAxisSpacing: 4,
                                   crossAxisSpacing: 4,
                                   itemBuilder: (context, sectionCommentIndex) {
+                                    if (itemKeys[subSections[subSectionIndex]
+                                            .comments[sectionCommentIndex]
+                                            .uid!] ==
+                                        null) {
+                                      itemKeys[subSections[subSectionIndex]
+                                          .comments[sectionCommentIndex]
+                                          .uid!] = GlobalKey();
+                                    }
                                     return SectionCommentCard(
+                                        key: itemKeys[
+                                            subSections[subSectionIndex]
+                                                .comments[sectionCommentIndex]
+                                                .uid!],
                                         comment: subSections[subSectionIndex]
                                             .comments[sectionCommentIndex],
                                         commentTitle:
