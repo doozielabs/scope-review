@@ -31,7 +31,7 @@ class InspectionModel {
   late bool isManual;
   late int? serverTimestamp;
   late int? lastModified;
-  late User? user;
+  // late User? user;
   late Map<String, String> inspectionHashMap;
   InspectionModel(
       {this.id,
@@ -56,7 +56,7 @@ class InspectionModel {
       this.isManual = false,
       this.serverTimestamp,
       this.lastModified,
-      this.user,
+      // this.user,
       this.inspectionHashMap = const {}})
       : photos = [];
 
@@ -92,7 +92,7 @@ class InspectionModel {
     sellerAgent = Person.fromJson(json['sellerAgent']);
     buyerAgent = Person.fromJson(json['buyerAgent']);
     client = Person.fromJson(json['client']);
-    user = User.fromJson(json['user']);
+    // user = User.fromJson(json['user']);
 
     status = GeneralHelper.getType(
       InspectionType.values,
@@ -141,9 +141,9 @@ class InspectionModel {
     if (sellerAgent != null) {
       data['sellerAgent'] = sellerAgent!.toJson();
     }
-    if (user != null) {
-      data['user'] = user!.toJson();
-    }
+    // if (user != null) {
+    //   data['user'] = user!.toJson();
+    // }
     data['status'] = GeneralHelper.typeValue(status);
     data['invoice'] = invoice;
     data["template"] = template!.toJson();
