@@ -34,7 +34,7 @@ class _SectionEyeShotForMobileState
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
       widget.inspection.template!.sections.length,
-      (index) => true,
+      (index) => false,
     );
   }
 
@@ -100,7 +100,7 @@ class _SectionEyeShotForMobileState
         ],
       ),
       content: SizedBox(
-        width: width / 1.3,
+        width: width,
         child: SingleChildScrollView(
           child: Column(
             children: [
