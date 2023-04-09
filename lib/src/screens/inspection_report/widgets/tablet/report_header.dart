@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
-import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/report_header_item.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
+import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class ReportHeaderTablet extends StatelessWidget {
   final InspectionModel inspection;
@@ -134,28 +133,25 @@ class ReportHeaderTablet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Home Buyer:",
                             style: secondryHeadingTextStyle,
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-user",
-                              text: inspection.sellerAgent?.firstname == ''
-                                  ? "Unspecified"
-                                  : "${inspection.sellerAgent?.firstname}"),
-                          SizedBox(height: 10),
+                              text:
+                                  inspection.buyerAgent!.firstname.unspecified +
+                                      " " +
+                                      (inspection.buyerAgent?.lastname ?? "")),
+                          const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-mail",
-                              text: inspection.sellerAgent?.email == ''
-                                  ? "Unspecified"
-                                  : "${inspection.sellerAgent?.email}"),
-                          SizedBox(height: 10),
+                              text: inspection.buyerAgent!.email.unspecified),
+                          const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-cell",
-                              text: inspection.sellerAgent?.phone == ''
-                                  ? "Unspecified"
-                                  : "${inspection.sellerAgent?.phone}")
+                              text: inspection.buyerAgent!.phone.unspecified)
                         ],
                       ),
                     ),
@@ -166,35 +162,28 @@ class ReportHeaderTablet extends StatelessWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             "Inspected by:",
                             style: secondryHeadingTextStyle,
                           ),
-                          SizedBox(height: 10),
-                          HeaderInfoItem(
-                              iconName: "icon-user",
-                              text: inspection.client?.firstname == ''
-                                  ? "Unspecified"
-                                  : "${inspection.client?.firstname}"),
-                          SizedBox(height: 10),
-                          HeaderInfoItem(
-                              iconName: "icon-mail",
-                              text: inspection.client?.email == ''
-                                  ? "Unspecified"
-                                  : "${inspection.client?.email}"),
-                          SizedBox(height: 10),
-                          HeaderInfoItem(
-                              iconName: "icon-cell",
-                              text: inspection.client?.phone == ''
-                                  ? "Unspecified"
-                                  : "${inspection.client?.phone}"),
-                          SizedBox(height: 10),
-                          //TODO: Uncomment after testing
+                          const SizedBox(height: 10),
+                          // HeaderInfoItem(
+                          //     iconName: "icon-user",
+                          //     text: inspection.user!.firstname.unspecified +
+                          //         " " +
+                          //         (inspection.user?.lastname ?? "")),
+                          // const SizedBox(height: 10),
+                          // HeaderInfoItem(
+                          //     iconName: "icon-mail",
+                          //     text: inspection.user!.email.unspecified),
+                          // const SizedBox(height: 10),
+                          // HeaderInfoItem(
+                          //     iconName: "icon-cell",
+                          //     text: inspection.user!.phone.unspecified),
+                          // const SizedBox(height: 10),
                           // HeaderInfoItem(
                           //     iconName: "icon-company",
-                          //     text: inspection.user?.organization == ''
-                          //         ? "Unspecified"
-                          //         : "${inspection.user?.organization}")
+                          //     text: inspection.user!.organization.unspecified)
                         ],
                       ),
                     ),

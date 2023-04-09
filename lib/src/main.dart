@@ -53,10 +53,7 @@ class _PDFReportState extends State<PDFReport> {
                   ? const CupertinoActivityIndicator(
                       color: ProjectColors.firefly)
                   : InspectionReportScreen(
-                      inspection: inspection!,
-                      media: media!,
-                      showDialogue: widget.showDialogue,
-                    ),
+                      inspection: inspection!, media: media!),
             )));
   }
 }

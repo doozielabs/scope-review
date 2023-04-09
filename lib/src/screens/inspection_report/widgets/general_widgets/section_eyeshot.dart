@@ -12,11 +12,9 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final InspectionModel inspection;
-  // final List<bool> isExpanded;
   const SectionEyeShotForMobileAndTablet({
     Key? key,
     required this.inspection,
-    // required this.isExpanded,
   }) : super(key: key);
 
   @override
@@ -27,19 +25,17 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
   late List<TemplateSection> sections = widget.inspection.template!.sections;
-
   List<bool> isExpanded = [];
+  _search(text) async {
+    sections = await widget.inspection.template!.sections.filter(text);
+    setState(() {});
+  }
 
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
       widget.inspection.template!.sections.length,
       (index) => true,
     );
-  }
-
-  _search(text) async {
-    sections = await widget.inspection.template!.sections.filter(text);
-    setState(() {});
   }
 
   int numberOfDiffencyCommentsInSection(dynamic section) {
@@ -54,6 +50,7 @@ class _SectionEyeShotForMobileState
 
   @override
   void initState() {
+    // TODO: implement initState
     isExpandedForAllSections();
     super.initState();
   }
@@ -95,7 +92,10 @@ class _SectionEyeShotForMobileState
             right: 0,
             child: GestureDetector(
                 onTap: () => Navigator.pop(context),
-                child: SvgPicture.asset("assets/svg/close.svg")),
+                child: SvgPicture.asset(
+                  "assets/svg/close.svg",
+                  package: "pdf_report_scope",
+                )),
           ),
         ],
       ),

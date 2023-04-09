@@ -6,10 +6,10 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/report_header_item.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/vertical_divider.dart';
+import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class ReportHeaderWeb extends StatelessWidget {
   final InspectionModel inspection;
@@ -19,7 +19,6 @@ class ReportHeaderWeb extends StatelessWidget {
       : super(key: key);
   @override
   Widget build(BuildContext context) {
-    List<String> _images = [];
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
@@ -44,9 +43,7 @@ class ReportHeaderWeb extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
                         child: Text(
-                          inspection.template!.name == ""
-                              ? "Unspecified"
-                              : inspection.template!.name.toUpperCase(),
+                          inspection.template!.name.unspecified.toUpperCase(),
                           style: primaryHeadingTextStyle.copyWith(
                               color: ProjectColors.white),
                         ),
@@ -151,28 +148,27 @@ class ReportHeaderWeb extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 "Home Buyer:",
                                 style: secondryHeadingTextStyle,
                               ),
                               const SizedBox(height: 10),
                               HeaderInfoItem(
                                   iconName: "icon-user",
-                                  text: inspection.sellerAgent?.firstname == ''
-                                      ? "Unspecified"
-                                      : "${inspection.sellerAgent?.firstname}"),
+                                  text: inspection
+                                          .buyerAgent!.firstname.unspecified +
+                                      " " +
+                                      (inspection.buyerAgent?.lastname ?? "")),
                               const SizedBox(height: 10),
                               HeaderInfoItem(
                                   iconName: "icon-mail",
-                                  text: inspection.sellerAgent?.email == ''
-                                      ? "Unspecified"
-                                      : "${inspection.sellerAgent?.email}"),
+                                  text:
+                                      inspection.buyerAgent!.email.unspecified),
                               const SizedBox(height: 10),
                               HeaderInfoItem(
                                   iconName: "icon-cell",
-                                  text: inspection.sellerAgent?.phone == ''
-                                      ? "Unspecified"
-                                      : "${inspection.sellerAgent?.phone}")
+                                  text:
+                                      inspection.buyerAgent!.phone.unspecified)
                             ],
                           ),
                         ),
@@ -191,30 +187,23 @@ class ReportHeaderWeb extends StatelessWidget {
                               style: secondryHeadingTextStyle,
                             ),
                             const SizedBox(height: 10),
-                            HeaderInfoItem(
-                                iconName: "icon-user",
-                                text: inspection.client?.firstname == ''
-                                    ? "Unspecified"
-                                    : "${inspection.client?.firstname}"),
-                            const SizedBox(height: 10),
-                            HeaderInfoItem(
-                                iconName: "icon-mail",
-                                text: inspection.client?.email == ''
-                                    ? "Unspecified"
-                                    : "${inspection.client?.email}"),
-                            const SizedBox(height: 10),
-                            HeaderInfoItem(
-                                iconName: "icon-cell",
-                                text: inspection.client?.phone == ''
-                                    ? "Unspecified"
-                                    : "${inspection.client?.phone}"),
-                            const SizedBox(height: 10),
-                            //TODO: Uncomment after testing
+                            // HeaderInfoItem(
+                            //     iconName: "icon-user",
+                            //     text: inspection.user!.firstname.unspecified +
+                            //         " " +
+                            //         (inspection.user?.lastname ?? "")),
+                            // const SizedBox(height: 10),
+                            // HeaderInfoItem(
+                            //     iconName: "icon-mail",
+                            //     text: inspection.user!.email.unspecified),
+                            // const SizedBox(height: 10),
+                            // HeaderInfoItem(
+                            //     iconName: "icon-cell",
+                            //     text: inspection.user!.phone.unspecified),
+                            // const SizedBox(height: 10),
                             // HeaderInfoItem(
                             //     iconName: "icon-company",
-                            //     text: inspection.user?.organization == ''
-                            //         ? "Unspecified"
-                            //         : "${inspection.user?.organization}"),
+                            //     text: inspection.user!.organization.unspecified)
                           ],
                         ),
                       ),

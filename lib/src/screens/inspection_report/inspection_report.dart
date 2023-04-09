@@ -13,7 +13,6 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_header.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_summary.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/template_sections.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
 
@@ -22,13 +21,12 @@ import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 class InspectionReportScreen extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
-  final bool showDialogue;
-  const InspectionReportScreen(
-      {Key? key,
-      required this.inspection,
-      required this.media,
-      required this.showDialogue})
-      : super(key: key);
+
+  const InspectionReportScreen({
+    Key? key,
+    required this.inspection,
+    required this.media,
+  }) : super(key: key);
 
   @override
   State<InspectionReportScreen> createState() => _InspectionReportScreenState();

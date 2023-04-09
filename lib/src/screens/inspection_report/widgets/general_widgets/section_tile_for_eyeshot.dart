@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
+import 'package:pdf_report_scope/src/core/constant/globals.dart';
 
-class SectionTile extends StatelessWidget {
+class SectionTile extends StatefulWidget {
   const SectionTile({
     Key? key,
     required this.section,
@@ -22,30 +23,44 @@ class SectionTile extends StatelessWidget {
   final int diffencyCount;
 
   @override
+  State<SectionTile> createState() => _SectionTileState();
+}
+
+class _SectionTileState extends State<SectionTile> {
+  @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          section.name!,
-          style: primaryHeadingTextStyle.copyWith(
-            letterSpacing: 2,
-            color: ProjectColors.primary,
-            fontFamily: fontFamilyJostMedium,
+        InkWell(
+          child: Text(
+            widget.section.name!,
+            style: primaryHeadingTextStyle.copyWith(
+              letterSpacing: 2,
+              color: ProjectColors.primary,
+              fontFamily: fontFamilyJostMedium,
+            ),
           ),
+          onTap: () {
+            controllerStream.add(widget.sectionIndex);
+            Scrollable.ensureVisible(
+              itemKeys[widget.section.uid!]!.currentContext!,
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeInOut,
+            );
+          },
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SvgPicture.asset(
               "assets/svg/comments.svg",
-              package: "pdf_report_scope",
               width: 12,
               height: 12,
             ),
             const SizedBox(width: 7.17),
             Text(
-              totalComments.toString(),
+              widget.totalComments.toString(),
               style: b4Medium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
@@ -59,13 +74,15 @@ class SectionTile extends StatelessWidget {
             ),
             const SizedBox(width: 7.17),
             Text(
-              diffencyCount.toString(),
+              widget.diffencyCount.toString(),
               style: b4Medium.copyWith(
                 fontWeight: FontWeight.w600,
               ),
             ),
-            hasSubsections ? const SizedBox(width: 12) : const SizedBox(),
-            hasSubsections
+            widget.hasSubsections
+                ? const SizedBox(width: 12)
+                : const SizedBox(),
+            widget.hasSubsections
                 ? SizedBox(
                     height: 23,
                     child: VerticalDivider(
@@ -73,10 +90,12 @@ class SectionTile extends StatelessWidget {
                     ),
                   )
                 : const SizedBox(),
-            hasSubsections ? const SizedBox(width: 12) : const SizedBox(),
-            hasSubsections
+            widget.hasSubsections
+                ? const SizedBox(width: 12)
+                : const SizedBox(),
+            widget.hasSubsections
                 ? SvgPicture.asset(
-                    "assets/svg/${isExpanded[sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
+                    "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
                     package: "pdf_report_scope",
                   )
                 : const SizedBox()

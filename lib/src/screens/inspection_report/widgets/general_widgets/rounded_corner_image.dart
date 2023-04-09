@@ -156,7 +156,7 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double fontSizeValue = (counts * 10);
-    double borderRadiusValue = (counts * 4.0);
+    double borderRadiusValue = 16.0; //(counts * 4.0);
     if (lastItem) {
       return GestureDetector(
         onTap: () async {
@@ -169,26 +169,27 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
         child: ClipRRect(
             borderRadius: BorderRadius.circular(borderRadiusValue),
             child: Container(
-                width: width,
-                height: height,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: NetworkImage(
-                      imageUrl,
-                    ),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.6), BlendMode.darken),
+              width: width,
+              height: height,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(
+                    imageUrl,
                   ),
+                  fit: BoxFit.cover,
+                  // colorFilter: ColorFilter.mode(
+                  // Colors.black.withOpacity(0.6), BlendMode.darken),
                 ),
-                child: Align(
-                  alignment: Alignment.bottomRight,
-                  child: RichText(
-                      text: TextSpan(
-                          text: "+ $remain",
-                          style: TextStyle(
-                              fontSize: fontSizeValue, color: Colors.white))),
-                ))),
+              ),
+              // child: Align(
+              //   alignment: Alignment.bottomRight,
+              //   child: RichText(
+              //       text: TextSpan(
+              //           text: "+ $remain",
+              //           style: TextStyle(
+              //               fontSize: fontSizeValue, color: Colors.white))),
+              // )
+            )),
       );
     } else {
       return ClipRRect(
