@@ -26,6 +26,7 @@ class ImageWithRoundedCorners extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double borderRadiusValue = (counts * 4.0);
+    print("GettingLinkUrl:${imageUrl.url}");
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadiusValue),
       child: (!(imageUrl.url).isDeviceUrl ||
