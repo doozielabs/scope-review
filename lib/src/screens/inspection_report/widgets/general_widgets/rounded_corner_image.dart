@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 // import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
@@ -38,8 +40,8 @@ class ImageWithRoundedCorners extends StatelessWidget {
               height: height,
               fit: BoxFit.fill,
             )
-          : Image.asset(
-              imageUrl.url,
+          : Image.file(
+              File(imageUrl.url),
               width: width,
               height: height,
               fit: BoxFit.fill,
