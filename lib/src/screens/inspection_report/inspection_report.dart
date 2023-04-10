@@ -22,11 +22,13 @@ import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 class InspectionReportScreen extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
+  final List<ImageShape> mobileMedia;
 
   const InspectionReportScreen({
     Key? key,
     required this.inspection,
     required this.media,
+    required this.mobileMedia,
   }) : super(key: key);
 
   @override

@@ -120,7 +120,7 @@ class GeneralHelper {
     } else {
       int remainIdsCount = (ids.length - 1);
       return ImageWithRoundedCornersForHeader(
-        imageUrl: GeneralHelper.getMediaById(ids[0], media),
+        imageUrl: media[0],
         width: 300,
         height: 300,
         remain: remainIdsCount,

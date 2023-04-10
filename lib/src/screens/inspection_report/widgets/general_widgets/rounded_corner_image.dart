@@ -128,7 +128,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
 }
 
 class ImageWithRoundedCornersForHeader extends StatelessWidget {
-  final String imageUrl;
+  final ImageShape imageUrl;
   final double width;
   final double height;
   final int remain;
@@ -155,6 +155,8 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(
+        "ImageShape:$imageUrl && 1.${imageUrl.original} && 2.${imageUrl.url}");
     double fontSizeValue = (counts * 10);
     double borderRadiusValue = 16.0; //(counts * 4.0);
     if (lastItem) {
@@ -174,7 +176,7 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(
-                    imageUrl,
+                    imageUrl.url,
                   ),
                   fit: BoxFit.cover,
                   // colorFilter: ColorFilter.mode(
@@ -196,17 +198,12 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
         borderRadius: BorderRadius.circular(borderRadiusValue),
         child: getDeviceType(context) == DeviceTypeForWeb.web
             ? Image.network(
-                imageUrl,
+                imageUrl.url,
                 width: width,
                 height: height,
                 fit: BoxFit.fill,
               )
-            : Image.asset(
-                imageUrl,
-                width: width,
-                height: height,
-                fit: BoxFit.fill,
-              ),
+            : Image.asset(imageUrl.url),
       );
     }
   }
