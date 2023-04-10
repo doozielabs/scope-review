@@ -39,11 +39,15 @@ class _PDFReportState extends State<PDFReport> {
       // inspection = await InspectionProvider().getInspection();
       print("mainins:${widget.inspection} ");
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
-      for (var element in widget.media) {
-        print("Pacakge_log:${element}");
-        // media.add(ImageShape.fromJson(jsonDecode(element)));
+      try {
+        for (var image in widget.media) {
+          print("Pacakge_log:${image}");
+          media.add(ImageShape.fromJson(jsonDecode(image)));
+        }
+        print("Pacakge_log---$media");
+      } catch (e) {
+        print("Error:$e");
       }
-      print("Pacakge_log---$media");
       // media = await InspectionProvider().getPhotoByIds(inspection!)
       //     as List<ImageShape>;
       // media = widget.media;
