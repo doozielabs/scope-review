@@ -149,11 +149,11 @@ extension StringExtension on String? {
   String get punctuation => set.isEmpty ? "" : ', $this';
   bool get isUrl => set.contains("http");
   bool get isDeviceUrl {
-    // if (Platform.isIOS) {
-    return set.contains("/var/mobile/Containers"); // for Physical Device
-    // return set.contains("data/Containers/"); // for Simulator
-    // }
-    // return set.contains("app.com.scope");
+    if (Platform.isIOS) {
+      return set.contains("/var/mobile/Containers"); // for Physical Device
+      // return set.contains("data/Containers/"); // for Simulator
+    }
+    return set.contains("app.com.scope");
   }
 
   bool get isAsset => set.contains("assets");
