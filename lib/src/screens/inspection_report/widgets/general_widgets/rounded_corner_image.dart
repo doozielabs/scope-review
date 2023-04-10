@@ -29,7 +29,7 @@ class ImageWithRoundedCorners extends StatelessWidget {
     print("GettingLinkUrl:${imageUrl.url}");
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadiusValue),
-      child: (!(imageUrl.url).isDeviceUrl ||
+      child: (!(imageUrl.url).isDeviceUrl &&
               !(imageUrl.url)
                   .isAsset) //getDeviceType(context) == DeviceTypeForWeb.web
           ? Image.network(
