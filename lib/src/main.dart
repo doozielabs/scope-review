@@ -16,7 +16,9 @@ class NavigationService {
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final dynamic inspection;
-  const PDFReport({Key? key, required this.showDialogue, this.inspection})
+  final dynamic media;
+  const PDFReport(
+      {Key? key, required this.showDialogue, this.inspection, this.media})
       : super(key: key);
 
   @override
