@@ -34,20 +34,22 @@ class _PDFReportState extends State<PDFReport> {
   List<ImageShape> media = [];
   @override
   void initState() {
-    // Future.delayed(const Duration(), () async {
-    // setState(() => isLoading = true);
-    // inspection = await InspectionProvider().getInspection();
-    print("mainins:${widget.inspection} ");
-    inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
-    for (var element in widget.media) {
-      media.add(ImageShape.fromJson(jsonDecode(element)));
-    }
-    // media = await InspectionProvider().getPhotoByIds(inspection!)
-    //     as List<ImageShape>;
-    // media = widget.media;
-    // print('img si $media');
-    // setState(() => isLoading = false);
-    // });
+    Future.delayed(const Duration(), () async {
+      setState(() => isLoading = true);
+      // inspection = await InspectionProvider().getInspection();
+      print("mainins:${widget.inspection} ");
+      inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
+      for (var element in widget.media) {
+        print("Pacakge_log:${element}");
+        media.add(ImageShape.fromJson(jsonDecode(element)));
+      }
+      print("Pacakge_log---$media");
+      // media = await InspectionProvider().getPhotoByIds(inspection!)
+      //     as List<ImageShape>;
+      // media = widget.media;
+      // print('img si $media');
+      setState(() => isLoading = false);
+    });
     super.initState();
   }
 
