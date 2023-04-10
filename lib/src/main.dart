@@ -42,7 +42,7 @@ class _PDFReportState extends State<PDFReport> {
       try {
         for (var image in widget.media) {
           print("Pacakge_log:${image}");
-          media.add(ImageShape.fromJson(jsonDecode(image)));
+          media.add(ImageShape.fromJson(image));
         }
         print("Pacakge_log---$media");
       } catch (e) {
