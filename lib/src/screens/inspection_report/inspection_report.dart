@@ -13,6 +13,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_header.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_summary.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/template_sections.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
 
@@ -74,6 +75,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   Widget build(BuildContext context) {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
+      constraintStream.add(constraints.maxWidth);
       if (SizerUtil.deviceType == DeviceType.mobile) {
         //Mobile
         return SafeArea(
@@ -120,6 +122,36 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         if (constraints.maxWidth < 600) {
           return SafeArea(
             child: Scaffold(
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                title: Text(
+                  "Report Review",
+                  style: h1.copyWith(color: ProjectColors.black),
+                ),
+                actions: [
+                  InkWell(
+                    onTap: () async {
+                      // ShowMenuDialogue showMenuDialogue = ShowMenuDialogue(true);
+                      // showMenuDialogue.showMenu(context, jsonData);
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SectionEyeShotForMobileAndTablet(
+                                inspection: widget.inspection);
+                          });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 16),
+                      child: SvgPicture.asset(
+                        "assets/svg/menu.svg",
+                      ),
+                    ),
+                  )
+                ],
+              ),
               body: SingleChildScrollView(
                 child: Column(
                   children: [
@@ -146,6 +178,26 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                   "Report Review",
                   style: h1.copyWith(color: ProjectColors.black),
                 ),
+                actions: [
+                  InkWell(
+                    onTap: () async {
+                      showDialog(
+                          barrierDismissible: false,
+                          context: context,
+                          builder: (BuildContext context) {
+                            return SectionEyeShotForMobileAndTablet(
+                                inspection: widget.inspection);
+                          });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 10, horizontal: 16),
+                      child: SvgPicture.asset(
+                        "assets/svg/menu.svg",
+                      ),
+                    ),
+                  )
+                ],
               ),
               body: SingleChildScrollView(
                 child: Column(

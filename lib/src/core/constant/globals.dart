@@ -24,6 +24,8 @@ final ScrollController subSectionCommentsController = ScrollController();
 
 Map<String, GlobalKey> itemKeys = {};
 StreamController<int> controllerStream = StreamController<int>();
+StreamController<dynamic> constraintStream =
+    StreamController<dynamic>.broadcast();
 
 enum DeviceTypeForWeb {
   mobile,

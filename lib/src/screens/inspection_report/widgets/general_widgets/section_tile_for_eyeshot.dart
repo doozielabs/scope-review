@@ -27,6 +27,17 @@ class SectionTile extends StatefulWidget {
 }
 
 class _SectionTileState extends State<SectionTile> {
+  var constraintMaxWidth = 0;
+  @override
+  void initState() {
+    constraintStream.stream.listen((index) {
+      setState(() {
+        constraintMaxWidth = index;
+      });
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
