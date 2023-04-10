@@ -149,11 +149,11 @@ extension StringExtension on String? {
   String get punctuation => set.isEmpty ? "" : ', $this';
   bool get isUrl => set.contains("http");
   bool get isDeviceUrl {
-    if (Platform.isIOS) {
-      return set.contains("/var/mobile/Containers"); // for Physical Device
-      // return set.contains("data/Containers/"); // for Simulator
-    }
-    return set.contains("app.com.scope");
+    // if (Platform.isIOS) {
+    return set.contains("/var/mobile/Containers"); // for Physical Device
+    // return set.contains("data/Containers/"); // for Simulator
+    // }
+    // return set.contains("app.com.scope");
   }
 
   bool get isAsset => set.contains("assets");
@@ -636,13 +636,13 @@ extension CommentTypeExtension on CommentType? {
 
   bool get needService => set == CommentType.deficiency;
 
-  // String get svg => _data(
-  //       info: "assets/svg/icons/info.svg",
-  //       saf: "assets/svg/icons/sheild.svg",
-  //       acct: "assets/svg/icons/check.svg",
-  //       def: "assets/svg/icons/deficiency.svg",
-  //       notIns: "assets/svg/icons/question_mark_round.svg",
-  //     );
+  String get svg => _data(
+        info: "assets/svg/icons/info.svg",
+        saf: "assets/svg/icons/sheild.svg",
+        acct: "assets/svg/icons/check.svg",
+        def: "assets/svg/icons/deficiency.svg",
+        notIns: "assets/svg/icons/question_mark_round.svg",
+      );
 
   // Color get color => _data(
   //       info: LightColors.primary,

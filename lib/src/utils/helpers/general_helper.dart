@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
@@ -109,7 +111,10 @@ class GeneralHelper {
   }
 
   static getMediaForHeader(ids, List<ImageShape> media) {
+    // print("id header :$ids  -- ${GeneralHelper.getMediaById(ids[0], media)}");
+    // print("Media:$media");
     int counts = 1;
+
     if (ids.length == 0) {
       return ImageWithRoundedCorners(
         imageUrl: GeneralHelper.getMediaById(ids[0], media),
@@ -119,29 +124,32 @@ class GeneralHelper {
       );
     } else {
       int remainIdsCount = (ids.length - 1);
+      // print("--${GeneralHelper.getMediaById(ids[0], media)}");
+      // return Image.network(
+      //     "https://api.scopeinspectapp.com/images/inspection_placeholder.png");
       return ImageWithRoundedCornersForHeader(
-        imageUrl: media[0],
+        imageUrl: GeneralHelper.getMediaById(ids[0], media),
         width: 300,
         height: 300,
         remain: remainIdsCount,
         lastItem: true,
         ids: ids,
         media: media,
-        counts: counts,
       );
     }
   }
 
-  static getMediaById(id, List<ImageShape> media) {
+  static getMediaById(String id, List<ImageShape> media) {
     var imageUrl = baseUrlLive + defaultHeaderImage;
     if (id.isNotEmpty && media.isNotEmpty) {
       for (var image in media) {
         if (image.id == id) {
-          if (isWeb) {
-            imageUrl = baseUrlLive + image.original;
-          } else {
-            imageUrl = baseUrlLive + image.url;
-          }
+          return image;
+          // if (isWeb) {
+          //   return imageUrl = baseUrlLive + image.original;
+          // } else {
+          //   return imageUrl = baseUrlLive + image.url;
+          // }
         }
       }
     }
@@ -440,7 +448,7 @@ class Id {
 }
 
 class CustomDialog extends StatefulWidget {
-  CustomDialog({
+  const CustomDialog({
     Key? key,
     required this.ids,
     required this.media,
@@ -456,95 +464,120 @@ class _CustomDialogState extends State<CustomDialog> {
   final CarouselController _controller = CarouselController();
   int _current = 0;
 
-  dialogContent(BuildContext context) {
-    final List<String> imageUrl =
-        GeneralHelper.getMediaList(widget.ids, widget.media);
-    _indicators() {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: List.generate(
-          imageUrl.length,
-          (index) => GestureDetector(
-            onTap: () => _controller.animateToPage(
-              index,
-              curve: Curves.fastOutSlowIn,
-              duration: Duration(milliseconds: 800),
-            ),
-            child: Container(
-              width: 10,
-              height: 10,
-              margin: EdgeInsets.only(left: index.isZero ? 0 : 10),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Theme.of(context)
-                    .scaffoldBackgroundColor
-                    .withOpacity(_current == index ? 1.0 : 0.4),
-              ),
-            ),
-          ),
-        ),
-      );
-    }
-
-    return Container(
-      width: 710,
-      height: 510,
-      decoration: BoxDecoration(
-        color: Colors.grey[850],
-        shape: BoxShape.rectangle,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        // mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: const Icon(Icons.cancel),
-              ),
-            ),
-          ),
-          CarouselSlider(
-            carouselController: _controller,
-            options: CarouselOptions(
-              aspectRatio: 1.7,
-              enlargeCenterPage: true,
-              enableInfiniteScroll: false,
-              enlargeStrategy: CenterPageEnlargeStrategy.scale,
-              onPageChanged: (indexed, r) => setState(() => _current = indexed),
-            ),
-            items: imageUrl
-                .map((item) => Container(
-                      child: Image.network(
-                        item,
-                        fit: BoxFit.cover,
-                      ),
-                      color: Colors.green,
-                    ))
-                .toList(),
-          ),
-          const SizedBox(height: 24.0),
-          _indicators(),
-        ],
-      ),
-    );
-  }
+  // dialogContent(BuildContext context) {
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey[850],
+  //       shape: BoxShape.rectangle,
+  //       borderRadius: BorderRadius.circular(20),
+  //     ),
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.center,
+  //       children: <Widget>[
+  //         Padding(
+  //           padding: const EdgeInsets.all(10.0),
+  //           child: Align(
+  //             alignment: Alignment.topRight,
+  //             child: TextButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: const Icon(Icons.cancel),
+  //             ),
+  //           ),
+  //         ),
+  //         const SizedBox(height: 24.0),
+  //         _indicators(),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Dialog(
+    final List<String> imageUrl =
+        GeneralHelper.getMediaList(widget.ids, widget.media);
+    return AlertDialog(
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          InkWell(
+            onTap: () => Navigator.pop(context),
+            child: SvgPicture.asset(
+              "assets/svg/close.svg",
+              color: ProjectColors.white,
+            ),
+          )
+        ],
+      ),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
       elevation: 0.0,
       backgroundColor: Colors.transparent,
-      child: dialogContent(context),
+      // content: dialogContent(context),
+      content: SizedBox(
+
+          // decoration: BoxDecoration(
+          //   color: Colors.grey[850],
+          //   shape: BoxShape.rectangle,
+          //   borderRadius: BorderRadius.circular(20),
+          // ),
+          width: MediaQuery.of(context).size.width,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(top: 50.0, bottom: 50),
+              child: Column(
+                children: [
+                  CarouselSlider(
+                    carouselController: _controller,
+                    options: CarouselOptions(
+                      aspectRatio: 1.2,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
+                      enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                      onPageChanged: (indexed, r) =>
+                          setState(() => _current = indexed),
+                    ),
+                    items: imageUrl
+                        .map((item) => ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: Image.network(
+                                item,
+                                fit: BoxFit.cover,
+                              ),
+                            ))
+                        .toList(),
+                  ),
+                  const SizedBox(height: 24.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      imageUrl.length,
+                      (index) => GestureDetector(
+                        onTap: () => _controller.animateToPage(
+                          index,
+                          curve: Curves.fastOutSlowIn,
+                          duration: const Duration(milliseconds: 800),
+                        ),
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          margin: EdgeInsets.only(left: index.isZero ? 0 : 10),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context)
+                                .scaffoldBackgroundColor
+                                .withOpacity(_current == index ? 1.0 : 0.4),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          )),
     );
   }
 }
