@@ -16,9 +16,12 @@ class NavigationService {
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final dynamic inspection;
-  final dynamic media;
+  final List media;
   const PDFReport(
-      {Key? key, required this.showDialogue, this.inspection, this.media})
+      {Key? key,
+      required this.showDialogue,
+      this.inspection,
+      required this.media})
       : super(key: key);
 
   @override
@@ -28,20 +31,23 @@ class PDFReport extends StatefulWidget {
 class _PDFReportState extends State<PDFReport> {
   InspectionModel? inspection;
   bool isLoading = false;
-  List<ImageShape>? media;
+  List<ImageShape> media = [];
   @override
   void initState() {
-    Future.delayed(const Duration(), () async {
-      setState(() => isLoading = true);
-      // inspection = await InspectionProvider().getInspection();
-      print("mainins:${widget.inspection} ");
-      inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
-      media = await InspectionProvider().getPhotoByIds(inspection!)
-          as List<ImageShape>;
-      // media = widget.media;
-      // print('img si $media');
-      setState(() => isLoading = false);
-    });
+    // Future.delayed(const Duration(), () async {
+    // setState(() => isLoading = true);
+    // inspection = await InspectionProvider().getInspection();
+    print("mainins:${widget.inspection} ");
+    inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
+    for (var element in widget.media) {
+      media.add(ImageShape.fromJson(jsonDecode(element)));
+    }
+    // media = await InspectionProvider().getPhotoByIds(inspection!)
+    //     as List<ImageShape>;
+    // media = widget.media;
+    // print('img si $media');
+    // setState(() => isLoading = false);
+    // });
     super.initState();
   }
 
@@ -57,8 +63,7 @@ class _PDFReportState extends State<PDFReport> {
                       color: ProjectColors.firefly)
                   : InspectionReportScreen(
                       inspection: inspection!,
-                      media: media!,
-                      mobileMedia: widget.media,
+                      media: media,
                     ),
             )));
   }
