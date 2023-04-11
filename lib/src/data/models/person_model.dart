@@ -26,10 +26,10 @@ class Person {
 
   Person.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    firstname = json['firstname'];
-    lastname = json['lastname'];
-    email = json['email'];
-    phone = json['phone'];
+    firstname = json['firstname'] ?? "";
+    lastname = json['lastname'] ?? "";
+    email = json['email'] ?? "";
+    phone = json['phone'] ?? "";
     photo = json['photo'] == null ? null : ImageShape.fromJson(json['photo']);
     type = GeneralHelper.getType(PersonType.values, "PersonType", json['type']);
     additionalEmails = json['additionalEmails'] ?? [];
