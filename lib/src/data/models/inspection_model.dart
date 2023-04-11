@@ -89,9 +89,9 @@ class InspectionModel {
     reportId = json['reportId'] ?? "";
     photos = List<String>.from(json['photos'] ?? []);
 
-    sellerAgent = Person.fromJson(json['sellerAgent']);
-    buyerAgent = Person.fromJson(json['buyerAgent']);
-    client = Person.fromJson(json['client']);
+    sellerAgent = Person.fromJson(json['sellerAgent'] ?? {});
+    buyerAgent = Person.fromJson(json['buyerAgent'] ?? {});
+    client = Person.fromJson(json['client'] ?? {});
     // user = User.fromJson(json['user']);
 
     status = GeneralHelper.getType(
