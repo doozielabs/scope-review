@@ -118,12 +118,15 @@ class GeneralHelper {
     int counts = 1;
 
     if (ids.length == 0) {
-      return ImageWithRoundedCorners(
-        imageUrl: GeneralHelper.getMediaById(ids[0], media),
-        width: 300,
-        height: 300,
-        counts: counts,
-      );
+      return isWeb
+          ? Image.network(baseUrlLive + defaultHeaderImage1)
+          : Image.asset("assets/images/default_image.png");
+      // return ImageWithRoundedCorners(
+      //   imageUrl: GeneralHelper.getMediaById(ids[0], media),
+      //   width: 300,
+      //   height: 300,
+      //   counts: counts,
+      // );
     } else {
       int remainIdsCount = (ids.length - 1);
       // print("--${GeneralHelper.getMediaById(ids[0], media)}");
