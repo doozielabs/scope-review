@@ -45,7 +45,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
       inspection.template!.sections.length,
-      (index) => true,
+      (index) => false,
     );
   }
 
