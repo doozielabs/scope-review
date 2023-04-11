@@ -58,14 +58,17 @@ class _PDFReportState extends State<PDFReport> {
               navigatorKey: NavigationService.navigatorKey,
               debugShowCheckedModeBanner: false,
               title: 'Inspektify Report',
-              home: (isLoading && inspection.template == null)
+              home: isLoading
                   ? const CupertinoActivityIndicator(
                       color: ProjectColors.firefly)
-                  : InspectionReportScreen(
-                      inspection: inspection,
-                      media: media,
-                      showDialogue: widget.showDialogue,
-                    ),
+                  : inspection.template == null
+                      ? const CupertinoActivityIndicator(
+                          color: ProjectColors.firefly)
+                      : InspectionReportScreen(
+                          inspection: inspection,
+                          media: media,
+                          showDialogue: widget.showDialogue,
+                        ),
             )));
   }
 }
