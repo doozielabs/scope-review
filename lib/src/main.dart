@@ -29,7 +29,7 @@ class PDFReport extends StatefulWidget {
 }
 
 class _PDFReportState extends State<PDFReport> {
-  InspectionModel? inspection;
+  late InspectionModel inspection;
   bool isLoading = false;
   List<ImageShape> media = [];
   @override
@@ -39,14 +39,8 @@ class _PDFReportState extends State<PDFReport> {
       // inspection = await InspectionProvider().getInspection();
       print("mainins:${widget.inspection} ");
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
-      try {
-        for (var image in widget.media) {
-          print("Pacakge_log:${image}");
-          media.add(ImageShape.fromJson(image));
-        }
-        print("Pacakge_log---$media");
-      } catch (e) {
-        print("Error:$e");
+      for (var image in widget.media) {
+        media.add(ImageShape.fromJson(image));
       }
       // media = await InspectionProvider().getPhotoByIds(inspection!)
       //     as List<ImageShape>;
@@ -68,7 +62,7 @@ class _PDFReportState extends State<PDFReport> {
                   ? const CupertinoActivityIndicator(
                       color: ProjectColors.firefly)
                   : InspectionReportScreen(
-                      inspection: inspection!,
+                      inspection: inspection,
                       media: media,
                     ),
             )));
