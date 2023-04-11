@@ -126,13 +126,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 SingleChildScrollView(
                   child: Column(
                     children: [
-                      IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isLoading = true;
-                            });
-                          },
-                          icon: const Icon(Icons.ac_unit)),
                       ReportHeader(
                           inspection: widget.inspection, media: widget.media),
                       InspectionDescription(inspection: widget.inspection),

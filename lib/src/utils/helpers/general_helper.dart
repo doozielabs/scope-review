@@ -152,7 +152,7 @@ class GeneralHelper {
   }
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
-    if ((image.url).isDeviceUrl && (image.url).isAsset) {
+    if ((image.url).isDeviceUrl || (image.url).isAsset) {
       return Image.file(
         File(image.url),
         width: width,
