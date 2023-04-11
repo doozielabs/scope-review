@@ -33,7 +33,7 @@ class Person {
     photo = json['photo'] == null ? null : ImageShape.fromJson(json['photo']);
     type =
         GeneralHelper.getType(PersonType.values, "PersonType", json['type']) ??
-            "";
+            PersonType.buyer;
     additionalEmails = json['additionalEmails'] ?? [];
   }
 
