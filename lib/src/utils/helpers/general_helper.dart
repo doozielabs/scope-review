@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -139,6 +141,41 @@ class GeneralHelper {
     }
   }
 
+  static imageHandlerForGallery(ImageShape image) {
+    if ((image.url).isDeviceUrl && (image.url).isAsset) {
+      return FileImage(File(image.url));
+    } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
+      return NetworkImage(baseUrlLive + image.original);
+    } else {
+      return AssetImage(image.url);
+    }
+  }
+
+  static imageHandlerForRoundedConner(ImageShape image, width, height) {
+    if ((image.url).isDeviceUrl && (image.url).isAsset) {
+      return Image.file(
+        File(image.url),
+        width: width,
+        height: height,
+        fit: BoxFit.fill,
+      );
+    } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
+      return Image.network(
+        baseUrlLive + image.original,
+        width: width,
+        height: height,
+        fit: BoxFit.fill,
+      );
+    } else {
+      return Image.asset(
+        image.url,
+        width: width,
+        height: height,
+        fit: BoxFit.fill,
+      );
+    }
+  }
+
   static getMediaById(String id, List<ImageShape> media) {
     var imageUrl = baseUrlLive + defaultHeaderImage;
     if (id.isNotEmpty && media.isNotEmpty) {
@@ -157,24 +194,26 @@ class GeneralHelper {
   }
 
   static getMediaList(List ids, List<ImageShape> media) {
-    List<String> _images = [];
+    List<ImageShape> _images = [];
     if (ids.isNotEmpty && media.isNotEmpty) {
       for (var id in ids) {
         for (var image in media) {
           if (image.id == id) {
-            if (isWeb) {
-              _images.add(baseUrlLive + image.original);
-            } else {
-              _images.add(baseUrlLive + image.url);
-            }
+            _images.add(image);
+            // return _image;
+            // if (isWeb) {
+            //   _images.add(baseUrlLive + image.original);
+            // } else {
+            //   _images.add(baseUrlLive + image.url);
+            // }
           }
         }
       }
     }
 
-    if (_images.isEmpty) {
-      _images = [baseUrlLive + defaultHeaderImage];
-    }
+    // if (_images.isEmpty) {
+    //   _images = [baseUrlLive + defaultHeaderImage];
+    // }
     return _images;
   }
 
@@ -495,7 +534,7 @@ class _CustomDialogState extends State<CustomDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final List<String> imageUrl =
+    final List<ImageShape> imageUrl =
         GeneralHelper.getMediaList(widget.ids, widget.media);
     return AlertDialog(
       title: Row(
@@ -542,10 +581,12 @@ class _CustomDialogState extends State<CustomDialog> {
                     items: imageUrl
                         .map((item) => ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                item,
-                                fit: BoxFit.cover,
-                              ),
+                              child: GeneralHelper.imageHandlerForRoundedConner(
+                                  item, 300, 300),
+                              // Image.network(
+                              //   item.url,
+                              //   fit: BoxFit.cover,
+                              // ),
                             ))
                         .toList(),
                   ),

@@ -28,24 +28,25 @@ class ImageWithRoundedCorners extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double borderRadiusValue = (counts * 4.0);
-    print("GettingLinkUrl:${imageUrl.url}");
     return ClipRRect(
       borderRadius: BorderRadius.circular(borderRadiusValue),
-      child: (!(imageUrl.url).isDeviceUrl &&
-              !(imageUrl.url)
-                  .isAsset) //getDeviceType(context) == DeviceTypeForWeb.web
-          ? Image.network(
-              baseUrlLive + imageUrl.original,
-              width: width,
-              height: height,
-              fit: BoxFit.fill,
-            )
-          : Image.file(
-              File(imageUrl.url),
-              width: width,
-              height: height,
-              fit: BoxFit.fill,
-            ),
+      child:
+          GeneralHelper.imageHandlerForRoundedConner(imageUrl, width, height),
+      // child: (!(imageUrl.url).isDeviceUrl &&
+      //         !(imageUrl.url)
+      //             .isAsset)
+      //     ? Image.network(
+      //         baseUrlLive + imageUrl.original,
+      //         width: width,
+      //         height: height,
+      //         fit: BoxFit.fill,
+      //       )
+      //     : Image.asset(
+      //         imageUrl.url,
+      //         width: width,
+      //         height: height,
+      //         fit: BoxFit.fill,
+      //       ),
     );
   }
 }
@@ -96,9 +97,10 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
                 height: height,
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: NetworkImage(
-                      baseUrlLive + imageUrl.original,
-                    ),
+                    image: GeneralHelper.imageHandlerForGallery(imageUrl),
+                    // NetworkImage(
+                    //   baseUrlLive + imageUrl.original,
+                    // ),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
                         Colors.black.withOpacity(0.6), BlendMode.darken),
@@ -116,21 +118,23 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
     } else {
       return ClipRRect(
         borderRadius: BorderRadius.circular(borderRadiusValue),
-        child: (!(imageUrl.url).isDeviceUrl ||
-                !(imageUrl.url)
-                    .isAsset) //getDeviceType(context) == DeviceTypeForWeb.web
-            ? Image.network(
-                baseUrlLive + imageUrl.url,
-                width: width,
-                height: height,
-                fit: BoxFit.fill,
-              )
-            : Image.asset(
-                imageUrl.url,
-                width: width,
-                height: height,
-                fit: BoxFit.fill,
-              ),
+        child:
+            GeneralHelper.imageHandlerForRoundedConner(imageUrl, width, height),
+        // child: (!(imageUrl.url).isDeviceUrl &&
+        //         !(imageUrl.url)
+        //             .isAsset)
+        //     ? Image.network(
+        //         baseUrlLive + imageUrl.url,
+        //         width: width,
+        //         height: height,
+        //         fit: BoxFit.fill,
+        //       )
+        //     : Image.asset(
+        //         imageUrl.url,
+        //         width: width,
+        //         height: height,
+        //         fit: BoxFit.fill,
+        //       ),
       );
     }
   }
@@ -182,9 +186,10 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
               height: height,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: NetworkImage(
-                    baseUrlLive + imageUrl.original,
-                  ),
+                  image: GeneralHelper.imageHandlerForGallery(imageUrl),
+                  // NetworkImage(
+                  //   baseUrlLive + imageUrl.original,
+                  // ),
                   fit: BoxFit.cover,
                   // colorFilter: ColorFilter.mode(
                   // Colors.black.withOpacity(0.6), BlendMode.darken),
@@ -206,21 +211,23 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
     } else {
       return ClipRRect(
         borderRadius: BorderRadius.circular(borderRadiusValue),
-        child: (!(imageUrl.url).isDeviceUrl ||
-                !(imageUrl.url)
-                    .isAsset) //getDeviceType(context) == DeviceTypeForWeb.web
-            ? Image.network(
-                baseUrlLive + imageUrl.url,
-                width: width,
-                height: height,
-                fit: BoxFit.fill,
-              )
-            : Image.asset(
-                imageUrl.url,
-                width: width,
-                height: height,
-                fit: BoxFit.fill,
-              ),
+        child:
+            GeneralHelper.imageHandlerForRoundedConner(imageUrl, width, height),
+        // child: (!(imageUrl.url).isDeviceUrl &&
+        //         !(imageUrl.url)
+        //             .isAsset) //getDeviceType(context) == DeviceTypeForWeb.web
+        //     ? Image.network(
+        //         baseUrlLive + imageUrl.url,
+        //         width: width,
+        //         height: height,
+        //         fit: BoxFit.fill,
+        //       )
+        //     : Image.asset(
+        //         imageUrl.url,
+        //         width: width,
+        //         height: height,
+        //         fit: BoxFit.fill,
+        //       ),
       );
     }
   }

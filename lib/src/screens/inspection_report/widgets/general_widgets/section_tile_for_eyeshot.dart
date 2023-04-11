@@ -27,14 +27,8 @@ class SectionTile extends StatefulWidget {
 }
 
 class _SectionTileState extends State<SectionTile> {
-  var constraintMaxWidth = 0;
   @override
   void initState() {
-    constraintStream.stream.listen((index) {
-      setState(() {
-        constraintMaxWidth = index;
-      });
-    });
     super.initState();
   }
 
@@ -53,6 +47,9 @@ class _SectionTileState extends State<SectionTile> {
             ),
           ),
           onTap: () {
+            if ((constraintMaxWidthForNavPop < 1230)) {
+              Navigator.pop(context);
+            }
             controllerStream.add(widget.sectionIndex);
             Scrollable.ensureVisible(
               itemKeys[widget.section.uid!]!.currentContext!,

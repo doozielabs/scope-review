@@ -23,9 +23,10 @@ final ScrollController subSectionsListviewController = ScrollController();
 final ScrollController subSectionCommentsController = ScrollController();
 
 Map<String, GlobalKey> itemKeys = {};
-StreamController<int> controllerStream = StreamController<int>();
-StreamController<dynamic> constraintStream =
-    StreamController<dynamic>.broadcast();
+double constraintMaxWidthForNavPop = 0.0;
+StreamController<double> constraintStream =
+    StreamController<double>.broadcast(sync: true);
+StreamController<int> controllerStream = StreamController<int>.broadcast();
 
 enum DeviceTypeForWeb {
   mobile,
@@ -65,27 +66,27 @@ enum ImageType {
   itemImage,
 }
 
-Future<double> getItemHeight(int index) async {
-  await Future.delayed(Duration.zero);
-  final RenderBox? renderBox =
-      itemKeys[index]?.currentContext?.findRenderObject() as RenderBox?;
-  if (renderBox != null) {
-    print("Height:${renderBox.size.height}");
-    return renderBox.size.height;
-  } else {
-    return 0.0; // or any default value you want to return
-  }
-}
+// Future<double> getItemHeight(int index) async {
+//   await Future.delayed(Duration.zero);
+//   final RenderBox? renderBox =
+//       itemKeys[index]?.currentContext?.findRenderObject() as RenderBox?;
+//   if (renderBox != null) {
+//     print("Height:${renderBox.size.height}");
+//     return renderBox.size.height;
+//   } else {
+//     return 0.0; // or any default value you want to return
+//   }
+// }
 
-Future<double> getHeightOfWidget(int index) async {
-  double height = 0;
-  for (var i = 0; i < index; i++) {
-    double temp = await getItemHeight(i);
-    height += temp;
-    print("Height:$height");
-  }
-  return height;
-}
+// Future<double> getHeightOfWidget(int index) async {
+//   double height = 0;
+//   for (var i = 0; i < index; i++) {
+//     double temp = await getItemHeight(i);
+//     height += temp;
+//     print("Height:$height");
+//   }
+//   return height;
+// }
 
 List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
   double imageWidth;
@@ -128,15 +129,15 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (isMobile) {
           //Mobile SinlgeImage -- Section Image
           imageWidth = width;
-          imageHeight = height;
+          imageHeight = height / 5;
         } else if (isTablet) {
           //Tablet SinlgeImage -- Section Image
           imageWidth = width * 0.50;
-          imageHeight = height;
+          imageHeight = height / 3;
         } else {
           //Web SinlgeImage -- Section Image
           imageWidth = width;
-          imageHeight = height;
+          imageHeight = height / 4;
         }
       } else {
         if (isMobile) {

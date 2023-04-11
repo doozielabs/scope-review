@@ -22,24 +22,46 @@ import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 class InspectionReportScreen extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
-
-  const InspectionReportScreen({
-    Key? key,
-    required this.inspection,
-    required this.media,
-  }) : super(key: key);
+  final bool showDialogue;
+  const InspectionReportScreen(
+      {Key? key,
+      required this.inspection,
+      required this.media,
+      required this.showDialogue})
+      : super(key: key);
 
   @override
   State<InspectionReportScreen> createState() => _InspectionReportScreenState();
 }
 
 class _InspectionReportScreenState extends State<InspectionReportScreen> {
+  bool isLoading = false;
   List<bool> isExpanded = [];
   late List<TemplateSection> sections = widget.inspection.template!.sections;
+  Stream stream = constraintStream.stream;
+  bool _showBackToTopButton = false;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     isExpandedForAllSections();
+    // setListOfKeys();
+    _scrollController = ScrollController()
+      ..addListener(() {
+        setState(() {
+          if (_scrollController.offset >= 400) {
+            _showBackToTopButton = true;
+          } else {
+            _showBackToTopButton = false;
+          }
+        });
+      });
+
+    stream.listen((index) {
+      setState(() {
+        constraintMaxWidthForNavPop = index;
+      });
+    });
     super.initState();
   }
 
@@ -55,6 +77,19 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     );
   }
 
+  // setListOfKeys() {
+  //   for(var sectionKeys in widget.inspection.template!.sections){
+  //     if(itemKeys[sectionKeys.uid] == null) {
+  //       itemKeys[sectionKeys.uid!] = GlobalKey();
+  //     }
+  //     for(var subSectionKeys in sectionKeys.subSections){
+  //       if(itemKeys[subSectionKeys.uid] == null) {
+  //       itemKeys[subSectionKeys.uid!] = GlobalKey();
+  //     }
+  //     }
+  //   }
+  // }
+
   int numberOfDiffencyCommentsInSection(dynamic section) {
     int diffencyCount = 0;
     for (var comment in section.comments) {
@@ -68,7 +103,13 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   @override
   void dispose() {
     isExpanded.clear();
+    _scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(0,
+        duration: const Duration(seconds: 1), curve: Curves.linear);
   }
 
   @override
@@ -85,6 +126,13 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 SingleChildScrollView(
                   child: Column(
                     children: [
+                      IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isLoading = true;
+                            });
+                          },
+                          icon: const Icon(Icons.ac_unit)),
                       ReportHeader(
                           inspection: widget.inspection, media: widget.media),
                       InspectionDescription(inspection: widget.inspection),
@@ -218,6 +266,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
           return SafeArea(
             child: Scaffold(
               body: SingleChildScrollView(
+                controller: _scrollController,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -226,7 +275,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                       padding: const EdgeInsets.all(18.0),
                       child: SvgPicture.asset(
                         "assets/svg/logo.svg",
-                        package: "pdf_report_scope",
                         width: 50,
                         height: 50,
                       ),
@@ -557,6 +605,12 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                   ],
                 ),
               ),
+              floatingActionButton: _showBackToTopButton == false
+                  ? null
+                  : FloatingActionButton(
+                      onPressed: _scrollToTop,
+                      child: const Icon(Icons.arrow_upward),
+                    ),
             ),
           );
         }
