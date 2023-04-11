@@ -142,7 +142,7 @@ class GeneralHelper {
   }
 
   static imageHandlerForGallery(ImageShape image) {
-    if ((image.url).isDeviceUrl && (image.url).isAsset) {
+    if ((image.url).isDeviceUrl || (image.url).isAsset) {
       return FileImage(File(image.url));
     } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
       return NetworkImage(baseUrlLive + image.original);
