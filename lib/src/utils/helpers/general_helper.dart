@@ -120,7 +120,10 @@ class GeneralHelper {
     if (ids.length == 0) {
       return isWeb
           ? Image.network(baseUrlLive + defaultHeaderImage1)
-          : Image.asset("assets/images/default_image.png");
+          : Image.asset(
+              "assets/images/default_image.png",
+              package: "pdf_report_scope",
+            );
       // return ImageWithRoundedCorners(
       //   imageUrl: GeneralHelper.getMediaById(ids[0], media),
       //   width: 300,
