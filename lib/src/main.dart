@@ -29,12 +29,12 @@ class PDFReport extends StatefulWidget {
 }
 
 class _PDFReportState extends State<PDFReport> {
-  late InspectionModel inspection;
+  late InspectionModel inspection = InspectionModel();
   bool isLoading = false;
   List<ImageShape> media = [];
   @override
   void initState() {
-    Future.delayed(const Duration(), () async {
+    Future.delayed(const Duration(seconds: 1), () async {
       setState(() => isLoading = true);
       // inspection = await InspectionProvider().getInspection();
       print("mainins:${widget.inspection} ");
