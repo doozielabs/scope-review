@@ -64,6 +64,7 @@ class _PDFReportState extends State<PDFReport> {
                   : InspectionReportScreen(
                       inspection: inspection,
                       media: media,
+                      showDialogue: widget.showDialogue,
                     ),
             )));
   }
