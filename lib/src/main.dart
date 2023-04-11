@@ -29,7 +29,7 @@ class PDFReport extends StatefulWidget {
 }
 
 class _PDFReportState extends State<PDFReport> {
-  late InspectionModel inspection;
+  InspectionModel inspection = InspectionModel();
   bool isLoading = false;
   List<ImageShape> media = [];
   @override
