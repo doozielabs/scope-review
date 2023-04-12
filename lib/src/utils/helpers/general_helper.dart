@@ -162,8 +162,8 @@ class GeneralHelper {
     if ((image.url).isDeviceUrl || (image.url).isAsset) {
       return Image.file(
         File(image.url),
-        width: 200.w,
-        height: 200.h,
+        width: width,
+        height: height,
         fit: BoxFit.fill,
       );
     } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
@@ -551,6 +551,7 @@ class _CustomDialogState extends State<CustomDialog> {
             onTap: () => Navigator.pop(context),
             child: SvgPicture.asset(
               "assets/svg/close.svg",
+              package: "",
               color: ProjectColors.white,
             ),
           )
@@ -589,7 +590,13 @@ class _CustomDialogState extends State<CustomDialog> {
                         .map((item) => ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: GeneralHelper.imageHandlerForRoundedConner(
-                                  item, 300, 300),
+                                item,
+                                getImageWidthHeight(
+                                    ImageType.sectionImage, imageUrl)[0],
+                                getImageWidthHeight(
+                                    ImageType.sectionImage, imageUrl)[1],
+                              ),
+
                               // Image.network(
                               //   item.url,
                               //   fit: BoxFit.cover,
