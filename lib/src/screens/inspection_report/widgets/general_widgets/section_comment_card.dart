@@ -24,6 +24,8 @@ class SectionCommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var thisCommentKey =
+        commentKeys[comment.id.toString() + comment.uid.toString()];
     return Container(
       decoration: BoxDecoration(
         color: ProjectColors.white,
@@ -56,7 +58,9 @@ class SectionCommentCard extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 14),
-            Text(comment.comment, key: itemKeys[comment.uid]),
+            needJumpToSectionButton
+                ? Text(comment.comment)
+                : Text(comment.comment, key: thisCommentKey),
             Padding(
               padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
               child: Wrap(
@@ -99,11 +103,14 @@ class SectionCommentCard extends StatelessWidget {
                     padding: const EdgeInsets.all(15.0),
                     child: GestureDetector(
                       onTap: () {
-                        Scrollable.ensureVisible(
-                          itemKeys[comment.uid!]!.currentContext!,
-                          duration: const Duration(milliseconds: 400),
-                          curve: Curves.easeInOut,
-                        );
+                        controllerStream.add(comment.serverTimestamp!);
+                        Future.delayed(const Duration(seconds: 1), () {
+                          Scrollable.ensureVisible(
+                            thisCommentKey!.currentContext!,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        });
                         //TODO: Jump to Section Comment Callback
                       },
                       child: Row(

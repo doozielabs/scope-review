@@ -107,12 +107,6 @@ class _TemplateSectionsState extends State<TemplateSections> {
                 children: [
                   ...List.generate(inspection.template!.sections.length,
                       (sectionIndex) {
-                    if (itemKeys[
-                            inspection.template!.sections[sectionIndex].uid] ==
-                        null) {
-                      itemKeys[inspection
-                          .template!.sections[sectionIndex].uid!] = GlobalKey();
-                    }
                     bool hasSectionItemComments = inspection
                         .template!.sections[sectionIndex].items
                         .any((item) => item.comments.isNotEmpty);

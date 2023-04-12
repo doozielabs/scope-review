@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
-import 'package:pdf_report_scope/src/core/constant/constants.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
@@ -49,11 +48,12 @@ class ReportSummary extends StatelessWidget {
                   return Padding(
                     padding: const EdgeInsets.only(top: 7.0, bottom: 7.0),
                     child: SectionCommentCard(
-                        needJumpToSectionButton: true,
-                        comment: deficiencyComments[index],
-                        commentTitle: inspection.template!
-                            .commentTitle(deficiencyComments[index]),
-                        media: media!),
+                      needJumpToSectionButton: true,
+                      comment: deficiencyComments[index],
+                      commentTitle: inspection.template!
+                          .commentTitle(deficiencyComments[index]),
+                      media: media!,
+                    ),
                   );
                 })
               ],

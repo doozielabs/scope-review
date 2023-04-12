@@ -23,6 +23,8 @@ final ScrollController subSectionsListviewController = ScrollController();
 final ScrollController subSectionCommentsController = ScrollController();
 
 Map<String, GlobalKey> itemKeys = {};
+Map<String, GlobalKey> commentKeys = {};
+const INVALID_IMAGE = "invalid image";
 double constraintMaxWidthForNavPop = 0.0;
 StreamController<double> constraintStream =
     StreamController<double>.broadcast(sync: true);

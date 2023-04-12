@@ -51,11 +51,13 @@ class _SectionTileState extends State<SectionTile> {
               Navigator.pop(context);
             }
             controllerStream.add(widget.sectionIndex);
-            Scrollable.ensureVisible(
-              itemKeys[widget.section.uid!]!.currentContext!,
-              duration: const Duration(milliseconds: 400),
-              curve: Curves.easeInOut,
-            );
+            Future.delayed(const Duration(seconds: 1), () {
+              Scrollable.ensureVisible(
+                itemKeys[widget.section.uid!]!.currentContext!,
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeInOut,
+              );
+            });
           },
         ),
         Row(
@@ -63,6 +65,7 @@ class _SectionTileState extends State<SectionTile> {
           children: [
             SvgPicture.asset(
               "assets/svg/comments.svg",
+              package: "pdf_report_scope",
               width: 12,
               height: 12,
             ),

@@ -74,10 +74,14 @@ class _SectionEyeShotForMobileState
             padding: const EdgeInsets.all(12.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(Icons.share),
-                SizedBox(width: 10),
-                Text('Share PDF', style: b2Medium),
+              children: [
+                const Icon(
+                  Icons.share,
+                  color: ProjectColors.white,
+                ),
+                const SizedBox(width: 10),
+                Text('Share PDF',
+                    style: b2Medium.copyWith(color: ProjectColors.white)),
               ],
             ),
           ),
@@ -86,7 +90,7 @@ class _SectionEyeShotForMobileState
       title: Stack(
         children: [
           const Center(
-            child: Text("Jump to Section", style: h1),
+            child: Text("Jump to Section", style: h2),
           ),
           Positioned(
             right: 0,

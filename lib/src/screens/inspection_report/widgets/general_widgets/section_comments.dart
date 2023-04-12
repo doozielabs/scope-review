@@ -31,15 +31,9 @@ class SectionComments extends StatelessWidget {
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
       itemBuilder: (context, sectionCommentIndex) {
-        if (itemKeys[inspection.template!.sections[sectionIndex]
-                .comments[sectionCommentIndex].uid] ==
-            null) {
-          itemKeys[inspection.template!.sections[sectionIndex]
-              .comments[sectionCommentIndex].uid!] = GlobalKey();
-        }
         return SectionCommentCard(
-            key: itemKeys[inspection.template!.sections[sectionIndex]
-                .comments[sectionCommentIndex].uid!],
+            // key:itemKeys[inspection
+            //     .template!.sections[sectionIndex].comments[sectionCommentIndex].uid!],
             commentTitle:
                 "Comment ( ${inspection.template!.sections[sectionIndex].name} )",
             comment: inspection

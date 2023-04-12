@@ -45,23 +45,20 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   @override
   void initState() {
     isExpandedForAllSections();
-    // setListOfKeys();
+    setListOfKeys();
     _scrollController = ScrollController()
       ..addListener(() {
-        setState(() {
-          if (_scrollController.offset >= 400) {
-            _showBackToTopButton = true;
-          } else {
-            _showBackToTopButton = false;
-          }
-        });
+        if (_scrollController.offset >= 400) {
+          _showBackToTopButton = true;
+        } else {
+          _showBackToTopButton = false;
+        }
       });
 
     stream.listen((index) {
-      setState(() {
-        constraintMaxWidthForNavPop = index;
-      });
+      constraintMaxWidthForNavPop = index;
     });
+    setState(() {});
     super.initState();
   }
 
@@ -77,18 +74,18 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     );
   }
 
-  // setListOfKeys() {
-  //   for(var sectionKeys in widget.inspection.template!.sections){
-  //     if(itemKeys[sectionKeys.uid] == null) {
-  //       itemKeys[sectionKeys.uid!] = GlobalKey();
-  //     }
-  //     for(var subSectionKeys in sectionKeys.subSections){
-  //       if(itemKeys[subSectionKeys.uid] == null) {
-  //       itemKeys[subSectionKeys.uid!] = GlobalKey();
-  //     }
-  //     }
-  //   }
-  // }
+  setListOfKeys() {
+    for (var sectionKeys in widget.inspection.template!.sections) {
+      if (itemKeys[sectionKeys.uid] == null) {
+        itemKeys[sectionKeys.uid!] = GlobalKey();
+      }
+      for (var subSectionKeys in sectionKeys.subSections) {
+        if (itemKeys[subSectionKeys.uid] == null) {
+          itemKeys[subSectionKeys.uid!] = GlobalKey();
+        }
+      }
+    }
+  }
 
   int numberOfDiffencyCommentsInSection(dynamic section) {
     int diffencyCount = 0;
@@ -235,6 +232,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           vertical: 10, horizontal: 16),
                       child: SvgPicture.asset(
                         "assets/svg/menu.svg",
+                        package: "pdf_report_scope",
                       ),
                     ),
                   )
@@ -268,6 +266,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                       padding: const EdgeInsets.all(18.0),
                       child: SvgPicture.asset(
                         "assets/svg/logo.svg",
+                        package: "pdf_report_scope",
                         width: 50,
                         height: 50,
                       ),

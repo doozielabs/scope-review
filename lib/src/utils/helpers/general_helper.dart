@@ -114,38 +114,22 @@ class GeneralHelper {
   }
 
   static getMediaForHeader(ids, List<ImageShape> media) {
-    // print("id header :$ids  -- ${GeneralHelper.getMediaById(ids[0], media)}");
-    // print("Media:$media");
     int counts = 1;
-
     if (ids.length == 0) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: isWeb
-            ? Image.network(baseUrlLive + defaultHeaderImage1)
-            : Image.asset(
-                "assets/images/default_image.png",
-                package: "pdf_report_scope",
-                // width: 300,
-                // height: 300,
-              ),
-      );
-      // return ImageWithRoundedCorners(
-      //   imageUrl: GeneralHelper.getMediaById(ids[0], media),
-      //   width: 300,
-      //   height: 300,
-      //   counts: counts,
-      // );
+          borderRadius: BorderRadius.circular(16),
+          child: isWeb
+              ? Image.network(baseUrlLive + defaultHeaderImage1)
+              : Image.asset(
+                  "assets/images/default_image.png",
+                  package: "pdf_report_scope",
+                ));
     } else {
       int remainIdsCount = (ids.length - 1);
-      // print("--${GeneralHelper.getMediaById(ids[0], media)}");
-      // return Image.network(
-      //     "https://api.scopeinspectapp.com/images/inspection_placeholder.png");
       return ImageWithRoundedCornersForHeader(
         imageUrl: GeneralHelper.getMediaById(ids[0], media),
-        // width: 70.w,
+        // width: 300,
         height: 35.h,
-        // height: 100.h,
         remain: remainIdsCount,
         lastItem: true,
         ids: ids,
@@ -155,10 +139,11 @@ class GeneralHelper {
   }
 
   static imageHandlerForGallery(ImageShape image) {
+    double scale = 0.4;
     if ((image.url).isDeviceUrl || (image.url).isAsset) {
-      return FileImage(File(image.url));
+      return FileImage(File(image.url), scale: scale);
     } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
-      return NetworkImage(baseUrlLive + image.original);
+      return NetworkImage(baseUrlLive + image.original, scale: scale);
     } else {
       return AssetImage(image.url);
     }
@@ -190,20 +175,14 @@ class GeneralHelper {
   }
 
   static getMediaById(String id, List<ImageShape> media) {
-    var imageUrl = baseUrlLive + defaultHeaderImage;
     if (id.isNotEmpty && media.isNotEmpty) {
       for (var image in media) {
         if (image.id == id) {
           return image;
-          // if (isWeb) {
-          //   return imageUrl = baseUrlLive + image.original;
-          // } else {
-          //   return imageUrl = baseUrlLive + image.url;
-          // }
         }
       }
     }
-    return imageUrl;
+    return INVALID_IMAGE;
   }
 
   static getMediaList(List ids, List<ImageShape> media) {
@@ -213,20 +192,10 @@ class GeneralHelper {
         for (var image in media) {
           if (image.id == id) {
             _images.add(image);
-            // return _image;
-            // if (isWeb) {
-            //   _images.add(baseUrlLive + image.original);
-            // } else {
-            //   _images.add(baseUrlLive + image.url);
-            // }
           }
         }
       }
     }
-
-    // if (_images.isEmpty) {
-    //   _images = [baseUrlLive + defaultHeaderImage];
-    // }
     return _images;
   }
 
@@ -242,12 +211,17 @@ class GeneralHelper {
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             itemBuilder: (context, countIndex) {
-              return ImageWithRoundedCorners(
-                imageUrl: GeneralHelper.getMediaById(ids[countIndex], media),
-                width: getImageWidthHeight(imagetype, ids)[0],
-                height: getImageWidthHeight(imagetype, ids)[1],
-                counts: counts,
-              );
+              var imageObj = GeneralHelper.getMediaById(ids[countIndex], media);
+              if (imageObj is ImageShape) {
+                return ImageWithRoundedCorners(
+                  imageUrl: GeneralHelper.getMediaById(ids[countIndex], media),
+                  width: getImageWidthHeight(imagetype, ids)[0],
+                  height: getImageWidthHeight(imagetype, ids)[1],
+                  counts: counts,
+                );
+              } else {
+                return const SizedBox();
+              }
             });
       } else {
         return MasonryGridView.count(
@@ -259,28 +233,42 @@ class GeneralHelper {
             crossAxisSpacing: 4,
             itemBuilder: (context, countIndex) {
               if (countIndex == (counts - 1) && remainIdsCount != 0) {
-                return ImageWithRoundedCornersV1(
-                  imageUrl: GeneralHelper.getMediaById(ids[countIndex], media),
-                  width: getImageWidthHeight(imagetype, ids)[0],
-                  height: getImageWidthHeight(imagetype, ids)[1],
-                  remain: remainIdsCount,
-                  lastItem: true,
-                  ids: ids,
-                  media: media,
-                  counts: counts,
-                );
+                var imageObj =
+                    GeneralHelper.getMediaById(ids[countIndex], media);
+                if (imageObj is ImageShape) {
+                  return ImageWithRoundedCornersV1(
+                    imageUrl:
+                        GeneralHelper.getMediaById(ids[countIndex], media),
+                    width: getImageWidthHeight(imagetype, ids)[0],
+                    height: getImageWidthHeight(imagetype, ids)[1],
+                    remain: remainIdsCount,
+                    lastItem: true,
+                    ids: ids,
+                    media: media,
+                    counts: counts,
+                  );
+                } else {
+                  return const SizedBox();
+                }
               } else {
-                return ImageWithRoundedCorners(
-                  imageUrl: GeneralHelper.getMediaById(ids[countIndex], media),
-                  width: getImageWidthHeight(imagetype, ids)[0],
-                  height: getImageWidthHeight(imagetype, ids)[1],
-                  counts: counts,
-                );
+                var imageObj =
+                    GeneralHelper.getMediaById(ids[countIndex], media);
+                if (imageObj is ImageShape) {
+                  return ImageWithRoundedCorners(
+                    imageUrl:
+                        GeneralHelper.getMediaById(ids[countIndex], media),
+                    width: getImageWidthHeight(imagetype, ids)[0],
+                    height: getImageWidthHeight(imagetype, ids)[1],
+                    counts: counts,
+                  );
+                } else {
+                  return const SizedBox();
+                }
               }
             });
       }
     } else {
-      return const Text("");
+      return const SizedBox();
     }
   }
 
@@ -335,6 +323,14 @@ class GeneralHelper {
           commentIndex++) {
         final comment = sections[sectionIndex].comments[commentIndex];
         if (comment.type == CommentType.deficiency) {
+          if (!comment.uid.isNull &&
+              commentKeys[comment.id.toString() + comment.uid!].isNull) {
+            if (commentKeys[comment.id.toString() + comment.uid!] !=
+                GlobalKey()) {
+              commentKeys[comment.id.toString() + comment.uid!] = GlobalKey();
+              comment.serverTimestamp = sectionIndex;
+            }
+          }
           deficiencyCommets.add(comment);
         }
       }
@@ -345,6 +341,13 @@ class GeneralHelper {
         final item = sections[sectionIndex].items[itemIndex];
         for (var i = 0; i < item.comments.length; i++) {
           if (item.comments[i].level == CommentType.deficiency) {
+            if (!item.comments[i].uid.isNull &&
+                [item.comments[i].id.toString() + item.comments[i].uid!] ==
+                    null) {
+              commentKeys[item.comments[i].id.toString() +
+                  item.comments[i].uid!] = GlobalKey();
+              item.comments[i].serverTimestamp = sectionIndex;
+            }
             deficiencyCommets.add(item.comments[i]);
           }
         }
@@ -361,6 +364,14 @@ class GeneralHelper {
           final subsSectionComment =
               subSections[subSectionIndex].comments[subSectioncommentIndex];
           if (subsSectionComment.type == CommentType.deficiency) {
+            if (!subsSectionComment.uid.isNull &&
+                commentKeys[subsSectionComment.id.toString() +
+                        subsSectionComment.uid!] ==
+                    null) {
+              commentKeys[subsSectionComment.id.toString() +
+                  subsSectionComment.uid!] = GlobalKey();
+              subsSectionComment.serverTimestamp = sectionIndex;
+            }
             deficiencyCommets.add(subsSectionComment);
           }
         }
@@ -370,6 +381,14 @@ class GeneralHelper {
           final item = subSections[subSectionIndex].items[subSectionitemIndex];
           for (var i = 0; i < item.comments.length; i++) {
             if (item.comments[i].level == CommentType.deficiency) {
+              if (!item.comments[i].uid.isNull &&
+                  commentKeys[item.comments[i].id.toString() +
+                          item.comments[i].uid!] ==
+                      null) {
+                commentKeys[item.comments[i].id.toString() +
+                    item.comments[i].uid!] = GlobalKey();
+                item.comments[i].serverTimestamp = sectionIndex;
+              }
               deficiencyCommets.add(item.comments[i]);
             }
           }
@@ -578,65 +597,62 @@ class _CustomDialogState extends State<CustomDialog> {
           // ),
           width: MediaQuery.of(context).size.width,
           child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 50.0, bottom: 50),
-              child: Column(
-                children: [
-                  CarouselSlider(
-                    carouselController: _controller,
-                    options: CarouselOptions(
-                      aspectRatio: 1.2,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
-                      enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                      onPageChanged: (indexed, r) =>
-                          setState(() => _current = indexed),
-                    ),
-                    items: imageUrl
-                        .map((item) => ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: GeneralHelper.imageHandlerForRoundedConner(
-                                item,
-                                getImageWidthHeight(
-                                    ImageType.sectionImage, imageUrl)[0],
-                                getImageWidthHeight(
-                                    ImageType.sectionImage, imageUrl)[1],
-                              ),
-
-                              // Image.network(
-                              //   item.url,
-                              //   fit: BoxFit.cover,
-                              // ),
-                            ))
-                        .toList(),
+            child: Column(
+              children: [
+                CarouselSlider(
+                  carouselController: _controller,
+                  options: CarouselOptions(
+                    aspectRatio: 1.2,
+                    enlargeCenterPage: true,
+                    enableInfiniteScroll: false,
+                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                    onPageChanged: (indexed, r) =>
+                        setState(() => _current = indexed),
                   ),
-                  const SizedBox(height: 24.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      imageUrl.length,
-                      (index) => GestureDetector(
-                        onTap: () => _controller.animateToPage(
-                          index,
-                          curve: Curves.fastOutSlowIn,
-                          duration: const Duration(milliseconds: 800),
-                        ),
-                        child: Container(
-                          width: 10,
-                          height: 10,
-                          margin: EdgeInsets.only(left: index.isZero ? 0 : 10),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context)
-                                .scaffoldBackgroundColor
-                                .withOpacity(_current == index ? 1.0 : 0.4),
-                          ),
+                  items: imageUrl
+                      .map((item) => ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: GeneralHelper.imageHandlerForRoundedConner(
+                              item,
+                              getImageWidthHeight(
+                                  ImageType.sectionImage, imageUrl)[0],
+                              getImageWidthHeight(
+                                  ImageType.sectionImage, imageUrl)[1],
+                            ),
+                            // Image.network(
+                            //   item.url,
+                            //   fit: BoxFit.cover,
+                            // ),
+                          ))
+                      .toList(),
+                ),
+                const SizedBox(height: 24.0),
+                Wrap(
+                  direction: Axis.horizontal,
+                  // mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    imageUrl.length,
+                    (index) => GestureDetector(
+                      onTap: () => _controller.animateToPage(
+                        index,
+                        curve: Curves.fastOutSlowIn,
+                        duration: const Duration(milliseconds: 800),
+                      ),
+                      child: Container(
+                        width: 10,
+                        height: 10,
+                        margin: EdgeInsets.only(left: index.isZero ? 0 : 10),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context)
+                              .scaffoldBackgroundColor
+                              .withOpacity(_current == index ? 1.0 : 0.4),
                         ),
                       ),
                     ),
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
           )),
     );
