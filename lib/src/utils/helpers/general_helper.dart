@@ -551,7 +551,7 @@ class _CustomDialogState extends State<CustomDialog> {
             onTap: () => Navigator.pop(context),
             child: SvgPicture.asset(
               "assets/svg/close.svg",
-              package: "",
+              package: "pdf_report_scope",
               color: ProjectColors.white,
             ),
           )
