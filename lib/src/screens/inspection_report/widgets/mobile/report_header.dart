@@ -155,27 +155,26 @@ class ReportHeaderMobile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Inspected by:",
+                    "Client:",
                     style: secondryHeadingTextStyle,
                   ),
                   const SizedBox(height: 10),
-                  // HeaderInfoItem(
-                  //     iconName: "icon-user",
-                  //     text: inspection.user!.firstname.unspecified +
-                  //         " " +
-                  //         (inspection.user?.lastname ?? "")),
+                  HeaderInfoItem(
+                      iconName: "icon-user",
+                      text:
+                          "${inspection.client!.firstname.unspecified}${inspection.client!.lastname}"),
                   const SizedBox(height: 10),
-                  // HeaderInfoItem(
-                  //     iconName: "icon-mail",
-                  //     text: inspection.user!.email.unspecified),
+                  HeaderInfoItem(
+                      iconName: "icon-mail",
+                      text: inspection.client!.email.unspecified),
                   const SizedBox(height: 10),
-                  // HeaderInfoItem(
-                  //     iconName: "icon-cell",
-                  //     text: inspection.user!.phone.unspecified),
+                  HeaderInfoItem(
+                      iconName: "icon-cell",
+                      text: inspection.client!.phone.unspecified),
                   const SizedBox(height: 10),
                   // HeaderInfoItem(
                   //     iconName: "icon-company",
-                  //     text: inspection.user!.organization.unspecified)
+                  //     text: inspection.client!.organization.unspecified)
                 ],
               ),
             ),

@@ -120,7 +120,7 @@ class GeneralHelper {
 
     if (ids.length == 0) {
       return ClipRRect(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(16),
         child: isWeb
             ? Image.network(baseUrlLive + defaultHeaderImage1)
             : Image.asset(
@@ -143,8 +143,9 @@ class GeneralHelper {
       //     "https://api.scopeinspectapp.com/images/inspection_placeholder.png");
       return ImageWithRoundedCornersForHeader(
         imageUrl: GeneralHelper.getMediaById(ids[0], media),
-        // width: 300.w,
-        // height: 300.h,
+        // width: 70.w,
+        height: 35.h,
+        // height: 100.h,
         remain: remainIdsCount,
         lastItem: true,
         ids: ids,
