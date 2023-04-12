@@ -124,6 +124,8 @@ class GeneralHelper {
           : Image.asset(
               "assets/images/default_image.png",
               package: "pdf_report_scope",
+              width: width,
+              height: height / 4,
             );
       // return ImageWithRoundedCorners(
       //   imageUrl: GeneralHelper.getMediaById(ids[0], media),
