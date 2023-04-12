@@ -126,8 +126,8 @@ class GeneralHelper {
             : Image.asset(
                 "assets/images/default_image.png",
                 package: "pdf_report_scope",
-                width: 300.w,
-                height: 300.h,
+                // width: 300,
+                // height: 300,
               ),
       );
       // return ImageWithRoundedCorners(
@@ -143,8 +143,8 @@ class GeneralHelper {
       //     "https://api.scopeinspectapp.com/images/inspection_placeholder.png");
       return ImageWithRoundedCornersForHeader(
         imageUrl: GeneralHelper.getMediaById(ids[0], media),
-        width: 300.w,
-        height: 300.h,
+        // width: 300.w,
+        // height: 300.h,
         remain: remainIdsCount,
         lastItem: true,
         ids: ids,
