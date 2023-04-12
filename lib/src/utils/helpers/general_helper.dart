@@ -15,6 +15,7 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 // import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:sizer/sizer.dart';
 
 import '../../core/constant/globals.dart';
 import '../../screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
@@ -161,8 +162,8 @@ class GeneralHelper {
     if ((image.url).isDeviceUrl || (image.url).isAsset) {
       return Image.file(
         File(image.url),
-        width: width,
-        height: height,
+        width: 200.w,
+        height: 200.h,
         fit: BoxFit.fill,
       );
     } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
