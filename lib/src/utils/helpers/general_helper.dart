@@ -119,14 +119,17 @@ class GeneralHelper {
     int counts = 1;
 
     if (ids.length == 0) {
-      return isWeb
-          ? Image.network(baseUrlLive + defaultHeaderImage1)
-          : Image.asset(
-              "assets/images/default_image.png",
-              package: "pdf_report_scope",
-              width: width,
-              height: height / 4,
-            );
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(10),
+        child: isWeb
+            ? Image.network(baseUrlLive + defaultHeaderImage1)
+            : Image.asset(
+                "assets/images/default_image.png",
+                package: "pdf_report_scope",
+                width: 300.w,
+                height: 300.h,
+              ),
+      );
       // return ImageWithRoundedCorners(
       //   imageUrl: GeneralHelper.getMediaById(ids[0], media),
       //   width: 300,
@@ -140,8 +143,8 @@ class GeneralHelper {
       //     "https://api.scopeinspectapp.com/images/inspection_placeholder.png");
       return ImageWithRoundedCornersForHeader(
         imageUrl: GeneralHelper.getMediaById(ids[0], media),
-        width: 300,
-        height: 300,
+        width: 300.w,
+        height: 300.h,
         remain: remainIdsCount,
         lastItem: true,
         ids: ids,
