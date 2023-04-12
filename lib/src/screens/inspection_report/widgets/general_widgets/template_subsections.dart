@@ -33,13 +33,6 @@ class TemplateSubSection extends StatelessWidget {
         itemCount: subSections.length,
         crossAxisCount: 1,
         itemBuilder: (context, subSectionIndex) {
-          if (itemKeys[inspection.template!.sections[sectionIndex]
-                  .subSections[subSectionIndex].uid] ==
-              null) {
-            itemKeys[inspection.template!.sections[sectionIndex]
-                .subSections[subSectionIndex].uid!] = GlobalKey();
-          }
-
           bool hasSubSectionItems =
               subSections[subSectionIndex].items.isNotEmpty;
           bool hasSubSectionImages =
@@ -216,19 +209,9 @@ class TemplateSubSection extends StatelessWidget {
                                   mainAxisSpacing: 4,
                                   crossAxisSpacing: 4,
                                   itemBuilder: (context, sectionCommentIndex) {
-                                    if (itemKeys[subSections[subSectionIndex]
-                                            .comments[sectionCommentIndex]
-                                            .uid!] ==
-                                        null) {
-                                      itemKeys[subSections[subSectionIndex]
-                                          .comments[sectionCommentIndex]
-                                          .uid!] = GlobalKey();
-                                    }
                                     return SectionCommentCard(
-                                        key: itemKeys[
-                                            subSections[subSectionIndex]
-                                                .comments[sectionCommentIndex]
-                                                .uid!],
+                                        // key:itemKeys[subSections[subSectionIndex]
+                                        // .comments[sectionCommentIndex].uid!],
                                         comment: subSections[subSectionIndex]
                                             .comments[sectionCommentIndex],
                                         commentTitle:
