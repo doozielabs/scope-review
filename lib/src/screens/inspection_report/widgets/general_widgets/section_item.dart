@@ -40,14 +40,14 @@ class SectionItem extends StatelessWidget {
       }
     }
 
-    _getItemValue() {
-      var _value = item.value;
-      if (_value == null || _value == "") {
+    getItemValue() {
+      if (item.unspecified) {
         return Text(
-          "".unspecified,
+          "Unspecified",
           style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
         );
       }
+      var _value = item.value;
       switch (item.type) {
         case TemplateItemType.timestamp:
           return Text(
@@ -128,88 +128,91 @@ class SectionItem extends StatelessWidget {
       }
     }
 
-    return Container(
-      decoration: BoxDecoration(
-        color: ProjectColors.white,
-        borderRadius: BorderRadius.circular(16),
-        border: isSubsectionItem
-            ? Border.all(
-                color: ProjectColors.firefly.withOpacity(0.15),
-                width: 1.5,
-              )
-            : null,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            //Item Label
-            Text(
-              "${item.label.toString()} :",
-              style: b3Medium,
+    return item.unspecified
+        ? const SizedBox(height: 0)
+        : Container(
+            decoration: BoxDecoration(
+              color: ProjectColors.white,
+              borderRadius: BorderRadius.circular(16),
+              border: isSubsectionItem
+                  ? Border.all(
+                      color: ProjectColors.firefly.withOpacity(0.15),
+                      width: 1.5,
+                    )
+                  : null,
             ),
-            const SizedBox(height: 8),
-            //Item value
-            _getItemValue(),
-            const SizedBox(height: 14),
-            item.images.isNotEmpty
-                //  ? GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage)
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  //Item Label
+                  Text(
+                    "${item.label.toString()} :",
+                    style: b3Medium,
+                  ),
+                  const SizedBox(height: 8),
+                  //Item value
+                  getItemValue(),
+                  const SizedBox(height: 14),
+                  // item.images.isNotEmpty
+                  //     //  ? GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage)
 
-                ? Padding(
-                    padding: const EdgeInsets.only(top: 14.0, bottom: 21.0),
-                    child: Wrap(
-                      direction: Axis.horizontal,
-                      children: [
-                        const SizedBox(),
-                        //            ImageWithRoundedCorners(
-                        //   imageUrl:GeneralHelper.getMediaById(item.images[0], media!),
-                        //   width: 300,
-                        //   height: 300,
-                        //       counts:1,
-                        // ),
-                        // GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),
-                        //  Padding(
-                        //   padding: const EdgeInsets.only(left: 5.0, bottom: 5.0),
-                        //   child: GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),
-                        //  ),
+                  //     ? Padding(
+                  //         padding:
+                  //             const EdgeInsets.only(top: 14.0, bottom: 21.0),
+                  //         child: Wrap(
+                  //           direction: Axis.horizontal,
+                  //           children: [
+                  //             const SizedBox(),
+                  //             //            ImageWithRoundedCorners(
+                  //             //   imageUrl:GeneralHelper.getMediaById(item.images[0], media!),
+                  //             //   width: 300,
+                  //             //   height: 300,
+                  //             //       counts:1,
+                  //             // ),
+                  //             // GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),
+                  //             //  Padding(
+                  //             //   padding: const EdgeInsets.only(left: 5.0, bottom: 5.0),
+                  //             //   child: GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),
+                  //             //  ),
 
-                        //  Text("${item.images[0]} == image::  ${item.images} "),
-                        // ...List.generate(
-                        //   item.images.length,
-                        //   (index) {
-                        //     return Padding(
-                        //       padding:
-                        //           const EdgeInsets.only(left: 5.0, bottom: 5.0),
-                        //           child: item.images.length == 1
-                        //           ? ImageWithRoundedCorners(
-                        //               imageUrl: isWeb
-                        //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300" //"${item.images[0]}"//"https://picsum.photos/seed/picsum/200/300"
-                        //                   : GeneralHelper.getMediaObj(item.images, media!), //"assets/images/house.jpeg",
-                        //               width: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[0],
-                        //               height: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[1],
-                        //             )
-                        //           : ImageWithRoundedCorners(
-                        //               imageUrl: isWeb
-                        //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300"
-                        //                   : GeneralHelper.getMediaObj(item.images, media!),  //"assets/images/house.jpeg",
-                        //               width: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[0],
-                        //               height: getImageWidthHeight(
-                        //                   ImageType.itemImage, item.images)[1],
-                        //             ),
-                        //     );
-                        //   },
-                        // )
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
-          ],
-        ),
-      ),
-    );
+                  //             //  Text("${item.images[0]} == image::  ${item.images} "),
+                  //             // ...List.generate(
+                  //             //   item.images.length,
+                  //             //   (index) {
+                  //             //     return Padding(
+                  //             //       padding:
+                  //             //           const EdgeInsets.only(left: 5.0, bottom: 5.0),
+                  //             //           child: item.images.length == 1
+                  //             //           ? ImageWithRoundedCorners(
+                  //             //               imageUrl: isWeb
+                  //             //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300" //"${item.images[0]}"//"https://picsum.photos/seed/picsum/200/300"
+                  //             //                   : GeneralHelper.getMediaObj(item.images, media!), //"assets/images/house.jpeg",
+                  //             //               width: getImageWidthHeight(
+                  //             //                   ImageType.itemImage, item.images)[0],
+                  //             //               height: getImageWidthHeight(
+                  //             //                   ImageType.itemImage, item.images)[1],
+                  //             //             )
+                  //             //           : ImageWithRoundedCorners(
+                  //             //               imageUrl: isWeb
+                  //             //                   ? GeneralHelper.getMediaObj(item.images, media!) //"https://picsum.photos/seed/picsum/200/300"
+                  //             //                   : GeneralHelper.getMediaObj(item.images, media!),  //"assets/images/house.jpeg",
+                  //             //               width: getImageWidthHeight(
+                  //             //                   ImageType.itemImage, item.images)[0],
+                  //             //               height: getImageWidthHeight(
+                  //             //                   ImageType.itemImage, item.images)[1],
+                  //             //             ),
+                  //             //     );
+                  //             //   },
+                  //             // )
+                  //           ],
+                  //         ),
+                  //       )
+                  //     : const SizedBox(),
+                ],
+              ),
+            ),
+          );
   }
 }
