@@ -2,10 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
+import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
-import 'package:pdf_report_scope/src/data/providers/inspection_provider.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report.dart';
 import 'package:sizer/sizer.dart';
 
@@ -37,11 +38,12 @@ class _PDFReportState extends State<PDFReport> {
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
       // inspection = await InspectionProvider().getInspection();
-      print("mainins:${widget.inspection} ");
+      // print("mainins:${widget.inspection} ");
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
       for (var image in widget.media) {
         media.add(ImageShape.fromJson(image));
       }
+      documentDirectory = (await getApplicationDocumentsDirectory()).path;
       // media = await InspectionProvider().getPhotoByIds(inspection!)
       //     as List<ImageShape>;
       // media = widget.media;
