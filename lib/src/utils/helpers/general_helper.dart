@@ -141,7 +141,7 @@ class GeneralHelper {
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
     if ((image.url).isDeviceUrl || (image.url).isAsset) {
-      return FileImage(File(image.url), scale: scale);
+      return FileImage(File(image.url.envRelativePath()), scale: scale);
     } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
       return NetworkImage(baseUrlLive + image.original, scale: scale);
     } else {
@@ -152,14 +152,14 @@ class GeneralHelper {
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
     if ((image.url).isDeviceUrl || (image.url).isAsset) {
       return Image.file(
-        File(image.url),
+        File(image.url.envRelativePath()),
         width: width,
         height: height,
         fit: BoxFit.fill,
       );
     } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
       return Image.network(
-        baseUrlLive + image.original,
+        image.url,
         width: width,
         height: height,
         fit: BoxFit.fill,
@@ -597,62 +597,65 @@ class _CustomDialogState extends State<CustomDialog> {
           // ),
           width: MediaQuery.of(context).size.width,
           child: SingleChildScrollView(
-            child: Column(
-              children: [
-                CarouselSlider(
-                  carouselController: _controller,
-                  options: CarouselOptions(
-                    aspectRatio: 1.2,
-                    enlargeCenterPage: true,
-                    enableInfiniteScroll: false,
-                    enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                    onPageChanged: (indexed, r) =>
-                        setState(() => _current = indexed),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 50.0, bottom: 50),
+              child: Column(
+                children: [
+                  CarouselSlider(
+                    carouselController: _controller,
+                    options: CarouselOptions(
+                      aspectRatio: 1.2,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
+                      enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                      onPageChanged: (indexed, r) =>
+                          setState(() => _current = indexed),
+                    ),
+                    items: imageUrl
+                        .map((item) => ClipRRect(
+                              borderRadius: BorderRadius.circular(10),
+                              child: GeneralHelper.imageHandlerForRoundedConner(
+                                item,
+                                getImageWidthHeight(
+                                    ImageType.sectionImage, imageUrl)[0],
+                                getImageWidthHeight(
+                                    ImageType.sectionImage, imageUrl)[1],
+                              ),
+                              // Image.network(
+                              //   item.url,
+                              //   fit: BoxFit.cover,
+                              // ),
+                            ))
+                        .toList(),
                   ),
-                  items: imageUrl
-                      .map((item) => ClipRRect(
-                            borderRadius: BorderRadius.circular(10),
-                            child: GeneralHelper.imageHandlerForRoundedConner(
-                              item,
-                              getImageWidthHeight(
-                                  ImageType.sectionImage, imageUrl)[0],
-                              getImageWidthHeight(
-                                  ImageType.sectionImage, imageUrl)[1],
-                            ),
-                            // Image.network(
-                            //   item.url,
-                            //   fit: BoxFit.cover,
-                            // ),
-                          ))
-                      .toList(),
-                ),
-                const SizedBox(height: 24.0),
-                Wrap(
-                  direction: Axis.horizontal,
-                  // mainAxisAlignment: MainAxisAlignment.center,
-                  children: List.generate(
-                    imageUrl.length,
-                    (index) => GestureDetector(
-                      onTap: () => _controller.animateToPage(
-                        index,
-                        curve: Curves.fastOutSlowIn,
-                        duration: const Duration(milliseconds: 800),
-                      ),
-                      child: Container(
-                        width: 10,
-                        height: 10,
-                        margin: EdgeInsets.only(left: index.isZero ? 0 : 10),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context)
-                              .scaffoldBackgroundColor
-                              .withOpacity(_current == index ? 1.0 : 0.4),
+                  const SizedBox(height: 24.0),
+                  Wrap(
+                    direction: Axis.horizontal,
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(
+                      imageUrl.length,
+                      (index) => GestureDetector(
+                        onTap: () => _controller.animateToPage(
+                          index,
+                          curve: Curves.fastOutSlowIn,
+                          duration: const Duration(milliseconds: 800),
+                        ),
+                        child: Container(
+                          width: 10,
+                          height: 10,
+                          margin: EdgeInsets.only(left: index.isZero ? 0 : 10),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context)
+                                .scaffoldBackgroundColor
+                                .withOpacity(_current == index ? 1.0 : 0.4),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
           )),
     );
