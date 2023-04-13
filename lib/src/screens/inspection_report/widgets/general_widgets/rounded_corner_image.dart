@@ -114,7 +114,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
 }
 
 class ImageWithRoundedCornersForHeader extends StatelessWidget {
-  final ImageShape imageUrl;
+  final dynamic imageUrl;
   final double width;
   final double height;
   final int remain;
