@@ -288,6 +288,24 @@ class GeneralHelper {
     if (list.isEmpty) list = [];
   }
 
+  static String getNameWithDots(
+      String fullName, int numberOfCharWantsToDisplay) {
+    // Check if the full name is less than 5 characters long
+    if (fullName.length < numberOfCharWantsToDisplay) {
+      // Return the full name with two dots at the end
+      return fullName;
+    }
+    // String firstName = fullName.split(" ")[0];
+    // Extract the first name from the full name
+    // Extract the first five characters of the first name
+    String name = (fullName.length < numberOfCharWantsToDisplay)
+        ? fullName
+        : fullName.substring(0, numberOfCharWantsToDisplay);
+    // Add two dots at the end
+    name += "..";
+    return name;
+  }
+
   static showSnackBar(
     BuildContext context, {
     Color? color,

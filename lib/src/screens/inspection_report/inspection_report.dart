@@ -185,6 +185,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           vertical: 10, horizontal: 16),
                       child: SvgPicture.asset(
                         "assets/svg/menu.svg",
+                        package: "pdf_report_scope",
                       ),
                     ),
                   )
