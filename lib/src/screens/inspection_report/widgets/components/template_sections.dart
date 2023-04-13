@@ -12,6 +12,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item_comments.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item_details.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/template_subsections.dart';
+import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class TemplateSections extends StatefulWidget {
   final InspectionModel inspection;
@@ -114,14 +115,25 @@ class _TemplateSectionsState extends State<TemplateSections> {
                         .template!.sections[sectionIndex].images.isNotEmpty;
                     bool hasSectionComments = inspection
                         .template!.sections[sectionIndex].comments.isNotEmpty;
-                    bool hasSectionItems = inspection
-                        .template!.sections[sectionIndex].items.isNotEmpty;
-                    bool hasSubSections = inspection.template!
-                        .sections[sectionIndex].subSections.isNotEmpty;
+                    bool hasSectionItems = false;
+                    for (var item
+                        in inspection.template!.sections[sectionIndex].items) {
+                      if (!item.unspecified) {
+                        hasSectionItems = true;
+                      }
+                    }
+                    bool hasSubSections = inspection
+                        .template!.sections[sectionIndex].subSections
+                        .any((subsection) => (subsection.items
+                                .any((item) => !item.unspecified) ||
+                            subsection.comments.isNotEmpty ||
+                            subsection.images.isNotEmpty));
+
                     if (hasSectionItems ||
                         hasSectionComments ||
                         hasSectionImages ||
-                        hasSectionItemComments) {
+                        hasSectionItemComments ||
+                        hasSubSections) {
                       return Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Column(
