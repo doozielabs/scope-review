@@ -33,7 +33,10 @@ class Person {
     photo = json['photo'] == null ? null : ImageShape.fromJson(json['photo']);
     type = GeneralHelper.getType(
         PersonType.values, "PersonType", json['type'] ?? "");
-    additionalEmails = json['additionalEmails'] ?? [];
+    if (json.containsKey("additionalEmails") &&
+        json['additionalEmails'].isNotEmpty) {
+      additionalEmails = json['additionalEmails'];
+    }
   }
 
   Map<String, dynamic> toJson([bool deep = true]) {
