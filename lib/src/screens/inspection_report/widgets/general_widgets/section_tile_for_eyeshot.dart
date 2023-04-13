@@ -114,6 +114,7 @@ class _SectionTileState extends State<SectionTile> {
                     child: Center(
                       child: SvgPicture.asset(
                         "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
+                        package: "pdf_report_scope",
                       ),
                     ),
                   )
