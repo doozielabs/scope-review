@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class SectionTile extends StatefulWidget {
   const SectionTile({
@@ -35,11 +36,12 @@ class _SectionTileState extends State<SectionTile> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      // crossAxisAlignment: WrapCrossAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
           child: Text(
-            widget.section.name!,
+            GeneralHelper.getNameWithDots(widget.section.name!, 15),
             style: primaryHeadingTextStyle.copyWith(
               letterSpacing: 2,
               color: ProjectColors.primary,
@@ -61,7 +63,7 @@ class _SectionTileState extends State<SectionTile> {
           },
         ),
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             SvgPicture.asset(
               "assets/svg/comments.svg",

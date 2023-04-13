@@ -57,164 +57,389 @@ class _SectionEyeShotForMobileState
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      actionsAlignment: MainAxisAlignment.center,
-      backgroundColor: ProjectColors.white.withOpacity(0.9),
-      actions: [
-        ElevatedButton(
-          onPressed: () {
-            // add your onPressed function here
-          },
-          style: ElevatedButton.styleFrom(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              primary: ProjectColors.primary),
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.share,
-                  color: ProjectColors.white,
-                ),
-                const SizedBox(width: 10),
-                Text('Share PDF',
-                    style: b2Medium.copyWith(color: ProjectColors.white)),
-              ],
-            ),
-          ),
+    return Scaffold(
+        backgroundColor: ProjectColors.white.withOpacity(0.9),
+        appBar: AppBar(
+          title: Text("Jump to Section",
+              style: h2.copyWith(color: ProjectColors.firefly)),
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgPicture.asset(
+                    "assets/svg/close.svg",
+                    package: "pdf_report_scope",
+                  )),
+            )
+          ],
         ),
-      ],
-      title: Stack(
-        children: [
-          const Center(
-            child: Text("Jump to Section", style: h2),
-          ),
-          Positioned(
-            right: 0,
-            child: GestureDetector(
-                onTap: () => Navigator.pop(context),
-                child: SvgPicture.asset(
-                  "assets/svg/close.svg",
-                  package: "pdf_report_scope",
-                )),
-          ),
-        ],
-      ),
-      content: SizedBox(
-        width: width,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              TextField(
-                onChanged: _search,
-                decoration: InputDecoration(
-                  prefixIcon: const Icon(Icons.search),
-                  hintText: 'Search',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    TextField(
+                      onChanged: _search,
+                      decoration: InputDecoration(
+                        prefixIcon: const Icon(Icons.search),
+                        hintText: 'Search',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                          borderSide: BorderSide.none,
+                        ),
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        contentPadding:
+                            const EdgeInsets.symmetric(horizontal: 16.0),
+                      ),
+                    ),
+                    ...List.generate(sections.length, (sectionIndex) {
+                      // final bool hasSubSections =
+                      //     sections[sectionIndex].subSections.isNotEmpty;
+                      final section = sections[sectionIndex];
+                      bool hasSectionItemComments = sections[sectionIndex]
+                          .items
+                          .any((item) => item.comments.isNotEmpty);
+                      bool hasSectionImages =
+                          sections[sectionIndex].images.isNotEmpty;
+                      bool hasSectionComments =
+                          sections[sectionIndex].comments.isNotEmpty;
+                      bool hasSectionItems = false;
+                      for (var item in sections[sectionIndex].items) {
+                        if (!item.unspecified) {
+                          hasSectionItems = true;
+                        }
+                      }
+                      bool hasSubSections = sections[sectionIndex]
+                          .subSections
+                          .any((subsection) => (subsection.items
+                                  .any((item) => !item.unspecified) ||
+                              subsection.comments.isNotEmpty ||
+                              subsection.images.isNotEmpty));
+
+                      if (hasSectionItems ||
+                          hasSectionComments ||
+                          hasSectionImages ||
+                          hasSectionItemComments ||
+                          hasSubSections) {
+                        return Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Container(
+                            padding: const EdgeInsets.only(
+                                top: 10, bottom: 10, left: 10, right: 10),
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              color: ProjectColors.white,
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      controllerStream.add(sectionIndex);
+                                      isExpanded[sectionIndex] =
+                                          !isExpanded[sectionIndex];
+                                    });
+                                  },
+                                  child: SectionTile(
+                                    diffencyCount:
+                                        numberOfDiffencyCommentsInSection(
+                                            sections[sectionIndex]),
+                                    totalComments: section.comments.length,
+                                    isExpanded: isExpanded,
+                                    hasSubsections: hasSubSections,
+                                    section: section,
+                                    sectionIndex: sectionIndex,
+                                  ),
+                                ),
+                                isExpanded[sectionIndex]
+                                    ? Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          section.subSections.isNotEmpty
+                                              ? Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 25.0,
+                                                          bottom: 12),
+                                                  child: Text(
+                                                    "Subsections of ${section.name!}",
+                                                    style: b4Regular,
+                                                  ),
+                                                )
+                                              : const SizedBox(),
+                                          MasonryGridView.count(
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              shrinkWrap: true,
+                                              itemCount:
+                                                  section.subSections.length,
+                                              crossAxisCount: 1,
+                                              itemBuilder:
+                                                  (context, subSectionIndex) {
+                                                final subSection =
+                                                    sections[sectionIndex]
+                                                            .subSections[
+                                                        subSectionIndex];
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          top: 13.0,
+                                                          bottom: 13.0),
+                                                  child: SectionTile(
+                                                    section: subSection,
+                                                    isExpanded: isExpanded,
+                                                    sectionIndex: sectionIndex,
+                                                    hasSubsections: false,
+                                                    totalComments: subSection
+                                                        .comments.length,
+                                                    diffencyCount:
+                                                        numberOfDiffencyCommentsInSection(
+                                                            subSection),
+                                                  ),
+                                                );
+                                              }),
+                                        ],
+                                      )
+                                    : const SizedBox(),
+                              ],
+                            ),
+                          ),
+                        );
+                      } else {
+                        return const SizedBox();
+                      }
+                    }),
+                  ],
                 ),
               ),
-              ...List.generate(sections.length, (sectionIndex) {
-                final bool hasSubSections =
-                    sections[sectionIndex].subSections.isNotEmpty;
-                final section = sections[sectionIndex];
-                return Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                        top: 15, bottom: 15, left: 20, right: 20),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      color: ProjectColors.white,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+            ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    // add your onPressed function here
+                  },
+                  style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10.0),
+                      ),
+                      primary: ProjectColors.primary),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              controllerStream.add(sectionIndex);
-                              isExpanded[sectionIndex] =
-                                  !isExpanded[sectionIndex];
-                            });
-                          },
-                          child: SectionTile(
-                            diffencyCount: numberOfDiffencyCommentsInSection(
-                                sections[sectionIndex]),
-                            totalComments: section.comments.length,
-                            isExpanded: isExpanded,
-                            hasSubsections: hasSubSections,
-                            section: section,
-                            sectionIndex: sectionIndex,
-                          ),
+                        const Icon(
+                          Icons.share,
+                          color: ProjectColors.white,
                         ),
-                        isExpanded[sectionIndex]
-                            ? Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  section.subSections.isNotEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 25.0, bottom: 12),
-                                          child: Text(
-                                            "Subsections of ${section.name!}",
-                                            style: b4Regular,
-                                          ),
-                                        )
-                                      : const SizedBox(),
-                                  MasonryGridView.count(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: section.subSections.length,
-                                      crossAxisCount: 1,
-                                      itemBuilder: (context, subSectionIndex) {
-                                        final subSection =
-                                            sections[sectionIndex]
-                                                .subSections[subSectionIndex];
-                                        return Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 13.0, bottom: 13.0),
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              print("SubSection Clicked");
-                                            },
-                                            child: SectionTile(
-                                              section: subSection,
-                                              isExpanded: isExpanded,
-                                              sectionIndex: sectionIndex,
-                                              hasSubsections: false,
-                                              totalComments:
-                                                  subSection.comments.length,
-                                              diffencyCount:
-                                                  numberOfDiffencyCommentsInSection(
-                                                      subSection),
-                                            ),
-                                          ),
-                                        );
-                                      }),
-                                ],
-                              )
-                            : const SizedBox(),
+                        const SizedBox(width: 10),
+                        Text('Share PDF',
+                            style:
+                                b2Medium.copyWith(color: ProjectColors.white)),
                       ],
                     ),
                   ),
-                );
-              })
-            ],
-          ),
-        ),
-      ),
-    );
+                ),
+              ),
+            ),
+          ],
+        ));
+
+    // Dialog(
+    //   // actionsAlignment: MainAxisAlignment.center,
+    //   backgroundColor: ProjectColors.white.withOpacity(0.9),
+    // actions: [
+    //   ElevatedButton(
+    //     onPressed: () {
+    //       // add your onPressed function here
+    //     },
+    //     style: ElevatedButton.styleFrom(
+    //         shape: RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(10.0),
+    //         ),
+    //         primary: ProjectColors.primary),
+    //     child: Padding(
+    //       padding: const EdgeInsets.all(12.0),
+    //       child: Row(
+    //         mainAxisAlignment: MainAxisAlignment.center,
+    //         children: [
+    //           const Icon(
+    //             Icons.share,
+    //             color: ProjectColors.white,
+    //           ),
+    //           const SizedBox(width: 10),
+    //           Text('Share PDF',
+    //               style: b2Medium.copyWith(color: ProjectColors.white)),
+    //         ],
+    //       ),
+    //     ),
+    //   ),
+    // ],
+    // title: Stack(
+    //   children: [
+    //     const Center(
+    //       child: Text("Jump to Section", style: h2),
+    //     ),
+    //     Positioned(
+    //       right: 0,
+    //       child: GestureDetector(
+    //           onTap: () => Navigator.pop(context),
+    //           child: SvgPicture.asset(
+    //             "assets/svg/close.svg",
+    //             package: "pdf_report_scope",
+    //           )),
+    //     ),
+    //   ],
+    // ),
+    //   child: SizedBox(
+    //     width: MediaQuery.of(context).size.width,
+    //     child: ListView(
+    //       children: [
+    //         TextField(
+    //           onChanged: _search,
+    //           decoration: InputDecoration(
+    //             prefixIcon: const Icon(Icons.search),
+    //             hintText: 'Search',
+    //             border: OutlineInputBorder(
+    //               borderRadius: BorderRadius.circular(10.0),
+    //               borderSide: BorderSide.none,
+    //             ),
+    //             filled: true,
+    //             fillColor: Colors.grey[200],
+    //             contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+    //           ),
+    //         ),
+    //         ...List.generate(sections.length, (sectionIndex) {
+    //           // final bool hasSubSections =
+    //           //     sections[sectionIndex].subSections.isNotEmpty;
+    //           final section = sections[sectionIndex];
+    //           bool hasSectionItemComments = sections[sectionIndex]
+    //               .items
+    //               .any((item) => item.comments.isNotEmpty);
+    //           bool hasSectionImages = sections[sectionIndex].images.isNotEmpty;
+    //           bool hasSectionComments =
+    //               sections[sectionIndex].comments.isNotEmpty;
+    //           bool hasSectionItems = false;
+    //           for (var item in sections[sectionIndex].items) {
+    //             if (!item.unspecified) {
+    //               hasSectionItems = true;
+    //             }
+    //           }
+    //           bool hasSubSections = sections[sectionIndex].subSections.any(
+    //               (subsection) =>
+    //                   (subsection.items.any((item) => !item.unspecified) ||
+    //                       subsection.comments.isNotEmpty ||
+    //                       subsection.images.isNotEmpty));
+
+    //           if (hasSectionItems ||
+    //               hasSectionComments ||
+    //               hasSectionImages ||
+    //               hasSectionItemComments ||
+    //               hasSubSections) {
+    //             return Padding(
+    //               padding: const EdgeInsets.all(10.0),
+    //               child: Container(
+    //                 padding: const EdgeInsets.only(
+    //                     top: 10, bottom: 10, left: 10, right: 10),
+    //                 width: MediaQuery.of(context).size.width,
+    //                 decoration: BoxDecoration(
+    //                   color: ProjectColors.white,
+    //                   borderRadius: BorderRadius.circular(10.0),
+    //                 ),
+    //                 child: Column(
+    //                   mainAxisAlignment: MainAxisAlignment.start,
+    //                   crossAxisAlignment: CrossAxisAlignment.start,
+    //                   children: [
+    //                     GestureDetector(
+    //                       onTap: () {
+    //                         setState(() {
+    //                           controllerStream.add(sectionIndex);
+    //                           isExpanded[sectionIndex] =
+    //                               !isExpanded[sectionIndex];
+    //                         });
+    //                       },
+    //                       child: SectionTile(
+    //                         diffencyCount: numberOfDiffencyCommentsInSection(
+    //                             sections[sectionIndex]),
+    //                         totalComments: section.comments.length,
+    //                         isExpanded: isExpanded,
+    //                         hasSubsections: hasSubSections,
+    //                         section: section,
+    //                         sectionIndex: sectionIndex,
+    //                       ),
+    //                     ),
+    //                     isExpanded[sectionIndex]
+    //                         ? Column(
+    //                             crossAxisAlignment: CrossAxisAlignment.start,
+    //                             children: [
+    //                               section.subSections.isNotEmpty
+    //                                   ? Padding(
+    //                                       padding: const EdgeInsets.only(
+    //                                           top: 25.0, bottom: 12),
+    //                                       child: Text(
+    //                                         "Subsections of ${section.name!}",
+    //                                         style: b4Regular,
+    //                                       ),
+    //                                     )
+    //                                   : const SizedBox(),
+    //                               MasonryGridView.count(
+    //                                   physics:
+    //                                       const NeverScrollableScrollPhysics(),
+    //                                   shrinkWrap: true,
+    //                                   itemCount: section.subSections.length,
+    //                                   crossAxisCount: 1,
+    //                                   itemBuilder: (context, subSectionIndex) {
+    //                                     final subSection =
+    //                                         sections[sectionIndex]
+    //                                             .subSections[subSectionIndex];
+    //                                     return Padding(
+    //                                       padding: const EdgeInsets.only(
+    //                                           top: 13.0, bottom: 13.0),
+    //                                       child: GestureDetector(
+    //                                         onTap: () {
+    //                                           print("SubSection Clicked");
+    //                                         },
+    //                                         child: SectionTile(
+    //                                           section: subSection,
+    //                                           isExpanded: isExpanded,
+    //                                           sectionIndex: sectionIndex,
+    //                                           hasSubsections: false,
+    //                                           totalComments:
+    //                                               subSection.comments.length,
+    //                                           diffencyCount:
+    //                                               numberOfDiffencyCommentsInSection(
+    //                                                   subSection),
+    //                                         ),
+    //                                       ),
+    //                                     );
+    //                                   }),
+    //                             ],
+    //                           )
+    //                         : const SizedBox(),
+    //                   ],
+    //                 ),
+    //               ),
+    //             );
+    //           } else {
+    //             return const SizedBox();
+    //           }
+    //         })
+    //       ],
+    //     ),
+    //   ),
+    // );
   }
 }
