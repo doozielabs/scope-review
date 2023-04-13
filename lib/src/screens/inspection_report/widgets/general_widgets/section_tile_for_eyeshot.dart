@@ -107,9 +107,15 @@ class _SectionTileState extends State<SectionTile> {
                 ? const SizedBox(width: 12)
                 : const SizedBox(),
             widget.hasSubsections
-                ? SvgPicture.asset(
-                    "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
-                    package: "pdf_report_scope",
+                ? Container(
+                    width: 30.0,
+                    height: 30.0,
+                    color: Colors.transparent,
+                    child: Center(
+                      child: SvgPicture.asset(
+                        "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
+                      ),
+                    ),
                   )
                 : const SizedBox()
           ],
