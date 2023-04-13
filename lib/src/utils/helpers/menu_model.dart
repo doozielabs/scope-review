@@ -12,8 +12,9 @@ class ShowMenuDialogue {
   void showMenu(BuildContext context, dynamic inspection) {
     InspectionModel inspectionModel =
         InspectionModel.fromJson(jsonDecode(inspection));
+
     print("inspectionModel:${inspectionModel.name}");
-    if (_showDialog) {
+    if (_showDialog && inspectionModel.template!.sections.isNotEmpty) {
       // Show the dialog
       showDialog(
           // barrierDismissible: false,
