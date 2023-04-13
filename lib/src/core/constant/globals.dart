@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/pdf_report_scope.dart';
@@ -10,6 +11,7 @@ const baseUrlStaging = 'https://staging.scopeinspectapp.com/';
 const baseUrlLocal = 'http://localhost:1337/';
 const defaultHeaderImage1 = 'images/inspection_placeholder.png';
 const defaultHeaderImage = "images/house.jpeg";
+String documentDirectory = "";
 
 const double kMobileMaxWidth = 550.0;
 const double kTabletMaxWidth = 959.0;
