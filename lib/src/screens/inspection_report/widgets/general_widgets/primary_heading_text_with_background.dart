@@ -12,17 +12,19 @@ class PrimaryHeadingTextWithBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 36.0,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
         color: backgroundColor,
         borderRadius: BorderRadius.circular(10.0),
       ),
       child: Center(
-          child: Text(
-        headingText.toUpperCase(),
-        style: primaryHeadingTextStyle.copyWith(
-            letterSpacing: 2, color: ProjectColors.white),
+          child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Text(
+          headingText.toUpperCase(),
+          style: primaryHeadingTextStyle.copyWith(
+              letterSpacing: 2, color: ProjectColors.white),
+        ),
       )),
     );
   }
