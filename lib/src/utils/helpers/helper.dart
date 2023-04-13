@@ -1,3 +1,4 @@
+import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/general_models.dart';
@@ -164,6 +165,23 @@ extension StringExtension on String? {
       return true;
     }
     return false;
+  }
+
+  String envRelativePath() {
+    if (Platform.isIOS) {
+      if (set.contains("Documents")) {
+        List<String> urlSplit = set.split('Documents');
+        String fileName = urlSplit.removeLast();
+        return '$documentDirectory$fileName';
+      }
+      return set;
+      // String folderName = urlSplit.removeLast();
+      // Directory imagesDir =
+      //     new Directory('$documentDirectory/images/$folderName');
+      // print("Document Dir ${imagesDir.path}/$fileName");
+    } else {
+      return set;
+    }
   }
 
   Future deleteDirectory() async {
