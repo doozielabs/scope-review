@@ -10,6 +10,7 @@ import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class NavigationService {
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
@@ -44,7 +45,7 @@ class _PDFReportState extends State<PDFReport> {
       for (var image in widget.media) {
         media.add(ImageShape.fromJson(image));
       }
-      if (Platform.isAndroid || Platform.isIOS) {
+      if (!kIsWeb) {
         documentDirectory = (await getApplicationDocumentsDirectory()).path;
       }
       // media = await InspectionProvider().getPhotoByIds(inspection!)
