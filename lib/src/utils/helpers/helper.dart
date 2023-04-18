@@ -153,8 +153,10 @@ extension StringExtension on String? {
     if (Platform.isIOS) {
       return set.contains("/var/mobile/Containers"); // for Physical Device
       // return set.contains("data/Containers/"); // for Simulator
+    } else if (Platform.isAndroid) {
+      return set.contains("app.com.scope");
     }
-    return set.contains("app.com.scope");
+    return false;
   }
 
   bool get isAsset => set.contains("assets");
