@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +44,9 @@ class _PDFReportState extends State<PDFReport> {
       for (var image in widget.media) {
         media.add(ImageShape.fromJson(image));
       }
-      documentDirectory = (await getApplicationDocumentsDirectory()).path;
+      if (Platform.isAndroid || Platform.isIOS) {
+        documentDirectory = (await getApplicationDocumentsDirectory()).path;
+      }
       // media = await InspectionProvider().getPhotoByIds(inspection!)
       //     as List<ImageShape>;
       // media = widget.media;
