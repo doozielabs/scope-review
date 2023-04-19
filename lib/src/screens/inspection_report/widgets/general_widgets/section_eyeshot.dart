@@ -38,14 +38,25 @@ class _SectionEyeShotForMobileState
     );
   }
 
-  int numberOfDiffencyCommentsInSection(dynamic section) {
+  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+      dynamic section) {
     int diffencyCount = 0;
+    int totalNumberOfSectionComments = 0;
+    for (var item in section.items) {
+      for (var itemComment in item.comments) {
+        totalNumberOfSectionComments++;
+        if (itemComment.type == CommentType.deficiency) {
+          diffencyCount++;
+        }
+      }
+    }
     for (var comment in section.comments) {
+      totalNumberOfSectionComments++;
       if (comment.type == CommentType.deficiency) {
         diffencyCount++;
       }
     }
-    return diffencyCount;
+    return [diffencyCount, totalNumberOfSectionComments];
   }
 
   @override
@@ -151,9 +162,11 @@ class _SectionEyeShotForMobileState
                                   },
                                   child: SectionTile(
                                     diffencyCount:
-                                        numberOfDiffencyCommentsInSection(
-                                            sections[sectionIndex]),
-                                    totalComments: section.comments.length,
+                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                            sections[sectionIndex])[0],
+                                    totalComments:
+                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                            sections[sectionIndex])[1],
                                     isExpanded: isExpanded,
                                     hasSubsections: hasSubSections,
                                     section: section,
@@ -200,11 +213,12 @@ class _SectionEyeShotForMobileState
                                                     isExpanded: isExpanded,
                                                     sectionIndex: sectionIndex,
                                                     hasSubsections: false,
-                                                    totalComments: subSection
-                                                        .comments.length,
+                                                    totalComments:
+                                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                                            subSection)[1],
                                                     diffencyCount:
-                                                        numberOfDiffencyCommentsInSection(
-                                                            subSection),
+                                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                                            subSection)[0],
                                                   ),
                                                 );
                                               }),
