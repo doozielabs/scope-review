@@ -16,7 +16,8 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
-
+import 'dart:js' as js;
+import 'dart:html' as html;
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 
 class InspectionReportScreen extends StatefulWidget {
@@ -107,6 +108,12 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     }
     return [diffencyCount, totalNumberOfSectionComments];
   }
+
+  void downloadFile(String url) {
+    html.AnchorElement anchorElement = html.AnchorElement(href: url);
+    anchorElement.target = "_blank";
+    anchorElement.click();
+  }  
 
   @override
   void dispose() {
@@ -503,6 +510,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                 children: [
                                                   ElevatedButton(
                                                     onPressed: () {
+                                                      js.context.callMethod('open', ['https://api.scopeinspectapp.com/pdfs/inspections-'+widget.inspection.id.toString()+'.pdf']);
                                                       // add your onPressed function here
                                                     },
                                                     style: ElevatedButton
@@ -538,7 +546,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                   ),
                                                   ElevatedButton(
                                                     onPressed: () {
-                                                      // add your onPressed function here
+                                                      downloadFile('https://api.scopeinspectapp.com/pdfs/inspections-'+widget.inspection.id.toString()+'.pdf');
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -566,7 +574,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                           SizedBox(
                                                             width: 10,
                                                           ),
-                                                          Text('Download PDF',
+                                                          Text('PDF',
                                                               style: b2Medium),
                                                         ],
                                                       ),
