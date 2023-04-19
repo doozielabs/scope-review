@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -140,37 +141,41 @@ class GeneralHelper {
 
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
-    if ((image.url).isDeviceUrl || (image.url).isAsset) {
-      return FileImage(File(image.url.envRelativePath()), scale: scale);
-    } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
-      return NetworkImage(baseUrlLive + image.original, scale: scale);
+    if(kIsWeb){
+      return NetworkImage(baseUrlLive + image.url, scale: scale);
     } else {
-      return AssetImage(image.url);
+       if ((image.url).isDeviceUrl || (image.url).isAsset) {
+        return FileImage(File(image.url.envRelativePath()), scale: scale);
+      } else {
+        return AssetImage(image.url);
+      }
     }
   }
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
-    if ((image.url).isDeviceUrl || (image.url).isAsset) {
+    if(kIsWeb){
+       return Image.network(
+        baseUrlLive +image.url,
+        width: width,
+        height: height,
+        fit: BoxFit.fill,
+      );
+    } else {
+      if ((image.url).isDeviceUrl || (image.url).isAsset) {
       return Image.file(
         File(image.url.envRelativePath()),
         width: width,
         height: height,
         fit: BoxFit.fill,
       );
-    } else if (!(image.url).isDeviceUrl && !(image.url).isAsset) {
-      return Image.network(
-        image.url,
-        width: width,
-        height: height,
-        fit: BoxFit.fill,
-      );
-    } else {
-      return Image.asset(
-        image.url,
-        width: width,
-        height: height,
-        fit: BoxFit.fill,
-      );
+      } else {
+        return Image.asset(
+          image.url,
+          width: width,
+          height: height,
+          fit: BoxFit.fill,
+        );
+      }
     }
   }
 
