@@ -119,12 +119,13 @@ class GeneralHelper {
     if (ids.length == 0) {
       return ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: isWeb
-              ? Image.network(baseUrlLive + defaultHeaderImage1)
-              : Image.asset(
+          child: (SizerUtil.deviceType == DeviceType.tablet ||
+                  SizerUtil.deviceType == DeviceType.mobile)
+              ? Image.asset(
                   "assets/images/default_image.png",
                   package: "pdf_report_scope",
-                ));
+                )
+              : Image.network(baseUrlLive + defaultHeaderImage1));
     } else {
       int remainIdsCount = (ids.length - 1);
       return ImageWithRoundedCornersForHeader(
@@ -141,10 +142,10 @@ class GeneralHelper {
 
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
-    if(kIsWeb){
+    if (kIsWeb) {
       return NetworkImage(baseUrlLive + image.url, scale: scale);
     } else {
-       if ((image.url).isDeviceUrl || (image.url).isAsset) {
+      if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url.envRelativePath()), scale: scale);
       } else {
         return AssetImage(image.url);
@@ -153,21 +154,21 @@ class GeneralHelper {
   }
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
-    if(kIsWeb){
-       return Image.network(
-        baseUrlLive +image.url,
+    if (kIsWeb) {
+      return Image.network(
+        baseUrlLive + image.url,
         width: width,
         height: height,
         fit: BoxFit.fill,
       );
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-      return Image.file(
-        File(image.url.envRelativePath()),
-        width: width,
-        height: height,
-        fit: BoxFit.fill,
-      );
+        return Image.file(
+          File(image.url.envRelativePath()),
+          width: width,
+          height: height,
+          fit: BoxFit.fill,
+        );
       } else {
         return Image.asset(
           image.url,
@@ -335,84 +336,49 @@ class GeneralHelper {
     );
   }
 
-  List<Comment> getDeficiencyCommetsFromInspection(InspectionModel inspection) {
+  List<Comment> getDeficiencyComments(Template template) {
     List<Comment> deficiencyCommets = [];
-    final sections = inspection.template!.sections;
-    //Looping the sections
-    for (var sectionIndex = 0; sectionIndex < sections.length; sectionIndex++) {
-      //section comments
-      for (var commentIndex = 0;
-          commentIndex < sections[sectionIndex].comments.length;
-          commentIndex++) {
-        final comment = sections[sectionIndex].comments[commentIndex];
-        if (comment.type == CommentType.deficiency) {
-          if (!comment.uid.isNull &&
-              commentKeys[comment.id.toString() + comment.uid!].isNull) {
-            if (commentKeys[comment.id.toString() + comment.uid!] !=
-                GlobalKey()) {
-              commentKeys[comment.id.toString() + comment.uid!] = GlobalKey();
-              comment.serverTimestamp = sectionIndex;
+    if (template.sections.isNotEmpty) {
+      //Section Comments
+      for (var section in template.sections) {
+        if (section.comments.isNotEmpty) {
+          for (var sectionComment in section.comments) {
+            if (sectionComment.type == CommentType.deficiency) {
+              deficiencyCommets.add(sectionComment);
             }
           }
-          deficiencyCommets.add(comment);
         }
-      }
-      //Section items comments
-      for (var itemIndex = 0;
-          itemIndex < sections[sectionIndex].items.length;
-          itemIndex++) {
-        final item = sections[sectionIndex].items[itemIndex];
-        for (var i = 0; i < item.comments.length; i++) {
-          if (item.comments[i].level == CommentType.deficiency) {
-            if (!item.comments[i].uid.isNull &&
-                [item.comments[i].id.toString() + item.comments[i].uid!] ==
-                    null) {
-              commentKeys[item.comments[i].id.toString() +
-                  item.comments[i].uid!] = GlobalKey();
-              item.comments[i].serverTimestamp = sectionIndex;
-            }
-            deficiencyCommets.add(item.comments[i]);
-          }
-        }
-      }
-      //Subsections
-      final subSections = sections[sectionIndex].subSections;
-      for (var subSectionIndex = 0;
-          subSectionIndex < subSections.length;
-          subSectionIndex++) {
-        for (var subSectioncommentIndex = 0;
-            subSectioncommentIndex <
-                subSections[subSectionIndex].comments.length;
-            subSectioncommentIndex++) {
-          final subsSectionComment =
-              subSections[subSectionIndex].comments[subSectioncommentIndex];
-          if (subsSectionComment.type == CommentType.deficiency) {
-            if (!subsSectionComment.uid.isNull &&
-                commentKeys[subsSectionComment.id.toString() +
-                        subsSectionComment.uid!] ==
-                    null) {
-              commentKeys[subsSectionComment.id.toString() +
-                  subsSectionComment.uid!] = GlobalKey();
-              subsSectionComment.serverTimestamp = sectionIndex;
-            }
-            deficiencyCommets.add(subsSectionComment);
-          }
-        }
-        for (var subSectionitemIndex = 0;
-            subSectionitemIndex < subSections[subSectionIndex].items.length;
-            subSectionitemIndex++) {
-          final item = subSections[subSectionIndex].items[subSectionitemIndex];
-          for (var i = 0; i < item.comments.length; i++) {
-            if (item.comments[i].level == CommentType.deficiency) {
-              if (!item.comments[i].uid.isNull &&
-                  commentKeys[item.comments[i].id.toString() +
-                          item.comments[i].uid!] ==
-                      null) {
-                commentKeys[item.comments[i].id.toString() +
-                    item.comments[i].uid!] = GlobalKey();
-                item.comments[i].serverTimestamp = sectionIndex;
+        //Section Item comments
+        if (section.items.isNotEmpty) {
+          for (var item in section.items) {
+            if (item.comments.isNotEmpty) {
+              for (var itemComment in item.comments) {
+                if (itemComment.type == CommentType.deficiency) {
+                  deficiencyCommets.add(itemComment);
+                }
               }
-              deficiencyCommets.add(item.comments[i]);
+            }
+          }
+        }
+        if (section.subSections.isNotEmpty) {
+          for (var subSection in section.subSections) {
+            if (subSection.comments.isNotEmpty) {
+              for (var subSectionComment in subSection.comments) {
+                if (subSectionComment.type == CommentType.deficiency) {
+                  deficiencyCommets.add(subSectionComment);
+                }
+              }
+            }
+            if (subSection.items.isNotEmpty) {
+              for (var subSectionItem in subSection.items) {
+                if (subSectionItem.comments.isNotEmpty) {
+                  for (var subSectionItemComment in subSectionItem.comments) {
+                    if (subSectionItemComment.type == CommentType.deficiency) {
+                      deficiencyCommets.add(subSectionItemComment);
+                    }
+                  }
+                }
+              }
             }
           }
         }
