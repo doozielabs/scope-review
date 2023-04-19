@@ -87,14 +87,25 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     }
   }
 
-  int numberOfDiffencyCommentsInSection(dynamic section) {
+  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+      dynamic section) {
     int diffencyCount = 0;
+    int totalNumberOfSectionComments = 0;
+    for (var item in section.items) {
+      for (var itemComment in item.comments) {
+        totalNumberOfSectionComments++;
+        if (itemComment.type == CommentType.deficiency) {
+          diffencyCount++;
+        }
+      }
+    }
     for (var comment in section.comments) {
+      totalNumberOfSectionComments++;
       if (comment.type == CommentType.deficiency) {
         diffencyCount++;
       }
     }
-    return diffencyCount;
+    return [diffencyCount, totalNumberOfSectionComments];
   }
 
   @override
@@ -415,13 +426,13 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                               child:
                                                                   SectionTile(
                                                                 diffencyCount:
-                                                                    numberOfDiffencyCommentsInSection(
+                                                                    numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
                                                                         sections[
-                                                                            sectionIndex]),
+                                                                            sectionIndex])[0],
                                                                 totalComments:
-                                                                    section
-                                                                        .comments
-                                                                        .length,
+                                                                    numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                                                        sections[
+                                                                            sectionIndex])[1],
                                                                 isExpanded:
                                                                     isExpanded,
                                                                 hasSubsections:
@@ -469,8 +480,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                               isExpanded: isExpanded,
                                                                               sectionIndex: sectionIndex,
                                                                               hasSubsections: false,
-                                                                              totalComments: subSection.comments.length,
-                                                                              diffencyCount: numberOfDiffencyCommentsInSection(subSection),
+                                                                              totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[1],
+                                                                              diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[0],
                                                                             ),
                                                                           );
                                                                         }),

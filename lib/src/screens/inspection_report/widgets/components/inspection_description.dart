@@ -42,9 +42,8 @@ class InspectionDescription extends StatelessWidget {
               const SizedBox(height: 10),
               SubHeadingOfInspectionDescritpion(
                 primaryText: "${inspection.template?.preparedForDescription}",
-                secondryText: inspection.buyerAgent!.firstname +
-                    " " +
-                    (inspection.buyerAgent?.lastname ?? ""),
+                secondryText:
+                    "${inspection.client!.firstname} ${inspection.client?.lastname ?? ""}",
               ),
               const SizedBox(height: 10),
               SubHeadingOfInspectionDescritpion(
