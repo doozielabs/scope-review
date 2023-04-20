@@ -339,11 +339,22 @@ class GeneralHelper {
   List<Comment> getDeficiencyComments(Template template) {
     List<Comment> deficiencyCommets = [];
     if (template.sections.isNotEmpty) {
+      var sectionIndex = 0;
       //Section Comments
       for (var section in template.sections) {
+        sectionIndex++;
+        sectionIndex=(sectionIndex-1);
         if (section.comments.isNotEmpty) {
           for (var sectionComment in section.comments) {
             if (sectionComment.type == CommentType.deficiency) {
+              if (!sectionComment.uid.isNull &&
+                  commentKeys[sectionComment.id.toString() + sectionComment.uid!].isNull) {
+                if (commentKeys[sectionComment.id.toString() + sectionComment.uid!] !=
+                    GlobalKey()) {
+                  commentKeys[sectionComment.id.toString() + sectionComment.uid!] = GlobalKey();
+                  sectionComment.serverTimestamp = sectionIndex;
+                }
+              }
               deficiencyCommets.add(sectionComment);
             }
           }
@@ -354,6 +365,12 @@ class GeneralHelper {
             if (item.comments.isNotEmpty) {
               for (var itemComment in item.comments) {
                 if (itemComment.type == CommentType.deficiency) {
+                  if (!itemComment.uid.isNull &&
+                      ![itemComment.id.toString() + itemComment.uid!].isNull) {
+                    commentKeys[itemComment.id.toString() +
+                        itemComment.uid!] = GlobalKey();
+                    itemComment.serverTimestamp = sectionIndex;
+                  }
                   deficiencyCommets.add(itemComment);
                 }
               }
@@ -365,6 +382,14 @@ class GeneralHelper {
             if (subSection.comments.isNotEmpty) {
               for (var subSectionComment in subSection.comments) {
                 if (subSectionComment.type == CommentType.deficiency) {
+                   if (!subSectionComment.uid.isNull &&
+                        commentKeys[subSectionComment.id.toString() +
+                                subSectionComment.uid!] ==
+                            null) {
+                      commentKeys[subSectionComment.id.toString() +
+                          subSectionComment.uid!] = GlobalKey();
+                      subSectionComment.serverTimestamp = sectionIndex;
+                    }
                   deficiencyCommets.add(subSectionComment);
                 }
               }
@@ -374,6 +399,14 @@ class GeneralHelper {
                 if (subSectionItem.comments.isNotEmpty) {
                   for (var subSectionItemComment in subSectionItem.comments) {
                     if (subSectionItemComment.type == CommentType.deficiency) {
+                       if (!subSectionItemComment.uid.isNull &&
+                            commentKeys[subSectionItemComment.id.toString() +
+                                    subSectionItemComment.uid!] ==
+                                null) {
+                          commentKeys[subSectionItemComment.id.toString() +
+                              subSectionItemComment.uid!] = GlobalKey();
+                          subSectionItemComment.serverTimestamp = sectionIndex;
+                        }
                       deficiencyCommets.add(subSectionItemComment);
                     }
                   }
