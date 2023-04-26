@@ -26,11 +26,16 @@ final ScrollController subSectionCommentsController = ScrollController();
 
 Map<String, GlobalKey> itemKeys = {};
 Map<String, GlobalKey> commentKeys = {};
+final inspectionInfoKey = GlobalKey();
+final inspectionSummaryKey = GlobalKey();
+bool expandSummary = false;
 const INVALID_IMAGE = "invalid image";
 double constraintMaxWidthForNavPop = 0.0;
 StreamController<double> constraintStream =
     StreamController<double>.broadcast(sync: true);
 StreamController<int> controllerStream = StreamController<int>.broadcast();
+StreamController<int> summaryControllerStreamToExpand =
+    StreamController<int>.broadcast();
 
 enum DeviceTypeForWeb {
   mobile,

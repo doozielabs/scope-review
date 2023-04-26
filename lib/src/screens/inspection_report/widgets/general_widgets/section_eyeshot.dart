@@ -109,6 +109,77 @@ class _SectionEyeShotForMobileState
                             const EdgeInsets.symmetric(horizontal: 16.0),
                       ),
                     ),
+                    InkWell(
+                      hoverColor: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: ProjectColors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            "Information",
+                            style: primaryHeadingTextStyle.copyWith(
+                              letterSpacing: 2,
+                              color: ProjectColors.primary,
+                              fontFamily: fontFamilyJostMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        if ((constraintMaxWidthForNavPop < 1230)) {
+                          Navigator.pop(context);
+                        }
+                        Future.delayed(const Duration(microseconds: 1), () {
+                          Scrollable.ensureVisible(
+                            inspectionInfoKey.currentContext!,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                      },
+                    ),
+                    InkWell(
+                      hoverColor: Colors.transparent,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Container(
+                          padding: const EdgeInsets.only(
+                              top: 10, bottom: 10, left: 10),
+                          width: MediaQuery.of(context).size.width,
+                          decoration: BoxDecoration(
+                            color: ProjectColors.white,
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            "Report Summary",
+                            style: primaryHeadingTextStyle.copyWith(
+                              letterSpacing: 2,
+                              color: ProjectColors.primary,
+                              fontFamily: fontFamilyJostMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                      onTap: () {
+                        if ((constraintMaxWidthForNavPop < 1230)) {
+                          Navigator.pop(context);
+                        }
+                        summaryControllerStreamToExpand.add(1);
+                        Future.delayed(const Duration(microseconds: 1), () {
+                          Scrollable.ensureVisible(
+                            inspectionSummaryKey.currentContext!,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                      },
+                    ),
                     ...List.generate(sections.length, (sectionIndex) {
                       // final bool hasSubSections =
                       //     sections[sectionIndex].subSections.isNotEmpty;

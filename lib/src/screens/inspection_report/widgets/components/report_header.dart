@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/mobile/report_header.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/tablet/report_header.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/web/report_header.dart';
+import 'package:sizer/sizer.dart';
 
 class ReportHeader extends StatelessWidget {
   final InspectionModel inspection;
@@ -15,15 +14,24 @@ class ReportHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        if (getDeviceType(context) == DeviceTypeForWeb.mobile) {
+        builder: (BuildContext context, BoxConstraints constraints) {
+      if (SizerUtil.deviceType == DeviceType.mobile) {
+        return ReportHeaderMobile(inspection: inspection, media: media!);
+      } else if (SizerUtil.deviceType == DeviceType.tablet) {
+        return ReportHeaderTablet(inspection: inspection, media: media!);
+      } else {
+        if (constraints.maxWidth < 600) {
+          //Mobile
           return ReportHeaderMobile(inspection: inspection, media: media!);
-        } else if (getDeviceType(context) == DeviceTypeForWeb.tablet) {
+        }
+        if (constraints.maxWidth < 1230) {
+          //Tablet
           return ReportHeaderTablet(inspection: inspection, media: media!);
         } else {
-          return ReportHeaderWeb(inspection: inspection, media: media!);
+          //Web
+          return ReportHeaderTablet(inspection: inspection, media: media!);
         }
-      },
-    );
+      }
+    });
   }
 }

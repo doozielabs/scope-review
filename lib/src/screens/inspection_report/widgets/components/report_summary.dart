@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
+import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
@@ -21,6 +22,17 @@ class ReportSummary extends StatefulWidget {
 
 class _ReportSummaryState extends State<ReportSummary> {
   bool isSummaryExpanded = false;
+  @override
+  void initState() {
+    summaryControllerStreamToExpand.stream.listen((index) {
+      setState(() {
+        isSummaryExpanded = true;
+      });
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Comment> deficiencyComments =

@@ -104,7 +104,7 @@ class SectionCommentCard extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         controllerStream.add(comment.serverTimestamp!);
-                        Future.delayed(const Duration(seconds: 1), () {
+                        Future.delayed(const Duration(microseconds: 1), () {
                           Scrollable.ensureVisible(
                             thisCommentKey!.currentContext!,
                             duration: const Duration(milliseconds: 400),

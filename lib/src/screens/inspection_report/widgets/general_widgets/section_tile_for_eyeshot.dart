@@ -53,7 +53,7 @@ class _SectionTileState extends State<SectionTile> {
               Navigator.pop(context);
             }
             controllerStream.add(widget.sectionIndex);
-            Future.delayed(const Duration(seconds: 1), () {
+            Future.delayed(const Duration(microseconds: 1), () {
               Scrollable.ensureVisible(
                 itemKeys[widget.section.uid!]!.currentContext!,
                 duration: const Duration(milliseconds: 400),
