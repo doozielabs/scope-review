@@ -140,6 +140,23 @@ class GeneralHelper {
     }
   }
 
+  static invalidImageText(){
+         return  Container(
+            height: 160,
+            padding: const EdgeInsets.symmetric(horizontal: 5),
+            decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10)),
+            child: const Center(
+              child: TextField(
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: INVALID_IMAGE,
+                ),
+              ),
+            ),
+          );
+  }
+
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
     if (kIsWeb) {
@@ -226,7 +243,7 @@ class GeneralHelper {
                   counts: counts,
                 );
               } else {
-                return const SizedBox();
+                return GeneralHelper.invalidImageText();
               }
             });
       } else {
@@ -254,7 +271,7 @@ class GeneralHelper {
                     counts: counts,
                   );
                 } else {
-                  return const SizedBox();
+                  return GeneralHelper.invalidImageText();
                 }
               } else {
                 var imageObj =
@@ -268,13 +285,13 @@ class GeneralHelper {
                     counts: counts,
                   );
                 } else {
-                  return const SizedBox();
+                  return GeneralHelper.invalidImageText();
                 }
               }
             });
       }
     } else {
-      return const SizedBox();
+      return GeneralHelper.invalidImageText();
     }
   }
 

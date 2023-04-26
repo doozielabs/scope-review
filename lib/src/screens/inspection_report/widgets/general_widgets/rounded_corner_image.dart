@@ -30,7 +30,7 @@ class ImageWithRoundedCorners extends StatelessWidget {
             GeneralHelper.imageHandlerForRoundedConner(imageUrl, width, height),
       );
     } else {
-      return const SizedBox();
+      return GeneralHelper.invalidImageText();
     }
   }
 }
@@ -107,7 +107,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
               imageUrl, width, height),
         );
       } else {
-        return const SizedBox();
+        return GeneralHelper.invalidImageText();
       }
     }
   }
@@ -191,7 +191,7 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
               imageUrl, width, height),
         );
       } else {
-        return const SizedBox();
+        return GeneralHelper.invalidImageText();
       }
     }
   }
