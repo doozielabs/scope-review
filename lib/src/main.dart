@@ -20,11 +20,13 @@ class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final dynamic inspection;
   final List media;
+  final Function(String url)? printCallBack;
   const PDFReport(
       {Key? key,
       required this.showDialogue,
       this.inspection,
-      required this.media})
+      required this.media,
+      this.printCallBack})
       : super(key: key);
 
   @override
@@ -74,6 +76,7 @@ class _PDFReportState extends State<PDFReport> {
                           inspection: inspection,
                           media: media,
                           showDialogue: widget.showDialogue,
+                          printCallBack: widget.printCallBack,
                         ),
             )));
   }

@@ -3,6 +3,7 @@ import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/mobile/report_header.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/tablet/report_header.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/web/report_header.dart';
 import 'package:sizer/sizer.dart';
 
 class ReportHeader extends StatelessWidget {
@@ -24,12 +25,14 @@ class ReportHeader extends StatelessWidget {
           //Mobile
           return ReportHeaderMobile(inspection: inspection, media: media!);
         }
-        if (constraints.maxWidth < 1230) {
-          //Tablet
-          return ReportHeaderTablet(inspection: inspection, media: media!);
-        } else {
+        //TODO: need to manage this
+        // if (constraints.maxWidth < 1230) {
+        //   //Tablet
+        //   return ReportHeaderTablet(inspection: inspection, media: media!);
+        // }
+        else {
           //Web
-          return ReportHeaderTablet(inspection: inspection, media: media!);
+          return ReportHeaderWeb(inspection: inspection, media: media!);
         }
       }
     });

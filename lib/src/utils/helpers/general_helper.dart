@@ -124,8 +124,15 @@ class GeneralHelper {
               ? Image.asset(
                   "assets/images/default_image.png",
                   package: "pdf_report_scope",
+                  fit: BoxFit.fill,
+                  width: 300.sp,
+                  height: 35.h,
                 )
-              : Image.network(baseUrlLive + defaultHeaderImage1));
+              : Image.network(
+                  baseUrlLive + defaultHeaderImage1,
+                  fit: BoxFit.fill,
+                  width: 70.sp,
+                ));
     } else {
       int remainIdsCount = (ids.length - 1);
       return ImageWithRoundedCornersForHeader(
@@ -140,21 +147,21 @@ class GeneralHelper {
     }
   }
 
-  static invalidImageText(){
-         return  Container(
-            height: 160,
-            padding: const EdgeInsets.symmetric(horizontal: 5),
-            decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10)),
-            child:  Center(
-               child: (SizerUtil.deviceType == DeviceType.tablet ||
+  static invalidImageText() {
+    return Container(
+      height: 160,
+      padding: const EdgeInsets.symmetric(horizontal: 5),
+      decoration: BoxDecoration(
+          color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10)),
+      child: Center(
+          child: (SizerUtil.deviceType == DeviceType.tablet ||
                   SizerUtil.deviceType == DeviceType.mobile)
               ? Image.asset(
                   "assets/images/default_image.png",
                   package: "pdf_report_scope",
                 )
-              : Image.network(baseUrlLive + defaultInvalidImage)
-            ),
-          );
+              : Image.network(baseUrlLive + defaultInvalidImage)),
+    );
   }
 
   static imageHandlerForGallery(ImageShape image) {
@@ -360,15 +367,19 @@ class GeneralHelper {
       //Section Comments
       for (var section in template.sections) {
         sectionIndex++;
-        sectionIndex=(sectionIndex-1);
+        sectionIndex = (sectionIndex - 1);
         if (section.comments.isNotEmpty) {
           for (var sectionComment in section.comments) {
             if (sectionComment.type == CommentType.deficiency) {
               if (!sectionComment.uid.isNull &&
-                  commentKeys[sectionComment.id.toString() + sectionComment.uid!].isNull) {
-                if (commentKeys[sectionComment.id.toString() + sectionComment.uid!] !=
+                  commentKeys[
+                          sectionComment.id.toString() + sectionComment.uid!]
+                      .isNull) {
+                if (commentKeys[
+                        sectionComment.id.toString() + sectionComment.uid!] !=
                     GlobalKey()) {
-                  commentKeys[sectionComment.id.toString() + sectionComment.uid!] = GlobalKey();
+                  commentKeys[sectionComment.id.toString() +
+                      sectionComment.uid!] = GlobalKey();
                   sectionComment.serverTimestamp = sectionIndex;
                 }
               }
@@ -384,8 +395,8 @@ class GeneralHelper {
                 if (itemComment.type == CommentType.deficiency) {
                   if (!itemComment.uid.isNull &&
                       ![itemComment.id.toString() + itemComment.uid!].isNull) {
-                    commentKeys[itemComment.id.toString() +
-                        itemComment.uid!] = GlobalKey();
+                    commentKeys[itemComment.id.toString() + itemComment.uid!] =
+                        GlobalKey();
                     itemComment.serverTimestamp = sectionIndex;
                   }
                   deficiencyCommets.add(itemComment);
@@ -399,14 +410,14 @@ class GeneralHelper {
             if (subSection.comments.isNotEmpty) {
               for (var subSectionComment in subSection.comments) {
                 if (subSectionComment.type == CommentType.deficiency) {
-                   if (!subSectionComment.uid.isNull &&
-                        commentKeys[subSectionComment.id.toString() +
-                                subSectionComment.uid!] ==
-                            null) {
+                  if (!subSectionComment.uid.isNull &&
                       commentKeys[subSectionComment.id.toString() +
-                          subSectionComment.uid!] = GlobalKey();
-                      subSectionComment.serverTimestamp = sectionIndex;
-                    }
+                              subSectionComment.uid!] ==
+                          null) {
+                    commentKeys[subSectionComment.id.toString() +
+                        subSectionComment.uid!] = GlobalKey();
+                    subSectionComment.serverTimestamp = sectionIndex;
+                  }
                   deficiencyCommets.add(subSectionComment);
                 }
               }
@@ -416,14 +427,14 @@ class GeneralHelper {
                 if (subSectionItem.comments.isNotEmpty) {
                   for (var subSectionItemComment in subSectionItem.comments) {
                     if (subSectionItemComment.type == CommentType.deficiency) {
-                       if (!subSectionItemComment.uid.isNull &&
-                            commentKeys[subSectionItemComment.id.toString() +
-                                    subSectionItemComment.uid!] ==
-                                null) {
+                      if (!subSectionItemComment.uid.isNull &&
                           commentKeys[subSectionItemComment.id.toString() +
-                              subSectionItemComment.uid!] = GlobalKey();
-                          subSectionItemComment.serverTimestamp = sectionIndex;
-                        }
+                                  subSectionItemComment.uid!] ==
+                              null) {
+                        commentKeys[subSectionItemComment.id.toString() +
+                            subSectionItemComment.uid!] = GlobalKey();
+                        subSectionItemComment.serverTimestamp = sectionIndex;
+                      }
                       deficiencyCommets.add(subSectionItemComment);
                     }
                   }

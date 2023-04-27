@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
@@ -18,18 +17,18 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
-// import  'dart:html' as html;
-// import 'dart:js' as js;
 
 class InspectionReportScreen extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
   final bool showDialogue;
+  final Function(String url)? printCallBack;
   const InspectionReportScreen(
       {Key? key,
       required this.inspection,
       required this.media,
-      required this.showDialogue})
+      required this.showDialogue,
+      this.printCallBack})
       : super(key: key);
 
   @override
@@ -116,7 +115,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     //     anchorElement.target = "_blank";
     //     anchorElement.click();
     //  }
-  }  
+  }
 
   @override
   void dispose() {
@@ -127,7 +126,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
 
   void _scrollToTop() {
     _scrollController.animateTo(0,
-        duration: const Duration(seconds: 1), curve: Curves.linear);
+        duration: const Duration(microseconds: 1), curve: Curves.linear);
   }
 
   @override
@@ -145,10 +144,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                   child: Column(
                     children: [
                       ReportHeader(
-                          inspection: widget.inspection, media: widget.media),
+                          key: inspectionInfoKey,
+                          inspection: widget.inspection,
+                          media: widget.media),
                       InspectionDescription(inspection: widget.inspection),
                       ReportSummary(
-                          inspection: widget.inspection, media: widget.media),
+                          key: inspectionSummaryKey,
+                          inspection: widget.inspection,
+                          media: widget.media),
                       TemplateSections(
                           inspection: widget.inspection, media: widget.media)
                     ],
@@ -166,10 +169,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
               child: Column(
                 children: [
                   ReportHeader(
-                      inspection: widget.inspection, media: widget.media),
+                      key: inspectionInfoKey,
+                      inspection: widget.inspection,
+                      media: widget.media),
                   InspectionDescription(inspection: widget.inspection),
                   ReportSummary(
-                      inspection: widget.inspection, media: widget.media),
+                      key: inspectionSummaryKey,
+                      inspection: widget.inspection,
+                      media: widget.media),
                   TemplateSections(
                       inspection: widget.inspection, media: widget.media)
                 ],
@@ -216,10 +223,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 child: Column(
                   children: [
                     ReportHeader(
-                        inspection: widget.inspection, media: widget.media),
+                        key: inspectionInfoKey,
+                        inspection: widget.inspection,
+                        media: widget.media),
                     InspectionDescription(inspection: widget.inspection),
                     ReportSummary(
-                        inspection: widget.inspection, media: widget.media),
+                        key: inspectionSummaryKey,
+                        inspection: widget.inspection,
+                        media: widget.media),
                     TemplateSections(
                         inspection: widget.inspection, media: widget.media)
                   ],
@@ -264,10 +275,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 child: Column(
                   children: [
                     ReportHeader(
-                        inspection: widget.inspection, media: widget.media),
+                        key: inspectionInfoKey,
+                        inspection: widget.inspection,
+                        media: widget.media),
                     InspectionDescription(inspection: widget.inspection),
                     ReportSummary(
-                        inspection: widget.inspection, media: widget.media),
+                        key: inspectionSummaryKey,
+                        inspection: widget.inspection,
+                        media: widget.media),
                     TemplateSections(
                         inspection: widget.inspection, media: widget.media)
                   ],
@@ -349,6 +364,102 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                     horizontal: 16.0),
                                           ),
                                         ),
+                                        InkWell(
+                                          hoverColor: Colors.transparent,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Container(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                  bottom: 10,
+                                                  left: 10),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                color: ProjectColors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                              ),
+                                              child: Text(
+                                                "Information",
+                                                style: primaryHeadingTextStyle
+                                                    .copyWith(
+                                                  letterSpacing: 2,
+                                                  color: ProjectColors.primary,
+                                                  fontFamily:
+                                                      fontFamilyJostMedium,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            if ((constraintMaxWidthForNavPop <
+                                                1230)) {
+                                              Navigator.pop(context);
+                                            }
+                                            Future.delayed(
+                                                const Duration(microseconds: 2),
+                                                () {
+                                              Scrollable.ensureVisible(
+                                                inspectionInfoKey
+                                                    .currentContext!,
+                                                duration: const Duration(
+                                                    milliseconds: 1),
+                                                curve: Curves.easeInOut,
+                                              );
+                                            });
+                                          },
+                                        ),
+                                        InkWell(
+                                          hoverColor: Colors.transparent,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Container(
+                                              padding: const EdgeInsets.only(
+                                                  top: 10,
+                                                  bottom: 10,
+                                                  left: 10),
+                                              width: MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                              decoration: BoxDecoration(
+                                                color: ProjectColors.white,
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                              ),
+                                              child: Text(
+                                                "Report Summary",
+                                                style: primaryHeadingTextStyle
+                                                    .copyWith(
+                                                  letterSpacing: 2,
+                                                  color: ProjectColors.primary,
+                                                  fontFamily:
+                                                      fontFamilyJostMedium,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          onTap: () {
+                                            if ((constraintMaxWidthForNavPop <
+                                                1230)) {
+                                              Navigator.pop(context);
+                                            }
+                                            summaryControllerStreamToExpand
+                                                .add(1);
+                                            Future.delayed(
+                                                const Duration(microseconds: 2),
+                                                () {
+                                              Scrollable.ensureVisible(
+                                                inspectionSummaryKey
+                                                    .currentContext!,
+                                                duration: const Duration(
+                                                    milliseconds: 1),
+                                                curve: Curves.easeInOut,
+                                              );
+                                            });
+                                          },
+                                        ),
                                         Padding(
                                           padding: const EdgeInsets.all(20.0),
                                           child: Column(
@@ -356,14 +467,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                               ...List.generate(
                                                 sections.length,
                                                 (sectionIndex) {
-                                                  final bool hasSubSections =
-                                                      sections[sectionIndex]
-                                                          .subSections
-                                                          .isNotEmpty;
-                                                  bool hasSectionComments =
-                                                      sections[sectionIndex]
-                                                          .comments
-                                                          .isNotEmpty;
                                                   final section =
                                                       sections[sectionIndex];
                                                   bool hasSectionItemComments =
@@ -376,11 +479,30 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                       sections[sectionIndex]
                                                           .images
                                                           .isNotEmpty;
-
-                                                  bool hasSectionItems =
+                                                  bool hasSectionComments =
                                                       sections[sectionIndex]
-                                                          .items
+                                                          .comments
                                                           .isNotEmpty;
+                                                  bool hasSectionItems = false;
+                                                  for (var item
+                                                      in sections[sectionIndex]
+                                                          .items) {
+                                                    if (!item.unspecified) {
+                                                      hasSectionItems = true;
+                                                    }
+                                                  }
+                                                  bool hasSubSections = sections[
+                                                          sectionIndex]
+                                                      .subSections
+                                                      .any((subsection) =>
+                                                          (subsection.items.any(
+                                                                  (item) => !item
+                                                                      .unspecified) ||
+                                                              subsection
+                                                                  .comments
+                                                                  .isNotEmpty ||
+                                                              subsection.images
+                                                                  .isNotEmpty));
 
                                                   if (hasSectionItems ||
                                                       hasSectionComments ||
@@ -551,7 +673,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                   ),
                                                   ElevatedButton(
                                                     onPressed: () {
-                                                      downloadFile('https://api.scopeinspectapp.com/pdfs/inspections-'+widget.inspection.id.toString()+'.pdf');
+                                                      print("I am called");
+                                                      if (widget
+                                                              .printCallBack !=
+                                                          null) {
+                                                        widget.printCallBack;
+                                                      }
+                                                      // downloadFile(
+                                                      //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -603,12 +732,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           child: Column(
                             children: [
                               ReportHeader(
+                                  key: inspectionInfoKey,
                                   inspection: widget.inspection,
                                   media: widget.media),
                               isWeb ? const Legends() : const SizedBox(),
                               InspectionDescription(
                                   inspection: widget.inspection),
                               ReportSummary(
+                                  key: inspectionSummaryKey,
                                   inspection: widget.inspection,
                                   media: widget.media),
                               TemplateSections(
