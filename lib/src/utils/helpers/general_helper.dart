@@ -145,14 +145,14 @@ class GeneralHelper {
             height: 160,
             padding: const EdgeInsets.symmetric(horizontal: 5),
             decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10)),
-            child: const Center(
-              child: TextField(
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: INVALID_IMAGE,
-                ),
-              ),
+            child:  Center(
+               child: (SizerUtil.deviceType == DeviceType.tablet ||
+                  SizerUtil.deviceType == DeviceType.mobile)
+              ? Image.asset(
+                  "assets/images/default_image.png",
+                  package: "pdf_report_scope",
+                )
+              : Image.network(baseUrlLive + defaultInvalidImage)
             ),
           );
   }

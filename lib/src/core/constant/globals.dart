@@ -11,6 +11,7 @@ const baseUrlStaging = 'https://staging.scopeinspectapp.com/';
 const baseUrlLocal = 'http://localhost:1337/';
 const defaultHeaderImage1 = 'images/inspection_placeholder.png';
 const defaultHeaderImage = "images/house.jpeg";
+const defaultInvalidImage = "images/invalid-placholder.png";
 String documentDirectory = "";
 
 const double kMobileMaxWidth = 550.0;
