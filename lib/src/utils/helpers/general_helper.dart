@@ -654,7 +654,10 @@ class _CustomDialogState extends State<CustomDialog> {
                   CarouselSlider(
                     carouselController: _controller,
                     options: CarouselOptions(
-                      aspectRatio: 1.2,
+                      aspectRatio: (SizerUtil.deviceType == DeviceType.mobile ||
+                              SizerUtil.deviceType == DeviceType.tablet)
+                          ? 1.2
+                          : 2.6,
                       enlargeCenterPage: true,
                       enableInfiniteScroll: false,
                       enlargeStrategy: CenterPageEnlargeStrategy.scale,
@@ -667,7 +670,8 @@ class _CustomDialogState extends State<CustomDialog> {
                               child: GeneralHelper.imageHandlerForRoundedConner(
                                 item,
                                 getImageWidthHeight(
-                                    ImageType.sectionImage, imageUrl)[0],
+                                        ImageType.sectionImage, imageUrl)[0] /
+                                    2,
                                 getImageWidthHeight(
                                     ImageType.sectionImage, imageUrl)[1],
                               ),
