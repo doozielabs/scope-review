@@ -507,7 +507,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                   if (hasSectionItems ||
                                                       hasSectionComments ||
                                                       hasSectionImages ||
-                                                      hasSectionItemComments) {
+                                                      hasSectionItemComments ||
+                                                      hasSubSections) {
                                                     return Container(
                                                       padding:
                                                           const EdgeInsets.only(
