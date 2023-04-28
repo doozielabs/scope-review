@@ -101,11 +101,19 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
       );
     } else {
       if (imageUrl is ImageShape) {
-        return ClipRRect(
+        return GestureDetector(	
+          onTap: () async {	
+            showDialog(	
+                context: context,	
+                builder: (BuildContext context) {	
+                  return CustomDialog(ids: ids!, media: media!);	
+                });	
+          },	
+        child: ClipRRect(
           borderRadius: BorderRadius.circular(borderRadiusValue),
           child: GeneralHelper.imageHandlerForRoundedConner(
               imageUrl, width, height),
-        );
+        ));
       } else {
         return GeneralHelper.invalidImageText();
       }

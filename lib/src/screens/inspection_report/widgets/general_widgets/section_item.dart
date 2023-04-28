@@ -171,7 +171,7 @@ class SectionItem extends StatelessWidget {
                   //             //   height: 300,
                   //             //       counts:1,
                   //             // ),
-                  //             // GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),
+                              GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),
                   //             //  Padding(
                   //             //   padding: const EdgeInsets.only(left: 5.0, bottom: 5.0),
                   //             //   child: GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage),

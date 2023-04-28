@@ -54,6 +54,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         } else {
           _showBackToTopButton = false;
         }
+        setState(() {});
       });
 
     stream.listen((index) {

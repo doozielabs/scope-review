@@ -167,6 +167,21 @@ class GeneralHelper {
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
     if (kIsWeb) {
+      // return Image.network(	
+      //   baseUrlLive + image.url,	
+      //   scale: scale,	
+      //     loadingBuilder: (context, child, loadingProgress) {	
+      //       if (loadingProgress == null) {	
+      //         return child;	
+      //       } else {	
+      //         return const Center(	
+      //         child: CircularProgressIndicator(),	
+      //         );	
+      //       }	
+      //     },	
+      //     errorBuilder: (context, error, stackTrace) {	
+      //         return GeneralHelper.invalidImageText();	
+      // });
       return NetworkImage(baseUrlLive + image.url, scale: scale);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
@@ -179,12 +194,30 @@ class GeneralHelper {
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
     if (kIsWeb) {
-      return Image.network(
-        baseUrlLive + image.url,
-        width: width,
-        height: height,
-        fit: BoxFit.fill,
-      );
+        return Image.network(	
+          baseUrlLive + image.url,	
+          width: width,	
+          height: height,	
+          fit: BoxFit.fill,	
+          loadingBuilder: (context, child, loadingProgress) {	
+          if (loadingProgress == null) {	
+            return child;	
+          } else {	
+            return const Center(	
+            child: CircularProgressIndicator(),	
+            );	
+          }	
+        }, 	
+        errorBuilder: (context, error, stackTrace) {	
+                return GeneralHelper.invalidImageText();	
+        }	
+        );
+      // return Image.network(
+      //   baseUrlLive + image.url,
+      //   width: width,
+      //   height: height,
+      //   fit: BoxFit.fill,
+      // );
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return Image.file(
@@ -243,10 +276,14 @@ class GeneralHelper {
             itemBuilder: (context, countIndex) {
               var imageObj = GeneralHelper.getMediaById(ids[countIndex], media);
               if (imageObj is ImageShape) {
-                return ImageWithRoundedCorners(
+                return ImageWithRoundedCornersV1(
                   imageUrl: GeneralHelper.getMediaById(ids[countIndex], media),
                   width: getImageWidthHeight(imagetype, ids)[0],
                   height: getImageWidthHeight(imagetype, ids)[1],
+                  remain: remainIdsCount,
+                  lastItem: false,
+                  ids: ids,
+                  media: media,
                   counts: counts,
                 );
               } else {
@@ -266,6 +303,7 @@ class GeneralHelper {
                 var imageObj =
                     GeneralHelper.getMediaById(ids[countIndex], media);
                 if (imageObj is ImageShape) {
+                  // last one
                   return ImageWithRoundedCornersV1(
                     imageUrl:
                         GeneralHelper.getMediaById(ids[countIndex], media),
@@ -284,11 +322,15 @@ class GeneralHelper {
                 var imageObj =
                     GeneralHelper.getMediaById(ids[countIndex], media);
                 if (imageObj is ImageShape) {
-                  return ImageWithRoundedCorners(
+                  return ImageWithRoundedCornersV1(
                     imageUrl:
                         GeneralHelper.getMediaById(ids[countIndex], media),
                     width: getImageWidthHeight(imagetype, ids)[0],
                     height: getImageWidthHeight(imagetype, ids)[1],
+                    remain: remainIdsCount,
+                    lastItem: false,
+                    ids: ids,
+                    media: media,
                     counts: counts,
                   );
                 } else {

@@ -105,6 +105,7 @@ class TemplateSubSection extends StatelessWidget {
                                       isSubsectionItem: true,
                                       item: subSections[subSectionIndex]
                                           .items[itemIndex],
+                                          media:media
                                     );
                                   },
                                 ),
