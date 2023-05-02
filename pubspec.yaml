@@ -1,7 +1,7 @@
 name: pdf_report_scope
 description: PDF Report for the Scope App and Website
-version: 0.0.6
-homepage: https://github.com/syedmehtabali/pdf_report_scope
+version: 0.0.7
+homepage: https://github.com/doozielabs/scope-review
 
 environment:
   sdk: '>=2.18.5 <3.0.0'
