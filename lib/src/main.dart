@@ -41,8 +41,6 @@ class _PDFReportState extends State<PDFReport> {
   void initState() {
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
-      // inspection = await InspectionProvider().getInspection();
-      // print("mainins:${widget.inspection} ");
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
       for (var image in widget.media) {
         media.add(ImageShape.fromJson(image));
@@ -50,10 +48,6 @@ class _PDFReportState extends State<PDFReport> {
       if (!kIsWeb) {
         documentDirectory = (await getApplicationDocumentsDirectory()).path;
       }
-      // media = await InspectionProvider().getPhotoByIds(inspection!)
-      //     as List<ImageShape>;
-      // media = widget.media;
-      // print('img si $media');
       setState(() => isLoading = false);
     });
     super.initState();
@@ -61,7 +55,32 @@ class _PDFReportState extends State<PDFReport> {
 
   @override
   Widget build(BuildContext context) {
-    return Sizer(
+    if(kIsWeb){
+    var inspectionID = Uri.base.pathSegments;
+    var concatenate = inspectionID.join("");
+      return Sizer(
+        builder: ((context, orientation, deviceType) => MaterialApp(
+              navigatorKey: NavigationService.navigatorKey,
+              debugShowCheckedModeBanner: false,
+              title: 'Inspektify Report',
+              initialRoute : "/$concatenate",
+              routes: <String, WidgetBuilder> {
+                  "/$concatenate" : (context) =>  isLoading ? const CupertinoActivityIndicator(
+                      color: ProjectColors.firefly)
+                      : inspection.template == null
+                      ? const CupertinoActivityIndicator(
+                          color: ProjectColors.firefly)
+                      : InspectionReportScreen(
+                          inspection: inspection,
+                          media: media,
+                          showDialogue: widget.showDialogue,
+                          printCallBack: widget.printCallBack,
+                        ),
+
+              },
+            )));
+    } else {
+      return Sizer(
         builder: ((context, orientation, deviceType) => MaterialApp(
               navigatorKey: NavigationService.navigatorKey,
               debugShowCheckedModeBanner: false,
@@ -76,8 +95,9 @@ class _PDFReportState extends State<PDFReport> {
                           inspection: inspection,
                           media: media,
                           showDialogue: widget.showDialogue,
-                          printCallBack: widget.printCallBack,
                         ),
             )));
+    }
+    
   }
 }
