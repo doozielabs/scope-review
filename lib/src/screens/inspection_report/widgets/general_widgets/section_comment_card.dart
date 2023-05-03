@@ -66,8 +66,10 @@ class SectionCommentCard extends StatelessWidget {
               child: Wrap(
                 direction: Axis.horizontal,
                 children: [
-                  GeneralHelper.displayMediaList(
-                      comment.images, media, 2, ImageType.commentImage),
+                  comment.images.isNotEmpty 
+                  ? GeneralHelper.displayMediaList(
+                      comment.images, media, 2, ImageType.commentImage)
+                  : const SizedBox.shrink()    
                   // ...List.generate(comment.images.length, (index) {
                   //   return Padding(
                   //     padding: const EdgeInsets.only(left: 5.0, bottom: 5.0),
