@@ -10,6 +10,7 @@ import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
+import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
@@ -98,6 +99,16 @@ class GeneralHelper {
     } else {
       return index;
     }
+  }
+
+  static getOnlyValidSectionItems(List<TemplateItem> items){
+    List<TemplateItem> sectionItems =[];
+    for (var item in items) {
+      if (!item.unspecified || item.images.isNotEmpty) {
+        sectionItems.add(item);
+      }
+    }
+    return sectionItems; 
   }
 
   static getMediaObj(ids, List<ImageShape> media) {
@@ -203,9 +214,19 @@ class GeneralHelper {
           if (loadingProgress == null) {	
             return child;	
           } else {	
-            return const Center(	
-            child: CircularProgressIndicator(),	
-            );	
+            return const Center(
+              child: SizedBox(
+                height: 100,
+                width: 100,
+                child: Padding(
+                  padding: EdgeInsets.only(top:40.0, bottom: 30.0, right: 30.0, left: 30.0),
+                  child: CircularProgressIndicator(),
+                )),
+            );
+// const Align(
+//                 alignment: Alignment.bottomCenter,
+//                 child: CircularProgressIndicator(),
+//             );
           }	
         }, 	
         errorBuilder: (context, error, stackTrace) {	

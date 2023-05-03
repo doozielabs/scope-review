@@ -337,10 +337,14 @@ class SectionImages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GeneralHelper.displayMediaList(
+    return 
+    inspection.template!.sections[sectionIndex].images.isNotEmpty
+    ? GeneralHelper.displayMediaList(
         inspection.template!.sections[sectionIndex].images,
         media,
         4,
-        ImageType.sectionImage);
+        ImageType.sectionImage)
+    : 
+    SizedBox.shrink();
   }
 }

@@ -5,6 +5,7 @@ import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/primary_heading_text_with_background.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/secondary_heading_text_with_background.dart';
@@ -47,7 +48,8 @@ class TemplateSubSection extends StatelessWidget {
           bool hasSectionItemComments = subSections[subSectionIndex]
               .items
               .any((item) => item.comments.isNotEmpty);
-
+          List<TemplateItem> filterItems = [];
+          filterItems = GeneralHelper.getOnlyValidSectionItems(subSections[subSectionIndex].items);
           if (hasSubSectionItems ||
               hasSubSectionImages ||
               hasSubSectionComments ||
@@ -92,7 +94,7 @@ class TemplateSubSection extends StatelessWidget {
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount:
-                                      subSections[subSectionIndex].items.length,
+                                      filterItems.length,
                                   crossAxisCount: isMobile
                                       ? 1
                                       : isTablet
@@ -103,8 +105,7 @@ class TemplateSubSection extends StatelessWidget {
                                   itemBuilder: (context, itemIndex) {
                                     return SectionItem(
                                       isSubsectionItem: true,
-                                      item: subSections[subSectionIndex]
-                                          .items[itemIndex],
+                                      item: filterItems[itemIndex],
                                           media:media
                                     );
                                   },

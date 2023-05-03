@@ -3,7 +3,7 @@ import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ImageWithRoundedCorners extends StatelessWidget {
-  final ImageShape imageUrl;
+  final dynamic imageUrl;
   final double width;
   final double height;
   final double borderRadius;
@@ -36,7 +36,7 @@ class ImageWithRoundedCorners extends StatelessWidget {
 }
 
 class ImageWithRoundedCornersV1 extends StatelessWidget {
-  final ImageShape imageUrl;
+  final dynamic imageUrl;
   final double width;
   final double height;
   final int remain;
