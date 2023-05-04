@@ -21,16 +21,15 @@ class ReportHeader extends StatelessWidget {
       } else if (SizerUtil.deviceType == DeviceType.tablet) {
         return ReportHeaderTablet(inspection: inspection, media: media!);
       } else {
-        if (constraints.maxWidth < 600) {
+        if (constraints.maxWidth < 500) {
           //Mobile
           return ReportHeaderMobile(inspection: inspection, media: media!);
         }
         //TODO: need to manage this
-        // if (constraints.maxWidth < 1230) {
-        //   //Tablet
-        //   return ReportHeaderTablet(inspection: inspection, media: media!);
-        // }
-        else {
+        if (constraints.maxWidth < 1030) {
+          //Tablet
+          return ReportHeaderTablet(inspection: inspection, media: media!);
+        } else {
           //Web
           return ReportHeaderWeb(inspection: inspection, media: media!);
         }

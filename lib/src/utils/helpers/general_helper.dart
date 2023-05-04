@@ -126,6 +126,26 @@ class GeneralHelper {
     return imageUrl;
   }
 
+  static List<double> getHeaderImageSizesForWeb() {
+    double width = 0;
+    double height = 0;
+    if (globalConstraints.maxWidth < 600) {
+      //Mobile
+      width = 300.sp;
+      height = 35.h;
+    }
+    if (globalConstraints.maxWidth < 1230) {
+      //Tablet
+      width = 120.sp;
+      height = 80.h;
+    } else {
+      //Web
+      width = 90.sp;
+      height = 70.h;
+    }
+    return [width, height];
+  }
+
   static getMediaForHeader(ids, List<ImageShape> media) {
     int counts = 1;
     if (ids.length == 0) {
@@ -137,24 +157,39 @@ class GeneralHelper {
                   "assets/images/default_image.png",
                   package: "pdf_report_scope",
                   fit: BoxFit.fill,
-                  width: 300.sp,
-                  height: 35.h,
+                  width: 120.sp,
+                  height: 55.h,
                 )
               : Image.network(
                   baseUrlLive + defaultHeaderImage1,
                   fit: BoxFit.fill,
-                  width: 70.sp,
+                  width: getHeaderImageSizesForWeb()[0],
+                  height: getHeaderImageSizesForWeb()[1],
                 ));
     } else {
       int remainIdsCount = (ids.length - 1);
-      return ImageWithRoundedCornersForHeader(
-        imageUrl: GeneralHelper.getMediaById(ids[0], media), // width: 300,
-        height: 35.h,
-        remain: remainIdsCount,
-        lastItem: true,
-        ids: ids,
-        media: media,
-      );
+      return (SizerUtil.deviceType == DeviceType.tablet ||
+              SizerUtil.deviceType == DeviceType.mobile)
+          ? ImageWithRoundedCornersForHeader(
+              imageUrl: GeneralHelper.getMediaById(ids[0], media),
+              width: 130.sp,
+              boxFit: BoxFit.fill,
+              height: 55.h,
+              remain: remainIdsCount,
+              lastItem: true,
+              ids: ids,
+              media: media,
+            )
+          : ImageWithRoundedCornersForHeader(
+              imageUrl: GeneralHelper.getMediaById(ids[0], media),
+              boxFit: BoxFit.fill,
+              width: getHeaderImageSizesForWeb()[0],
+              height: getHeaderImageSizesForWeb()[1],
+              remain: remainIdsCount,
+              lastItem: true,
+              ids: ids,
+              media: media,
+            );
     }
   }
 
@@ -297,7 +332,7 @@ class GeneralHelper {
         return 2;
       } else {
         //Web
-        if(ImageType.sectionImage == imagetype){
+        if (ImageType.sectionImage == imagetype) {
           return 4;
         } else {
           return 2;
@@ -349,13 +384,13 @@ class GeneralHelper {
   static displayMediaList(ids, List<ImageShape> media, int counts, imagetype) {
     int remainIdsCount = (ids.length - counts);
     int crossAxisCountAdjust = 1;
-    if(ids.length <  GeneralHelper.getSizeByDevicesForImages(imagetype)){
+    if (ids.length < GeneralHelper.getSizeByDevicesForImages(imagetype)) {
       crossAxisCountAdjust = ids.length;
     } else {
       crossAxisCountAdjust = GeneralHelper.getSizeByDevicesForImages(imagetype);
     }
-    if(crossAxisCountAdjust ==0){
-      crossAxisCountAdjust =1;
+    if (crossAxisCountAdjust == 0) {
+      crossAxisCountAdjust = 1;
     }
     if (ids.length != 0) {
       if (ids.length < counts) {
@@ -772,81 +807,261 @@ class _CustomDialogState extends State<CustomDialog> {
       ),
       elevation: 0.0,
       backgroundColor: Colors.transparent,
-      // content: dialogContent(context),
-      content: SizedBox(
-
-          // decoration: BoxDecoration(
-          //   color: Colors.grey[850],
-          //   shape: BoxShape.rectangle,
-          //   borderRadius: BorderRadius.circular(20),
-          // ),
-          width: MediaQuery.of(context).size.width,
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 50.0, bottom: 50),
-              child: Column(
-                children: [
-                  CarouselSlider(
-                    carouselController: _controller,
-                    options: CarouselOptions(
-                      aspectRatio: (SizerUtil.deviceType == DeviceType.mobile ||
-                              SizerUtil.deviceType == DeviceType.tablet)
-                          ? 1.2
-                          : 2.6,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
-                      enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                      onPageChanged: (indexed, r) =>
-                          setState(() => _current = indexed),
+      content: (SizerUtil.deviceType == DeviceType.mobile ||
+              SizerUtil.deviceType == DeviceType.tablet ||
+              globalConstraints.maxWidth < 700)
+          ? SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CarouselSlider(
+                      carouselController: _controller,
+                      options: CarouselOptions(
+                        aspectRatio: 1,
+                        enlargeCenterPage: true,
+                        clipBehavior: Clip.none,
+                        enableInfiniteScroll: false,
+                        enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                        onPageChanged: (indexed, r) =>
+                            setState(() => _current = indexed),
+                      ),
+                      items: imageUrl
+                          .map((item) => ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child:
+                                    GeneralHelper.imageHandlerForRoundedConner(
+                                  item,
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, imageUrl)[0],
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, imageUrl)[1],
+                                ),
+                              ))
+                          .toList(),
                     ),
-                    items: imageUrl
-                        .map((item) => ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: GeneralHelper.imageHandlerForRoundedConner(
-                                item,
-                                getImageWidthHeight(
-                                        ImageType.sectionImage, imageUrl)[0] /
-                                    2,
-                                getImageWidthHeight(
-                                    ImageType.sectionImage, imageUrl)[1],
-                              ),
-                              // Image.network(
-                              //   item.url,
-                              //   fit: BoxFit.cover,
-                              // ),
-                            ))
-                        .toList(),
-                  ),
-                  const SizedBox(height: 24.0),
-                  Wrap(
-                    direction: Axis.horizontal,
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: List.generate(
-                      imageUrl.length,
-                      (index) => GestureDetector(
-                        onTap: () => _controller.animateToPage(
-                          index,
-                          curve: Curves.fastOutSlowIn,
-                          duration: const Duration(milliseconds: 800),
-                        ),
-                        child: Container(
-                          width: 10,
-                          height: 10,
-                          margin: EdgeInsets.only(left: index.isZero ? 0 : 10),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context)
-                                .scaffoldBackgroundColor
-                                .withOpacity(_current == index ? 1.0 : 0.4),
+                    const SizedBox(height: 24.0),
+                    Wrap(
+                      direction: Axis.horizontal,
+                      children: List.generate(
+                        imageUrl.length,
+                        (index) => GestureDetector(
+                          onTap: () => _controller.animateToPage(
+                            index,
+                            curve: Curves.fastOutSlowIn,
+                            duration: const Duration(milliseconds: 800),
+                          ),
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            margin:
+                                EdgeInsets.only(left: index.isZero ? 0 : 10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(_current == index ? 1.0 : 0.4),
+                            ),
                           ),
                         ),
                       ),
+                    )
+                  ],
+                ),
+              ))
+          : globalConstraints.maxWidth < 1230
+              ? SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 100.sp,
+                          child: CarouselSlider(
+                            carouselController: _controller,
+                            options: CarouselOptions(
+                              aspectRatio: 1,
+                              enlargeCenterPage: true,
+                              clipBehavior: Clip.none,
+                              enableInfiniteScroll: false,
+                              enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                              onPageChanged: (indexed, r) =>
+                                  setState(() => _current = indexed),
+                            ),
+                            items: imageUrl
+                                .map((item) => ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: GeneralHelper
+                                        .imageHandlerForRoundedConner(
+                                      item,
+                                      getImageWidthHeight(
+                                          ImageType.sectionImage, imageUrl)[0],
+                                      getImageWidthHeight(
+                                          ImageType.sectionImage, imageUrl)[1],
+                                    )))
+                                .toList(),
+                          ),
+                        ),
+                        const SizedBox(height: 24.0),
+                        Wrap(
+                          direction: Axis.horizontal,
+                          children: List.generate(
+                            imageUrl.length,
+                            (index) => GestureDetector(
+                              onTap: () => _controller.animateToPage(
+                                index,
+                                curve: Curves.fastOutSlowIn,
+                                duration: const Duration(milliseconds: 800),
+                              ),
+                              child: Container(
+                                width: 10,
+                                height: 10,
+                                margin: EdgeInsets.only(
+                                    left: index.isZero ? 0 : 10),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Theme.of(context)
+                                      .scaffoldBackgroundColor
+                                      .withOpacity(
+                                          _current == index ? 1.0 : 0.4),
+                                ),
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ),
-          )),
+                  ))
+              : Stack(
+                  children: [
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width,
+                        child: SingleChildScrollView(
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.only(top: 50.0, bottom: 50),
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  height: 100.sp,
+                                  width: 100.sp,
+                                  child: CarouselSlider(
+                                    carouselController: _controller,
+                                    options: CarouselOptions(
+                                      aspectRatio: 1,
+                                      enlargeCenterPage: true,
+                                      clipBehavior: Clip.none,
+                                      enableInfiniteScroll: false,
+                                      enlargeStrategy:
+                                          CenterPageEnlargeStrategy.scale,
+                                      onPageChanged: (indexed, r) =>
+                                          setState(() => _current = indexed),
+                                    ),
+                                    items: imageUrl
+                                        .map((item) => ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: GeneralHelper
+                                                  .imageHandlerForRoundedConner(
+                                                item,
+                                                getImageWidthHeight(
+                                                        ImageType.sectionImage,
+                                                        imageUrl)[0] /
+                                                    2,
+                                                getImageWidthHeight(
+                                                    ImageType.sectionImage,
+                                                    imageUrl)[1],
+                                              ),
+                                              // Image.network(
+                                              //   item.url,
+                                              //   fit: BoxFit.cover,
+                                              // ),
+                                            ))
+                                        .toList(),
+                                  ),
+                                ),
+                                const SizedBox(height: 24.0),
+                                Wrap(
+                                  direction: Axis.horizontal,
+                                  // mainAxisAlignment: MainAxisAlignment.center,
+                                  children: List.generate(
+                                    imageUrl.length,
+                                    (index) => GestureDetector(
+                                      onTap: () => _controller.animateToPage(
+                                        index,
+                                        curve: Curves.fastOutSlowIn,
+                                        duration:
+                                            const Duration(milliseconds: 800),
+                                      ),
+                                      child: Container(
+                                        width: 10,
+                                        height: 10,
+                                        margin: EdgeInsets.only(
+                                            left: index.isZero ? 0 : 10),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Theme.of(context)
+                                              .scaffoldBackgroundColor
+                                              .withOpacity(_current == index
+                                                  ? 1.0
+                                                  : 0.4),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        )),
+                    Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IconButton(
+                              color: Colors.white,
+                              hoverColor: Colors.transparent,
+                              onPressed: () {
+                                if (_current != 0) {
+                                  _current--;
+                                  setState(() {});
+                                }
+                                _controller.animateToPage(
+                                  _current,
+                                  curve: Curves.fastOutSlowIn,
+                                  duration: const Duration(milliseconds: 800),
+                                );
+                              },
+                              icon: Icon(
+                                size: 10.sp,
+                                Icons.chevron_left,
+                                color: Colors.white,
+                              )),
+                          IconButton(
+                              color: Colors.white,
+                              hoverColor: Colors.transparent,
+                              onPressed: () {
+                                if (_current != imageUrl.lastIndex) {
+                                  _current++;
+                                  setState(() {});
+                                }
+                                _controller.animateToPage(
+                                  _current,
+                                  curve: Curves.fastOutSlowIn,
+                                  duration: const Duration(milliseconds: 800),
+                                );
+                              },
+                              icon: Icon(
+                                size: 10.sp,
+                                Icons.chevron_right,
+                                color: Colors.white,
+                              ))
+                        ],
+                      ),
+                    )
+                  ],
+                ),
     );
   }
 }

@@ -41,7 +41,7 @@ class _SectionTileState extends State<SectionTile> {
       children: [
         InkWell(
           child: Text(
-            GeneralHelper.getNameWithDots(widget.section.name!, 15),
+            GeneralHelper.getNameWithDots(widget.section.name!, 10),
             style: primaryHeadingTextStyle.copyWith(
               letterSpacing: 2,
               color: ProjectColors.primary,
@@ -108,9 +108,9 @@ class _SectionTileState extends State<SectionTile> {
                 : const SizedBox(),
             widget.hasSubsections
                 ? Container(
-                    width: 30.0,
+                    width: 20.0,
                     height: 30.0,
-                    color: Colors.transparent,
+                    color: Colors.red,
                     child: Center(
                       child: SvgPicture.asset(
                         "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
