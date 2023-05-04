@@ -86,12 +86,21 @@ class ItemDetailsBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<TemplateItem> filterItems = [];
+    int crossAxisCountAdjust = 1;
     filterItems = GeneralHelper.getOnlyValidSectionItems(inspection.template!.sections[sectionIndex].items);
+    if(filterItems.length <  GeneralHelper.getSizeByDevicesForItems()){
+      crossAxisCountAdjust = filterItems.length;
+    } else {
+      crossAxisCountAdjust = GeneralHelper.getSizeByDevicesForItems();
+    }
+    if(crossAxisCountAdjust ==0){
+      crossAxisCountAdjust =1;
+    }
     return MasonryGridView.count(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: filterItems.length,
-      crossAxisCount: crossAxisCount,
+      crossAxisCount: crossAxisCountAdjust,
       mainAxisSpacing: 14,
       crossAxisSpacing: 14,
       itemBuilder: (context, itemIndex) {

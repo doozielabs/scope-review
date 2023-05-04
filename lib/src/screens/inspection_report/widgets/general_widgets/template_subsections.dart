@@ -50,6 +50,25 @@ class TemplateSubSection extends StatelessWidget {
               .any((item) => item.comments.isNotEmpty);
           List<TemplateItem> filterItems = [];
           filterItems = GeneralHelper.getOnlyValidSectionItems(subSections[subSectionIndex].items);
+          int crossAxisCountItems = 1;
+          int crossAxisCountComments = 1;
+          // if(filterItems.length <  GeneralHelper.getSizeByDevicesForItems()){
+          //   crossAxisCountItems = filterItems.length;
+          // } else {
+            crossAxisCountItems = GeneralHelper.getSizeByDevicesForItems();
+          // }
+          // if(crossAxisCountItems ==0 || crossAxisCountItems==1){
+          //   crossAxisCountItems =1;
+          // }
+
+          // if(subSections[subSectionIndex].comments.length <  GeneralHelper.getSizeByDevicesForComments()){
+          //   crossAxisCountComments = subSections[subSectionIndex].comments.length;
+          // } else {
+            crossAxisCountComments = GeneralHelper.getSizeByDevicesForComments();
+          // }
+          // if(crossAxisCountComments ==0 || crossAxisCountComments ==1){
+          //   crossAxisCountComments =1;
+          // }
           if (hasSubSectionItems ||
               hasSubSectionImages ||
               hasSubSectionComments ||
@@ -95,11 +114,12 @@ class TemplateSubSection extends StatelessWidget {
                                   shrinkWrap: true,
                                   itemCount:
                                       filterItems.length,
-                                  crossAxisCount: isMobile
-                                      ? 1
-                                      : isTablet
-                                          ? 2
-                                          : 3,
+                                  crossAxisCount: crossAxisCountItems,
+                                  // isMobile
+                                  //     ? 1
+                                  //     : isTablet
+                                  //         ? 2
+                                  //         : 3,
                                   mainAxisSpacing: 14,
                                   crossAxisSpacing: 14,
                                   itemBuilder: (context, itemIndex) {
@@ -217,11 +237,12 @@ class TemplateSubSection extends StatelessWidget {
                                     itemCount: subSections[subSectionIndex]
                                         .comments
                                         .length,
-                                    crossAxisCount: isMobile
-                                        ? 1
-                                        : isTablet
-                                            ? 2
-                                            : 2,
+                                    crossAxisCount: crossAxisCountItems,
+                                    // isMobile
+                                    //     ? 1
+                                    //     : isTablet
+                                    //         ? 2
+                                    //         : 2,
                                     mainAxisSpacing: 4,
                                     crossAxisSpacing: 4,
                                     itemBuilder:
@@ -305,16 +326,28 @@ class SubSectionItemComments extends StatelessWidget {
         subSectionItemComments.add(comment);
       }
     }
-
+    int crossAxisCountItemComments = GeneralHelper.getSizeByDevicesForComments();
+    // if(subSectionItemComments.length <  GeneralHelper.getSizeByDevicesForComments()){
+    //   crossAxisCountItemComments = subSectionItemComments.length;
+    // } else {
+    //   crossAxisCountItemComments = GeneralHelper.getSizeByDevicesForComments();
+    // }
+    // if(crossAxisCountItemComments ==0){
+    //   crossAxisCountItemComments =1;
+    // }
+    // if(subSectionItemComments.length ==1){
+    //   crossAxisCountItemComments =2;
+    // }
     return MasonryGridView.count(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: subSectionItemComments.length,
-        crossAxisCount: isMobile
-            ? 1
-            : isTablet
-                ? 2
-                : 3,
+        crossAxisCount: crossAxisCountItemComments,
+        // isMobile
+        //     ? 1
+        //     : isTablet
+        //         ? 2
+        //         : 3,
         mainAxisSpacing: 4,
         crossAxisSpacing: 4,
         itemBuilder: (context, sectionCommentIndex) {

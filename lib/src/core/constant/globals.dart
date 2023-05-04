@@ -110,22 +110,21 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile SinlgeImage -- Comment Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 50.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
-          //Tablet SinlgeImage -- Comment Image
+          //Tablet SinlgeImage -- Comment 
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 30.h;
         } else {
-
           if(globalConstraints.maxWidth < 600){
             imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 50.h;
           } else if(globalConstraints.maxWidth < 1230){
             imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 25.h;
           } else {
             imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 50.h;
           }
           
         }
@@ -133,22 +132,22 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile multiple Images -- Comment Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 40.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet multiple Images -- Comment Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 30.h;
         } else {
           //Web multiple Images -- Comment Image
           if(globalConstraints.maxWidth < 600){
             imageWidth = 100.w;
-            imageHeight = 20.h;
+            imageHeight = 40.h;
           } else if(globalConstraints.maxWidth < 1230){
            imageWidth = 100.w;
             imageHeight = 20.h;
           } else {
             imageWidth = 100.w;
-            imageHeight = 20.h;
+            imageHeight = 40.h;
           }
         }
       }
@@ -158,11 +157,11 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile SinlgeImage -- Section Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 50.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet SinlgeImage -- Section Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 30.h;
         } else {
           //Web SinlgeImage -- Section Image
           if(globalConstraints.maxWidth < 600){
@@ -170,7 +169,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
             imageHeight = 50.h; /// 4;
           } else if(globalConstraints.maxWidth < 1230){
             imageWidth = 100.w;
-            imageHeight = 50.h;
+            imageHeight = 25.h;
           } else {
             imageWidth = 100.w;
             imageHeight = 50.h;
@@ -180,22 +179,22 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile multiple Images -- Section Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 40.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet multiple Images -- Section Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 40.h;
         } else {
           //Web multiple Images -- Section Image
           if(globalConstraints.maxWidth < 600){
             imageWidth = 100.w;
-            imageHeight = 30.h;
+            imageHeight = 40.h;
           } else if(globalConstraints.maxWidth < 1230){
             imageWidth = 100.w;
-            imageHeight = 30.h;
+            imageHeight = 40.h;
           } else {
             imageWidth = 100.w;
-            imageHeight = 30.h;
+            imageHeight = 40.h;
           }
         }
       }
@@ -204,28 +203,28 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
       if (isSingleImage) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 50.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 30.h;
         } else {
           //Web Single Images -- Item Image
           if(globalConstraints.maxWidth < 600){
              imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 50.h;
           } else if(globalConstraints.maxWidth < 1230){
              imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 30.h;
           } else {
              imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 50.h;
           }
         }
       } else {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile multiple Images -- Item Image
           imageWidth = 100.w;
-          imageHeight = 25.h;
+          imageHeight = 40.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet multiple Images -- Item Image
           imageWidth = 100.w;
@@ -234,13 +233,13 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
           //Web multiple Images -- Item Image
           if(globalConstraints.maxWidth < 600){
             imageWidth = 100.w;
-            imageHeight = 25.h;
+            imageHeight = 40.h;
           } else if(globalConstraints.maxWidth < 1230){
             imageWidth = 100.w;
             imageHeight = 25.h;
           } else {
             imageWidth = 100.w;
-            imageHeight = 25.h;
+            imageHeight = 40.h;
           }
         }
       }

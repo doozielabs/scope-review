@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -101,14 +102,14 @@ class GeneralHelper {
     }
   }
 
-  static getOnlyValidSectionItems(List<TemplateItem> items){
-    List<TemplateItem> sectionItems =[];
+  static getOnlyValidSectionItems(List<TemplateItem> items) {
+    List<TemplateItem> sectionItems = [];
     for (var item in items) {
       if (!item.unspecified || item.images.isNotEmpty) {
         sectionItems.add(item);
       }
     }
-    return sectionItems; 
+    return sectionItems;
   }
 
   static getMediaObj(ids, List<ImageShape> media) {
@@ -147,8 +148,7 @@ class GeneralHelper {
     } else {
       int remainIdsCount = (ids.length - 1);
       return ImageWithRoundedCornersForHeader(
-        imageUrl: GeneralHelper.getMediaById(ids[0], media),
-        // width: 300,
+        imageUrl: GeneralHelper.getMediaById(ids[0], media), // width: 300,
         height: 35.h,
         remain: remainIdsCount,
         lastItem: true,
@@ -178,20 +178,20 @@ class GeneralHelper {
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
     if (kIsWeb) {
-      // return Image.network(	
-      //   baseUrlLive + image.url,	
-      //   scale: scale,	
-      //     loadingBuilder: (context, child, loadingProgress) {	
-      //       if (loadingProgress == null) {	
-      //         return child;	
-      //       } else {	
-      //         return const Center(	
-      //         child: CircularProgressIndicator(),	
-      //         );	
-      //       }	
-      //     },	
-      //     errorBuilder: (context, error, stackTrace) {	
-      //         return GeneralHelper.invalidImageText();	
+      // return Image.network(
+      //   baseUrlLive + image.url,
+      //   scale: scale,
+      //     loadingBuilder: (context, child, loadingProgress) {
+      //       if (loadingProgress == null) {
+      //         return child;
+      //       } else {
+      //         return const Center(
+      //         child: CircularProgressIndicator(),
+      //         );
+      //       }
+      //     },
+      //     errorBuilder: (context, error, stackTrace) {
+      //         return GeneralHelper.invalidImageText();
       // });
       return NetworkImage(baseUrlLive + image.url, scale: 1.0);
     } else {
@@ -205,34 +205,33 @@ class GeneralHelper {
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
     if (kIsWeb) {
-        return Image.network(	
-          baseUrlLive + image.url,	
-          width: width,	
-          height: height,	
-          fit: BoxFit.fill,	
-          loadingBuilder: (context, child, loadingProgress) {	
-          if (loadingProgress == null) {	
-            return child;	
-          } else {	
-            return const Center(
-              child: SizedBox(
+      return Image.network(baseUrlLive + image.url,
+          width: width,
+          height: height,
+          fit: BoxFit.fill, loadingBuilder: (context, child, loadingProgress) {
+        if (loadingProgress == null) {
+          return child;
+        } else {
+          return const Center(
+            child: SizedBox(
                 height: 100,
                 width: 100,
                 child: Padding(
-                  padding: EdgeInsets.only(top:40.0, bottom: 30.0, right: 30.0, left: 30.0),
-                  child: CircularProgressIndicator(),
-                )),
-            );
+                    padding: EdgeInsets.only(
+                        top: 40.0, bottom: 30.0, right: 30.0, left: 30.0),
+                    child: CupertinoActivityIndicator(
+                      radius: 15,
+                      color: ProjectColors.firefly,
+                    ))),
+          );
 // const Align(
 //                 alignment: Alignment.bottomCenter,
 //                 child: CircularProgressIndicator(),
 //             );
-          }	
-        }, 	
-        errorBuilder: (context, error, stackTrace) {	
-                return GeneralHelper.invalidImageText();	
-        }	
-        );
+        }
+      }, errorBuilder: (context, error, stackTrace) {
+        return GeneralHelper.invalidImageText();
+      });
       // return Image.network(
       //   baseUrlLive + image.url,
       //   width: width,
@@ -283,35 +282,88 @@ class GeneralHelper {
     return _images;
   }
 
-  static getSizeByDevices(){
+  static getSizeByDevicesForImages(imagetype) {
     if (SizerUtil.deviceType == DeviceType.mobile) {
+      return 1;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      return 2;
+    } else {
+      if (globalConstraints.maxWidth < 600) {
+        //Mobile
         return 1;
-      } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      }
+      if (globalConstraints.maxWidth < 1230) {
+        //Tablet
         return 2;
       } else {
-        if (globalConstraints.maxWidth < 600) {
-          //Mobile
-          return 1;
-        }
-        if (globalConstraints.maxWidth < 1230) {
-          //Tablet
-          return 2;
+        //Web
+        if(ImageType.sectionImage == imagetype){
+          return 4;
         } else {
-          //Web
-          return 5;
+          return 2;
         }
       }
+    }
+  }
+
+  static getSizeByDevicesForItems() {
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      return 1;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      return 2;
+    } else {
+      if (globalConstraints.maxWidth < 600) {
+        //Mobile
+        return 1;
+      }
+      if (globalConstraints.maxWidth < 1230) {
+        //Tablet
+        return 2;
+      } else {
+        //Web
+        return 2;
+      }
+    }
+  }
+
+  static getSizeByDevicesForComments() {
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      return 1;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      return 2;
+    } else {
+      if (globalConstraints.maxWidth < 600) {
+        //Mobile
+        return 1;
+      }
+      if (globalConstraints.maxWidth < 1230) {
+        //Tablet
+        return 2;
+      } else {
+        //Web
+        return 2;
+      }
+    }
   }
 
   static displayMediaList(ids, List<ImageShape> media, int counts, imagetype) {
     int remainIdsCount = (ids.length - counts);
+    int crossAxisCountAdjust = 1;
+    if(ids.length <  GeneralHelper.getSizeByDevicesForImages(imagetype)){
+      crossAxisCountAdjust = ids.length;
+    } else {
+      crossAxisCountAdjust = GeneralHelper.getSizeByDevicesForImages(imagetype);
+    }
+    if(crossAxisCountAdjust ==0){
+      crossAxisCountAdjust =1;
+    }
     if (ids.length != 0) {
       if (ids.length < counts) {
         return MasonryGridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: ids.length,
-            crossAxisCount: isMobile ? 2 : ids.length,
+            crossAxisCount: crossAxisCountAdjust,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             itemBuilder: (context, countIndex) {
@@ -336,7 +388,7 @@ class GeneralHelper {
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
             itemCount: counts,
-            crossAxisCount: isMobile ? 2 : counts,
+            crossAxisCount: crossAxisCountAdjust,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             itemBuilder: (context, countIndex) {
