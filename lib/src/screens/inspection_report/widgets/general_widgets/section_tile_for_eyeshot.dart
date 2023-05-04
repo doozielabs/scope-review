@@ -110,7 +110,7 @@ class _SectionTileState extends State<SectionTile> {
                 ? Container(
                     width: 20.0,
                     height: 30.0,
-                    color: Colors.red,
+                    color: Colors.transparent,
                     child: Center(
                       child: SvgPicture.asset(
                         "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
