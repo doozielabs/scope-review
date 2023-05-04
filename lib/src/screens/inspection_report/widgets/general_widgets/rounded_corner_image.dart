@@ -164,7 +164,7 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
               ? ClipRRect(
                   borderRadius: BorderRadius.circular(borderRadiusValue),
                   child: Container(
-                    // width: width,
+                    width: width,
                     height: height,
                     decoration: BoxDecoration(
                       image: DecorationImage(

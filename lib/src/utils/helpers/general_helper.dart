@@ -193,7 +193,7 @@ class GeneralHelper {
       //     errorBuilder: (context, error, stackTrace) {	
       //         return GeneralHelper.invalidImageText();	
       // });
-      return NetworkImage(baseUrlLive + image.url, scale: scale);
+      return NetworkImage(baseUrlLive + image.url, scale: 1.0);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url.envRelativePath()), scale: scale);
@@ -281,6 +281,26 @@ class GeneralHelper {
       }
     }
     return _images;
+  }
+
+  static getSizeByDevices(){
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+        return 1;
+      } else if (SizerUtil.deviceType == DeviceType.tablet) {
+        return 2;
+      } else {
+        if (globalConstraints.maxWidth < 600) {
+          //Mobile
+          return 1;
+        }
+        if (globalConstraints.maxWidth < 1230) {
+          //Tablet
+          return 2;
+        } else {
+          //Web
+          return 5;
+        }
+      }
   }
 
   static displayMediaList(ids, List<ImageShape> media, int counts, imagetype) {

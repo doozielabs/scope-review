@@ -135,6 +135,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       constraintStream.add(constraints.maxWidth);
+      globalConstraints = constraints;
       if (SizerUtil.deviceType == DeviceType.mobile) {
         //Mobile
         return SafeArea(
