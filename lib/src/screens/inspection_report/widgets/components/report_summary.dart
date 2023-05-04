@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
@@ -105,19 +106,40 @@ class _ReportSummaryState extends State<ReportSummary> {
                           const HorizontalDividerWidget(
                             color: ProjectColors.pickledBluewood,
                           ),
-                          ...List.generate(deficiencyComments.length, (index) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.only(top: 7.0, bottom: 7.0),
-                              child: SectionCommentCard(
-                                needJumpToSectionButton: true,
-                                comment: deficiencyComments[index],
-                                commentTitle: widget.inspection.template!
-                                    .commentTitle(deficiencyComments[index]),
-                                media: widget.media!,
-                              ),
-                            );
-                          })
+                           MasonryGridView.count(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: deficiencyComments.length,
+                            crossAxisCount: isMobile
+                                ? 1
+                                : isTablet
+                                    ? 2
+                                    : 3,
+                            mainAxisSpacing: 4,
+                            crossAxisSpacing: 4,
+                            itemBuilder: (context, index) {
+                              return SectionCommentCard(
+                                  // key:itemKeys[inspection
+                                  //     .template!.sections[sectionIndex].comments[sectionCommentIndex].uid!],
+                                  needJumpToSectionButton: true,
+                                  commentTitle:widget.inspection.template!.commentTitle(deficiencyComments[index]),
+                                  comment: deficiencyComments[index],
+                                  media: widget.media!);
+                            },
+                          )
+                          // ...List.generate(deficiencyComments.length, (index) {
+                          //   return Padding(
+                          //     padding:
+                          //         const EdgeInsets.only(top: 7.0, bottom: 7.0),
+                          //     child: SectionCommentCard(
+                          //       needJumpToSectionButton: true,
+                          //       comment: deficiencyComments[index],
+                          //       commentTitle: widget.inspection.template!
+                          //           .commentTitle(deficiencyComments[index]),
+                          //       media: widget.media!,
+                          //     ),
+                          //   );
+                          // })
                         ],
                       )
                     : const SizedBox()

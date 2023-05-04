@@ -16,9 +16,9 @@ class SubHeadingOfInspectionDescritpion extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: primaryText,
-        style: primaryHeadingTextStyle.copyWith(
+        style: secondryHeadingTextStyle.copyWith(
           color: ProjectColors.firefly,
-          fontSize: 16.0,
+          fontSize: 14.0,
         ),
         children: <TextSpan>[
           TextSpan(

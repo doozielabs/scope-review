@@ -59,8 +59,8 @@ class SectionCommentCard extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             needJumpToSectionButton
-                ? Text(comment.comment, style: secondryHeadingTextStyle.copyWith( color: ProjectColors.black, ))
-                : Text(comment.comment, style: secondryHeadingTextStyle.copyWith(color: ProjectColors.black,), key: thisCommentKey),
+                ? Text(comment.comment, style: secondryHeadingTextStyle.copyWith( color: ProjectColors.pickledBluewood, ))
+                : Text(comment.comment, key: thisCommentKey, style: secondryHeadingTextStyle.copyWith(color: ProjectColors.pickledBluewood,)),
             Padding(
               padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
               child: Wrap(
