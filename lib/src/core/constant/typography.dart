@@ -4,7 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 const String fontFamilyJostLight = "jost-Light";
 const String fontFamilyJostRegular = "jost-Regular";
 const String fontFamilyJostMedium = "jost-Medium";
-const String fontFamilyJostSemiBold = "jost-semiBold";
+const String fontFamilyJostSemiBold = "jost-SemiBold";
 
 const TextStyle primaryHeadingTextStyle = TextStyle(
   fontSize: 16,

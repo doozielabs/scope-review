@@ -51,16 +51,16 @@ flutter:
   # example:
   # fonts:
   fonts:
-    - family: jost-light
+    - family: jost-Light
       fonts:
         - asset: assets/fonts/Jost-Light.ttf
     - family: jost-Medium
       fonts:
         - asset: assets/fonts/Jost-Medium.ttf
-    - family: jost-regular
+    - family: jost-Regular
       fonts:
         - asset: assets/fonts/Jost-Regular.ttf
-    - family: jost-semiBold
+    - family: jost-SemiBold
       fonts:
         - asset: assets/fonts/Jost-SemiBold.ttf
 

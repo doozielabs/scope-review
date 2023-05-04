@@ -16,17 +16,17 @@ class SubHeadingOfInspectionDescritpion extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: primaryText,
-        style: const TextStyle(
-            color: ProjectColors.firefly,
-            fontSize: 16.0,
-            fontFamily: fontFamilyJostRegular),
+        style: primaryHeadingTextStyle.copyWith(
+          color: ProjectColors.firefly,
+          fontSize: 16.0,
+        ),
         children: <TextSpan>[
           TextSpan(
             text: " $secondryText",
-            style: const TextStyle(
+            style: secondryHeadingTextStyle.copyWith(
               color: ProjectColors.pickledBluewood,
               fontWeight: FontWeight.bold,
-            ),
+            )
           ),
         ],
       ),

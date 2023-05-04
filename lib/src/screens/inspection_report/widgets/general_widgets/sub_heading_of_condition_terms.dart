@@ -16,17 +16,17 @@ class SubHeadingOfConditionTerms extends StatelessWidget {
     return RichText(
       text: TextSpan(
         text: "$primaryText\n",
-        style: const TextStyle(
-            color: ProjectColors.firefly,
-            fontSize: 18.0,
-            fontFamily: fontFamilyJostMedium),
+        style: primaryHeadingTextStyle.copyWith(
+          color: ProjectColors.firefly,
+          fontSize: 18.0,
+        ),
         children: <TextSpan>[
           TextSpan(
             text: secondryText,
-            style: const TextStyle(
-                fontSize: 16.0,
-                color: ProjectColors.pickledBluewood,
-                fontFamily: fontFamilyJostRegular),
+            style: secondryHeadingTextStyle.copyWith(
+              fontSize: 16.0,
+              color: ProjectColors.pickledBluewood,
+            )
           ),
         ],
       ),

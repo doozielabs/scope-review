@@ -41,6 +41,7 @@ class LegendItem extends StatelessWidget {
               Text(
                 value,
                 style: secondryHeadingTextStyle.copyWith(
+                    fontFamily: fontFamilyJostRegular,
                     color: ProjectColors.tundora),
               ),
             ],
