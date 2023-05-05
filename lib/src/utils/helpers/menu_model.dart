@@ -9,37 +9,19 @@ class ShowMenuDialogue {
 
   ShowMenuDialogue(this._showDialog);
 
-  void showMenu(BuildContext context, dynamic inspection) {
+  void showMenu(BuildContext context, dynamic inspection,
+      {Function? sharepdf}) {
     InspectionModel inspectionModel =
         InspectionModel.fromJson(jsonDecode(inspection));
-
-    print("inspectionModel:${inspectionModel.name}");
     if (_showDialog && inspectionModel.template!.sections.isNotEmpty) {
-      // Show the dialog
       showDialog(
-          // barrierDismissible: false,
           context: context,
           builder: (BuildContext context) {
             return SectionEyeShotForMobileAndTablet(
-                inspection: inspectionModel);
+              inspection: inspectionModel,
+              sharePdf: sharepdf,
+            );
           });
-      // showDialog(
-      //   context: context,
-      //   builder: (BuildContext context) {
-      //     return AlertDialog(
-      //       title: Text("Alert Dialog"),
-      //       content: Text("Dialog Content"),
-      //       actions: [
-      //         TextButton(
-      //           child: Text("Close"),
-      //           onPressed: () {
-      //             Navigator.of(context).pop();
-      //           },
-      //         )
-      //       ],
-      //     );
-      //   },
-      // );
     }
   }
 }
