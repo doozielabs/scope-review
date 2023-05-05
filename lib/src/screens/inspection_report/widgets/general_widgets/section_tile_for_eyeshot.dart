@@ -41,7 +41,7 @@ class _SectionTileState extends State<SectionTile> {
       children: [
         InkWell(
           child: Text(
-            GeneralHelper.getNameWithDots(widget.section.name!, 10),
+            GeneralHelper.getNameWithDots(widget.section.name!, 15),
             style: primaryHeadingTextStyle.copyWith(
               letterSpacing: 2,
               color: ProjectColors.primary,
@@ -65,67 +65,68 @@ class _SectionTileState extends State<SectionTile> {
             });
           },
         ),
-        !(widget.section.name == "Information" || widget.section.name == "Report Summary") ?
-        Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SvgPicture.asset(
-              "assets/svg/comments.svg",
-              package: "pdf_report_scope",
-              width: 12,
-              height: 12,
-            ),
-            const SizedBox(width: 7.17),
-            Text(
-              widget.totalComments.toString(),
-              style: b4Medium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(width: 7.17),
-            SvgPicture.asset(
-              "assets/svg/deficiency.svg",
-              package: "pdf_report_scope",
-              width: 12,
-              height: 12,
-            ),
-            const SizedBox(width: 7.17),
-            Text(
-              widget.diffencyCount.toString(),
-              style: b4Medium.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            widget.hasSubsections
-                ? const SizedBox(width: 12)
-                : const SizedBox(),
-            widget.hasSubsections
-                ? SizedBox(
-                    height: 23,
-                    child: VerticalDivider(
-                      color: ProjectColors.primary.withOpacity(0.50),
+        !(widget.section.name == "Information" ||
+                widget.section.name == "Report Summary")
+            ? Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SvgPicture.asset(
+                    "assets/svg/comments.svg",
+                    package: "pdf_report_scope",
+                    width: 12,
+                    height: 12,
+                  ),
+                  const SizedBox(width: 7.17),
+                  Text(
+                    widget.totalComments.toString(),
+                    style: b4Medium.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                  )
-                : const SizedBox(),
-            widget.hasSubsections
-                ? const SizedBox(width: 12)
-                : const SizedBox(),
-            widget.hasSubsections
-                ? Container(
-                    width: 20.0,
-                    height: 30.0,
-                    color: Colors.transparent,
-                    child: Center(
-                      child: SvgPicture.asset(
-                        "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
-                        package: "pdf_report_scope",
-                      ),
+                  ),
+                  const SizedBox(width: 7.17),
+                  SvgPicture.asset(
+                    "assets/svg/deficiency.svg",
+                    package: "pdf_report_scope",
+                    width: 12,
+                    height: 12,
+                  ),
+                  const SizedBox(width: 7.17),
+                  Text(
+                    widget.diffencyCount.toString(),
+                    style: b4Medium.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                  )
-                : const SizedBox()
-          ],
-        )
-        : SizedBox.shrink() 
+                  ),
+                  widget.hasSubsections
+                      ? const SizedBox(width: 12)
+                      : const SizedBox(),
+                  widget.hasSubsections
+                      ? SizedBox(
+                          height: 23,
+                          child: VerticalDivider(
+                            color: ProjectColors.primary.withOpacity(0.50),
+                          ),
+                        )
+                      : const SizedBox(),
+                  widget.hasSubsections
+                      ? const SizedBox(width: 12)
+                      : const SizedBox(),
+                  widget.hasSubsections
+                      ? Container(
+                          width: 20.0,
+                          height: 30.0,
+                          color: Colors.transparent,
+                          child: Center(
+                            child: SvgPicture.asset(
+                              "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
+                              package: "pdf_report_scope",
+                            ),
+                          ),
+                        )
+                      : const SizedBox()
+                ],
+              )
+            : SizedBox.shrink()
       ],
     );
   }

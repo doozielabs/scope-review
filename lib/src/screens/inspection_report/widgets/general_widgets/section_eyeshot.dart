@@ -24,7 +24,7 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
-      late List<TemplateSection> sections = widget.inspection.template!.sections;
+  late List<TemplateSection> sections = widget.inspection.template!.sections;
   List<bool> isExpanded = [];
   _search(text) async {
     sections = await widget.inspection.template!.sections.filter(text);
@@ -210,8 +210,7 @@ class _SectionEyeShotForMobileState
                           hasSectionItemComments ||
                           hasSubSections ||
                           section.name == "Information" ||
-                          section.name == "Report Summary"
-                          ) {
+                          section.name == "Report Summary") {
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Container(
@@ -295,7 +294,7 @@ class _SectionEyeShotForMobileState
                                                             subSection)[0],
                                                   ),
                                                 );
-                                              }),
+                                              })
                                         ],
                                       )
                                     : const SizedBox(),
@@ -307,6 +306,7 @@ class _SectionEyeShotForMobileState
                         return const SizedBox();
                       }
                     }),
+                    const SizedBox(height: 50)
                   ],
                 ),
               ),
