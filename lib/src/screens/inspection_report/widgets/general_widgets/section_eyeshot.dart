@@ -12,10 +12,10 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final InspectionModel inspection;
-  const SectionEyeShotForMobileAndTablet({
-    Key? key,
-    required this.inspection,
-  }) : super(key: key);
+  final Function? sharePdf;
+  const SectionEyeShotForMobileAndTablet(
+      {Key? key, required this.inspection, this.sharePdf})
+      : super(key: key);
 
   @override
   State<SectionEyeShotForMobileAndTablet> createState() =>
@@ -318,6 +318,7 @@ class _SectionEyeShotForMobileState
                 child: ElevatedButton(
                   onPressed: () {
                     // add your onPressed function here
+                    if (widget.sharePdf != null) widget.sharePdf!();
                   },
                   style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

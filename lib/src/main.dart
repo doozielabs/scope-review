@@ -20,13 +20,17 @@ class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final dynamic inspection;
   final List media;
-  final Function(String url)? printCallBack;
+  final Function? printCallBack;
+  final Function? downloadCallBack;
+  final Function? sharePdf;
   const PDFReport(
       {Key? key,
       required this.showDialogue,
       this.inspection,
       required this.media,
-      this.printCallBack})
+      this.printCallBack,
+      this.downloadCallBack,
+      this.sharePdf})
       : super(key: key);
 
   @override
@@ -55,49 +59,49 @@ class _PDFReportState extends State<PDFReport> {
 
   @override
   Widget build(BuildContext context) {
-    if(kIsWeb){
-    var inspectionID = Uri.base.pathSegments;
-    var concatenate = inspectionID.join("");
+    if (kIsWeb) {
+      var inspectionID = Uri.base.pathSegments;
+      var concatenate = inspectionID.join("");
       return Sizer(
-        builder: ((context, orientation, deviceType) => MaterialApp(
-              navigatorKey: NavigationService.navigatorKey,
-              debugShowCheckedModeBanner: false,
-              title: 'Inspektify Report',
-              initialRoute : "/$concatenate",
-              routes: <String, WidgetBuilder> {
-                  "/$concatenate" : (context) =>  isLoading ? const CupertinoActivityIndicator(
-                      color: ProjectColors.firefly)
-                      : inspection.template == null
+          builder: ((context, orientation, deviceType) => MaterialApp(
+                navigatorKey: NavigationService.navigatorKey,
+                debugShowCheckedModeBanner: false,
+                title: 'Inspektify Report',
+                initialRoute: "/$concatenate",
+                routes: <String, WidgetBuilder>{
+                  "/$concatenate": (context) => isLoading
                       ? const CupertinoActivityIndicator(
                           color: ProjectColors.firefly)
-                      : InspectionReportScreen(
-                          inspection: inspection,
-                          media: media,
-                          showDialogue: widget.showDialogue,
-                          printCallBack: widget.printCallBack,
-                        ),
-
-              },
-            )));
+                      : inspection.template == null
+                          ? const CupertinoActivityIndicator(
+                              color: ProjectColors.firefly)
+                          : InspectionReportScreen(
+                              inspection: inspection,
+                              media: media,
+                              showDialogue: widget.showDialogue,
+                              printCallBack: widget.printCallBack,
+                              downloadCallBack: widget.downloadCallBack,
+                              sharePdf: widget.sharePdf),
+                },
+              )));
     } else {
       return Sizer(
-        builder: ((context, orientation, deviceType) => MaterialApp(
-              navigatorKey: NavigationService.navigatorKey,
-              debugShowCheckedModeBanner: false,
-              title: 'Inspektify Report',
-              home: isLoading
-                  ? const CupertinoActivityIndicator(
-                      color: ProjectColors.firefly)
-                  : inspection.template == null
-                      ? const CupertinoActivityIndicator(
-                          color: ProjectColors.firefly)
-                      : InspectionReportScreen(
-                          inspection: inspection,
-                          media: media,
-                          showDialogue: widget.showDialogue,
-                        ),
-            )));
+          builder: ((context, orientation, deviceType) => MaterialApp(
+                navigatorKey: NavigationService.navigatorKey,
+                debugShowCheckedModeBanner: false,
+                title: 'Inspektify Report',
+                home: isLoading
+                    ? const CupertinoActivityIndicator(
+                        color: ProjectColors.firefly)
+                    : inspection.template == null
+                        ? const CupertinoActivityIndicator(
+                            color: ProjectColors.firefly)
+                        : InspectionReportScreen(
+                            inspection: inspection,
+                            media: media,
+                            showDialogue: widget.showDialogue,
+                          ),
+              )));
     }
-    
   }
 }

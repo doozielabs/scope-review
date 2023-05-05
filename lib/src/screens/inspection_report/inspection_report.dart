@@ -22,13 +22,17 @@ class InspectionReportScreen extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
   final bool showDialogue;
-  final Function(String url)? printCallBack;
+  final Function? printCallBack;
+  final Function? downloadCallBack;
+  final Function? sharePdf;
   const InspectionReportScreen(
       {Key? key,
       required this.inspection,
       required this.media,
       required this.showDialogue,
-      this.printCallBack})
+      this.printCallBack,
+      this.downloadCallBack,
+      this.sharePdf})
       : super(key: key);
 
   @override
@@ -217,7 +221,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return SectionEyeShotForMobileAndTablet(
-                                inspection: widget.inspection);
+                                inspection: widget.inspection,
+                                sharePdf: widget.sharePdf);
                           });
                     },
                     child: Padding(
@@ -269,7 +274,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return SectionEyeShotForMobileAndTablet(
-                                inspection: widget.inspection);
+                                inspection: widget.inspection,
+                                sharePdf: widget.sharePdf);
                           });
                     },
                     child: Padding(
@@ -650,10 +656,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                 children: [
                                                   ElevatedButton(
                                                     onPressed: () {
-                                                      // if(kIsWeb){
-                                                      //   js.context.callMethod('open', ['https://api.scopeinspectapp.com/pdfs/inspections-'+widget.inspection.id.toString()+'.pdf']);
-                                                      // }
-                                                      // add your onPressed function here
+                                                      if (widget
+                                                              .printCallBack !=
+                                                          null) {
+                                                        widget.printCallBack!();
+                                                      }
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
@@ -690,9 +697,10 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                     onPressed: () {
                                                       print("I am called");
                                                       if (widget
-                                                              .printCallBack !=
+                                                              .downloadCallBack !=
                                                           null) {
-                                                        widget.printCallBack;
+                                                        widget
+                                                            .downloadCallBack!();
                                                       }
                                                       // downloadFile(
                                                       //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
