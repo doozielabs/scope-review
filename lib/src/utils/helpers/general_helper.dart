@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -129,67 +128,92 @@ class GeneralHelper {
   static List<double> getHeaderImageSizesForWeb() {
     double width = 0;
     double height = 0;
-    if (globalConstraints.maxWidth < 600) {
+    if (globalConstraints.maxWidth < 500) {
       //Mobile
       width = 300.sp;
       height = 35.h;
+      return [width, height];
     }
     if (globalConstraints.maxWidth < 1230) {
       //Tablet
       width = 120.sp;
       height = 80.h;
+      return [width, height];
     } else {
       //Web
       width = 90.sp;
       height = 70.h;
+      return [width, height];
     }
-    return [width, height];
   }
 
   static getMediaForHeader(ids, List<ImageShape> media) {
     int counts = 1;
     if (ids.length == 0) {
-      return ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: (SizerUtil.deviceType == DeviceType.tablet ||
-                  SizerUtil.deviceType == DeviceType.mobile)
-              ? Image.asset(
-                  "assets/images/default_image.png",
-                  package: "pdf_report_scope",
-                  fit: BoxFit.fill,
-                  width: 120.sp,
-                  height: 55.h,
-                )
-              : Image.network(
-                  baseUrlLive + defaultHeaderImage1,
-                  fit: BoxFit.fill,
-                  width: getHeaderImageSizesForWeb()[0],
-                  height: getHeaderImageSizesForWeb()[1],
-                ));
-    } else {
-      int remainIdsCount = (ids.length - 1);
-      return (SizerUtil.deviceType == DeviceType.tablet ||
-              SizerUtil.deviceType == DeviceType.mobile)
-          ? ImageWithRoundedCornersForHeader(
-              imageUrl: GeneralHelper.getMediaById(ids[0], media),
-              width: 130.sp,
-              boxFit: BoxFit.fill,
+      if (SizerUtil.deviceType == DeviceType.mobile) {
+        return ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              "assets/images/default_image.png",
+              package: "pdf_report_scope",
+              fit: BoxFit.fill,
+            ));
+      } else if (SizerUtil.deviceType == DeviceType.tablet) {
+        return ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.asset(
+              "assets/images/default_image.png",
+              package: "pdf_report_scope",
+              fit: BoxFit.fill,
+              width: 120.sp,
               height: 55.h,
-              remain: remainIdsCount,
-              lastItem: true,
-              ids: ids,
-              media: media,
-            )
-          : ImageWithRoundedCornersForHeader(
-              imageUrl: GeneralHelper.getMediaById(ids[0], media),
-              boxFit: BoxFit.fill,
+            ));
+      } else {
+        return ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+            child: Image.network(
+              baseUrlLive + defaultHeaderImage1,
+              fit: BoxFit.fill,
               width: getHeaderImageSizesForWeb()[0],
               height: getHeaderImageSizesForWeb()[1],
-              remain: remainIdsCount,
-              lastItem: true,
-              ids: ids,
-              media: media,
-            );
+            ));
+      }
+    } else {
+      int remainIdsCount = (ids.length - 1);
+      if (SizerUtil.deviceType == DeviceType.mobile) {
+        return ImageWithRoundedCornersForHeader(
+          imageUrl: GeneralHelper.getMediaById(ids[0], media),
+          // width: 130.sp,
+          // boxFit: BoxFit.fill,
+          // height: 55.h,
+          remain: remainIdsCount,
+          lastItem: true,
+          ids: ids,
+          media: media,
+        );
+      } else if (SizerUtil.deviceType == DeviceType.tablet) {
+        return ImageWithRoundedCornersForHeader(
+          imageUrl: GeneralHelper.getMediaById(ids[0], media),
+          width: 130.sp,
+          boxFit: BoxFit.fill,
+          height: 55.h,
+          remain: remainIdsCount,
+          lastItem: true,
+          ids: ids,
+          media: media,
+        );
+      } else {
+        return ImageWithRoundedCornersForHeader(
+          imageUrl: GeneralHelper.getMediaById(ids[0], media),
+          boxFit: BoxFit.fill,
+          width: getHeaderImageSizesForWeb()[0],
+          height: getHeaderImageSizesForWeb()[1],
+          remain: remainIdsCount,
+          lastItem: true,
+          ids: ids,
+          media: media,
+        );
+      }
     }
   }
 
@@ -754,63 +778,31 @@ class CustomDialog extends StatefulWidget {
 class _CustomDialogState extends State<CustomDialog> {
   final CarouselController _controller = CarouselController();
   int _current = 0;
-
-  // dialogContent(BuildContext context) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey[850],
-  //       shape: BoxShape.rectangle,
-  //       borderRadius: BorderRadius.circular(20),
-  //     ),
-  //     child: Column(
-  //       crossAxisAlignment: CrossAxisAlignment.center,
-  //       children: <Widget>[
-  //         Padding(
-  //           padding: const EdgeInsets.all(10.0),
-  //           child: Align(
-  //             alignment: Alignment.topRight,
-  //             child: TextButton(
-  //               onPressed: () {
-  //                 Navigator.of(context).pop();
-  //               },
-  //               child: const Icon(Icons.cancel),
-  //             ),
-  //           ),
-  //         ),
-  //         const SizedBox(height: 24.0),
-  //         _indicators(),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
     final List<ImageShape> imageUrl =
         GeneralHelper.getMediaList(widget.ids, widget.media);
-    return AlertDialog(
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          InkWell(
-            onTap: () => Navigator.pop(context),
-            child: SvgPicture.asset(
-              "assets/svg/close.svg",
-              package: "pdf_report_scope",
-              color: ProjectColors.white,
-            ),
-          )
-        ],
-      ),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
-      elevation: 0.0,
-      backgroundColor: Colors.transparent,
-      content: (SizerUtil.deviceType == DeviceType.mobile ||
-              SizerUtil.deviceType == DeviceType.tablet ||
-              globalConstraints.maxWidth < 700)
-          ? SizedBox(
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: SvgPicture.asset(
+                  "assets/svg/close.svg",
+                  package: "pdf_report_scope",
+                  color: ProjectColors.white,
+                ),
+              )
+            ],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          content: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: SingleChildScrollView(
                 child: Column(
@@ -868,28 +860,211 @@ class _CustomDialogState extends State<CustomDialog> {
                     )
                   ],
                 ),
-              ))
-          : globalConstraints.maxWidth < 1230
-              ? SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 100.sp,
-                          child: CarouselSlider(
-                            carouselController: _controller,
-                            options: CarouselOptions(
-                              aspectRatio: 1,
-                              enlargeCenterPage: true,
-                              clipBehavior: Clip.none,
-                              enableInfiniteScroll: false,
-                              enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                              onPageChanged: (indexed, r) =>
-                                  setState(() => _current = indexed),
+              )));
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      return AlertDialog(
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              InkWell(
+                onTap: () => Navigator.pop(context),
+                child: SvgPicture.asset(
+                  "assets/svg/close.svg",
+                  package: "pdf_report_scope",
+                  color: ProjectColors.white,
+                ),
+              )
+            ],
+          ),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          content: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    CarouselSlider(
+                      carouselController: _controller,
+                      options: CarouselOptions(
+                        aspectRatio: 1,
+                        enlargeCenterPage: true,
+                        clipBehavior: Clip.none,
+                        enableInfiniteScroll: false,
+                        enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                        onPageChanged: (indexed, r) =>
+                            setState(() => _current = indexed),
+                      ),
+                      items: imageUrl
+                          .map((item) => ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child:
+                                    GeneralHelper.imageHandlerForRoundedConner(
+                                  item,
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, imageUrl)[0],
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, imageUrl)[1],
+                                ),
+                              ))
+                          .toList(),
+                    ),
+                    const SizedBox(height: 24.0),
+                    Wrap(
+                      direction: Axis.horizontal,
+                      children: List.generate(
+                        imageUrl.length,
+                        (index) => GestureDetector(
+                          onTap: () => _controller.animateToPage(
+                            index,
+                            curve: Curves.fastOutSlowIn,
+                            duration: const Duration(milliseconds: 800),
+                          ),
+                          child: Container(
+                            width: 10,
+                            height: 10,
+                            margin:
+                                EdgeInsets.only(left: index.isZero ? 0 : 10),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(_current == index ? 1.0 : 0.4),
                             ),
-                            items: imageUrl
-                                .map((item) => ClipRRect(
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )));
+    } else {
+      if (globalConstraints.maxWidth < 600) {
+        //Mobile (Done)
+        return AlertDialog(
+            title: Padding(
+              padding: EdgeInsets.only(top: 7.h, bottom: 7.h),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  InkWell(
+                    onTap: () => Navigator.pop(context),
+                    child: SvgPicture.asset(
+                      "assets/svg/close.svg",
+                      package: "pdf_report_scope",
+                      color: ProjectColors.white,
+                    ),
+                  )
+                ],
+              ),
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            content: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      CarouselSlider(
+                        carouselController: _controller,
+                        options: CarouselOptions(
+                          aspectRatio: 1,
+                          enlargeCenterPage: true,
+                          clipBehavior: Clip.none,
+                          enableInfiniteScroll: false,
+                          enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                          onPageChanged: (indexed, r) =>
+                              setState(() => _current = indexed),
+                        ),
+                        items: imageUrl
+                            .map((item) => ClipRRect(
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: GeneralHelper
+                                      .imageHandlerForRoundedConner(
+                                    item,
+                                    getImageWidthHeight(
+                                        ImageType.sectionImage, imageUrl)[0],
+                                    getImageWidthHeight(
+                                        ImageType.sectionImage, imageUrl)[1],
+                                  ),
+                                ))
+                            .toList(),
+                      ),
+                      const SizedBox(height: 24.0),
+                      Wrap(
+                        direction: Axis.horizontal,
+                        children: List.generate(
+                          imageUrl.length,
+                          (index) => GestureDetector(
+                            onTap: () => _controller.animateToPage(
+                              index,
+                              curve: Curves.fastOutSlowIn,
+                              duration: const Duration(milliseconds: 800),
+                            ),
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              margin:
+                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .scaffoldBackgroundColor
+                                    .withOpacity(_current == index ? 1.0 : 0.4),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )));
+      } else if (globalConstraints.maxWidth < 900) {
+        //Tablet
+        return AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgPicture.asset(
+                    "assets/svg/close.svg",
+                    package: "pdf_report_scope",
+                    color: ProjectColors.white,
+                  ),
+                )
+              ],
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            content: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 150.sp,
+                        child: CarouselSlider(
+                          carouselController: _controller,
+                          options: CarouselOptions(
+                            aspectRatio: 1,
+                            enlargeCenterPage: true,
+                            clipBehavior: Clip.none,
+                            enableInfiniteScroll: false,
+                            enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                            onPageChanged: (indexed, r) =>
+                                setState(() => _current = indexed),
+                          ),
+                          items: imageUrl
+                              .map((item) => ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
                                     child: GeneralHelper
                                         .imageHandlerForRoundedConner(
@@ -898,170 +1073,265 @@ class _CustomDialogState extends State<CustomDialog> {
                                           ImageType.sectionImage, imageUrl)[0],
                                       getImageWidthHeight(
                                           ImageType.sectionImage, imageUrl)[1],
-                                    )))
-                                .toList(),
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                      const SizedBox(height: 24.0),
+                      Wrap(
+                        direction: Axis.horizontal,
+                        children: List.generate(
+                          imageUrl.length,
+                          (index) => GestureDetector(
+                            onTap: () => _controller.animateToPage(
+                              index,
+                              curve: Curves.fastOutSlowIn,
+                              duration: const Duration(milliseconds: 800),
+                            ),
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              margin:
+                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .scaffoldBackgroundColor
+                                    .withOpacity(_current == index ? 1.0 : 0.4),
+                              ),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 24.0),
-                        Wrap(
-                          direction: Axis.horizontal,
-                          children: List.generate(
-                            imageUrl.length,
-                            (index) => GestureDetector(
-                              onTap: () => _controller.animateToPage(
-                                index,
-                                curve: Curves.fastOutSlowIn,
-                                duration: const Duration(milliseconds: 800),
-                              ),
-                              child: Container(
-                                width: 10,
-                                height: 10,
-                                margin: EdgeInsets.only(
-                                    left: index.isZero ? 0 : 10),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Theme.of(context)
-                                      .scaffoldBackgroundColor
-                                      .withOpacity(
-                                          _current == index ? 1.0 : 0.4),
-                                ),
-                              ),
-                            ),
+                      )
+                    ],
+                  ),
+                )));
+      } else if (globalConstraints.maxWidth < 1260) {
+        //Tablet
+        return AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgPicture.asset(
+                    "assets/svg/close.svg",
+                    package: "pdf_report_scope",
+                    color: ProjectColors.white,
+                  ),
+                )
+              ],
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            content: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 150.sp,
+                        child: CarouselSlider(
+                          carouselController: _controller,
+                          options: CarouselOptions(
+                            aspectRatio: 1,
+                            enlargeCenterPage: true,
+                            clipBehavior: Clip.none,
+                            enableInfiniteScroll: false,
+                            enlargeStrategy: CenterPageEnlargeStrategy.scale,
+                            onPageChanged: (indexed, r) =>
+                                setState(() => _current = indexed),
                           ),
-                        )
-                      ],
-                    ),
-                  ))
-              : Stack(
-                  children: [
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        child: SingleChildScrollView(
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.only(top: 50.0, bottom: 50),
-                            child: Column(
-                              children: [
-                                SizedBox(
-                                  height: 100.sp,
-                                  width: 100.sp,
-                                  child: CarouselSlider(
-                                    carouselController: _controller,
-                                    options: CarouselOptions(
-                                      aspectRatio: 1,
-                                      enlargeCenterPage: true,
-                                      clipBehavior: Clip.none,
-                                      enableInfiniteScroll: false,
-                                      enlargeStrategy:
-                                          CenterPageEnlargeStrategy.scale,
-                                      onPageChanged: (indexed, r) =>
-                                          setState(() => _current = indexed),
+                          items: imageUrl
+                              .map((item) => ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: GeneralHelper
+                                        .imageHandlerForRoundedConner(
+                                      item,
+                                      getImageWidthHeight(
+                                          ImageType.sectionImage, imageUrl)[0],
+                                      getImageWidthHeight(
+                                          ImageType.sectionImage, imageUrl)[1],
                                     ),
-                                    items: imageUrl
-                                        .map((item) => ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              child: GeneralHelper
-                                                  .imageHandlerForRoundedConner(
-                                                item,
-                                                getImageWidthHeight(
-                                                        ImageType.sectionImage,
-                                                        imageUrl)[0] /
-                                                    2,
-                                                getImageWidthHeight(
-                                                    ImageType.sectionImage,
-                                                    imageUrl)[1],
-                                              ),
-                                              // Image.network(
-                                              //   item.url,
-                                              //   fit: BoxFit.cover,
-                                              // ),
-                                            ))
-                                        .toList(),
-                                  ),
-                                ),
-                                const SizedBox(height: 24.0),
-                                Wrap(
-                                  direction: Axis.horizontal,
-                                  // mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                    imageUrl.length,
-                                    (index) => GestureDetector(
-                                      onTap: () => _controller.animateToPage(
-                                        index,
-                                        curve: Curves.fastOutSlowIn,
-                                        duration:
-                                            const Duration(milliseconds: 800),
-                                      ),
-                                      child: Container(
-                                        width: 10,
-                                        height: 10,
-                                        margin: EdgeInsets.only(
-                                            left: index.isZero ? 0 : 10),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: Theme.of(context)
-                                              .scaffoldBackgroundColor
-                                              .withOpacity(_current == index
-                                                  ? 1.0
-                                                  : 0.4),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                          ),
-                        )),
-                    Align(
-                      alignment: Alignment.center,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IconButton(
-                              color: Colors.white,
-                              hoverColor: Colors.transparent,
-                              onPressed: () {
-                                if (_current != 0) {
-                                  _current--;
-                                  setState(() {});
-                                }
-                                _controller.animateToPage(
-                                  _current,
-                                  curve: Curves.fastOutSlowIn,
-                                  duration: const Duration(milliseconds: 800),
-                                );
-                              },
-                              icon: Icon(
-                                size: 10.sp,
-                                Icons.chevron_left,
-                                color: Colors.white,
-                              )),
-                          IconButton(
-                              color: Colors.white,
-                              hoverColor: Colors.transparent,
-                              onPressed: () {
-                                if (_current != imageUrl.lastIndex) {
-                                  _current++;
-                                  setState(() {});
-                                }
-                                _controller.animateToPage(
-                                  _current,
-                                  curve: Curves.fastOutSlowIn,
-                                  duration: const Duration(milliseconds: 800),
-                                );
-                              },
-                              icon: Icon(
-                                size: 10.sp,
-                                Icons.chevron_right,
-                                color: Colors.white,
-                              ))
-                        ],
+                                  ))
+                              .toList(),
+                        ),
                       ),
-                    )
-                  ],
-                ),
-    );
+                      const SizedBox(height: 24.0),
+                      Wrap(
+                        direction: Axis.horizontal,
+                        children: List.generate(
+                          imageUrl.length,
+                          (index) => GestureDetector(
+                            onTap: () => _controller.animateToPage(
+                              index,
+                              curve: Curves.fastOutSlowIn,
+                              duration: const Duration(milliseconds: 800),
+                            ),
+                            child: Container(
+                              width: 10,
+                              height: 10,
+                              margin:
+                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Theme.of(context)
+                                    .scaffoldBackgroundColor
+                                    .withOpacity(_current == index ? 1.0 : 0.4),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                )));
+      } else {
+        //Web
+        return AlertDialog(
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () => Navigator.pop(context),
+                  child: SvgPicture.asset(
+                    "assets/svg/close.svg",
+                    package: "pdf_report_scope",
+                    color: ProjectColors.white,
+                  ),
+                )
+              ],
+            ),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            elevation: 0.0,
+            backgroundColor: Colors.transparent,
+            content: Stack(
+              children: [
+                SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 50.0, bottom: 50),
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: 100.sp,
+                              width: 100.sp,
+                              child: CarouselSlider(
+                                carouselController: _controller,
+                                options: CarouselOptions(
+                                  aspectRatio: 1,
+                                  enlargeCenterPage: true,
+                                  clipBehavior: Clip.none,
+                                  enableInfiniteScroll: false,
+                                  enlargeStrategy:
+                                      CenterPageEnlargeStrategy.scale,
+                                  onPageChanged: (indexed, r) =>
+                                      setState(() => _current = indexed),
+                                ),
+                                items: imageUrl
+                                    .map((item) => ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          child: GeneralHelper
+                                              .imageHandlerForRoundedConner(
+                                            item,
+                                            getImageWidthHeight(
+                                                ImageType.sectionImage,
+                                                imageUrl)[0],
+                                            getImageWidthHeight(
+                                                ImageType.sectionImage,
+                                                imageUrl)[1],
+                                          ),
+                                        ))
+                                    .toList(),
+                              ),
+                            ),
+                            const SizedBox(height: 24.0),
+                            Wrap(
+                              direction: Axis.horizontal,
+                              // mainAxisAlignment: MainAxisAlignment.center,
+                              children: List.generate(
+                                imageUrl.length,
+                                (index) => GestureDetector(
+                                  onTap: () => _controller.animateToPage(
+                                    index,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: const Duration(milliseconds: 800),
+                                  ),
+                                  child: Container(
+                                    width: 10,
+                                    height: 10,
+                                    margin: EdgeInsets.only(
+                                        left: index.isZero ? 0 : 10),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor
+                                          .withOpacity(
+                                              _current == index ? 1.0 : 0.4),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    )),
+                Align(
+                  alignment: Alignment.center,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      InkWell(
+                          onTap: () {
+                            if (_current != 0) {
+                              _current--;
+                              setState(() {});
+                            }
+                            _controller.animateToPage(
+                              _current,
+                              curve: Curves.fastOutSlowIn,
+                              duration: const Duration(milliseconds: 800),
+                            );
+                          },
+                          child: SvgPicture.asset(
+                            "assets/svg/left_chevron.svg",
+                            package: "pdf_report_scope",
+                            width: 10.sp,
+                            height: 10.sp,
+                          )),
+                      InkWell(
+                          onTap: () {
+                            if (_current != imageUrl.lastIndex) {
+                              _current++;
+                              setState(() {});
+                            }
+                            _controller.animateToPage(
+                              _current,
+                              curve: Curves.fastOutSlowIn,
+                              duration: const Duration(milliseconds: 800),
+                            );
+                          },
+                          child: SvgPicture.asset(
+                            "assets/svg/right_chevron.svg",
+                            package: "pdf_report_scope",
+                            width: 10.sp,
+                            height: 10.sp,
+                          )),
+                    ],
+                  ),
+                )
+              ],
+            ));
+      }
+    }
   }
 }
