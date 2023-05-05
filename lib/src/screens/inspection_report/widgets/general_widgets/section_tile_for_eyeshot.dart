@@ -52,7 +52,9 @@ class _SectionTileState extends State<SectionTile> {
             if ((constraintMaxWidthForNavPop < 1230)) {
               Navigator.pop(context);
             }
-            summaryControllerStreamToExpand.add(1);
+            if(widget.section.name == "Report Summary"){
+              summaryControllerStreamToExpand.add(1);
+            }
             controllerStream.add(widget.sectionIndex);
             Future.delayed(const Duration(microseconds: 1), () {
               Scrollable.ensureVisible(
