@@ -153,7 +153,7 @@ class SectionItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   //Item value
-                  item.unspecified ? const SizedBox() : getItemValue(),
+                  item.unspecified ? const Padding(padding: EdgeInsets.all(0)) : getItemValue(),
                   const SizedBox(height: 14),
                   item.images.isNotEmpty
                        ? GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage)

@@ -24,15 +24,10 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
-  late List<TemplateSection> sections = [
-    TemplateSection(name: "Information"),
-    TemplateSection(name: "Report Summary"),
-    ...widget.inspection.template!.sections
-  ];
-  late List<TemplateSection> filteredSections = [...sections];
+      late List<TemplateSection> sections = widget.inspection.template!.sections;
   List<bool> isExpanded = [];
   _search(text) async {
-    sections = await filteredSections.filter(text);
+    sections = await widget.inspection.template!.sections.filter(text);
     setState(() {});
   }
 
@@ -66,7 +61,6 @@ class _SectionEyeShotForMobileState
 
   @override
   void initState() {
-    // TODO: implement initState
     isExpandedForAllSections();
     super.initState();
   }
@@ -216,7 +210,8 @@ class _SectionEyeShotForMobileState
                           hasSectionItemComments ||
                           hasSubSections ||
                           section.name == "Information" ||
-                          section.name == "Report Summary") {
+                          section.name == "Report Summary"
+                          ) {
                         return Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Container(

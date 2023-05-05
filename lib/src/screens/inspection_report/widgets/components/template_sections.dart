@@ -35,8 +35,8 @@ class _TemplateSectionsState extends State<TemplateSections> {
     inspection = widget.inspection;
     media = widget.media;
     controllerStream.stream.listen((index) {
-      setState(() {
         isExpanded[index] = true;
+      setState(() {
       });
     });
     isExpandedForAllSections();

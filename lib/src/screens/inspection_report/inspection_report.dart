@@ -38,7 +38,12 @@ class InspectionReportScreen extends StatefulWidget {
 class _InspectionReportScreenState extends State<InspectionReportScreen> {
   bool isLoading = false;
   List<bool> isExpanded = [];
-  late List<TemplateSection> sections = widget.inspection.template!.sections;
+  late List<TemplateSection> sections = [
+      TemplateSection(name: "Information", uid: '00001'),
+      TemplateSection(name: "Report Summary",  uid: '00002' ),
+      ...widget.inspection.template!.sections
+    ];
+  // inspection.template!.sections =sections;  
   Stream stream = constraintStream.stream;
   bool _showBackToTopButton = false;
   late ScrollController _scrollController;
@@ -77,6 +82,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   }
 
   setListOfKeys() {
+    widget.inspection.template!.sections = sections;
     for (var sectionKeys in widget.inspection.template!.sections) {
       if (itemKeys[sectionKeys.uid] == null) {
         itemKeys[sectionKeys.uid!] = GlobalKey();
@@ -88,6 +94,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
       }
     }
   }
+
+
 
   List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
       dynamic section) {
@@ -132,6 +140,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final inspectionInfoKey = itemKeys['00001'];
+    final inspectionSummaryKey = itemKeys['00002'];
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       constraintStream.add(constraints.maxWidth);
@@ -366,102 +376,102 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                     horizontal: 16.0),
                                           ),
                                         ),
-                                        InkWell(
-                                          hoverColor: Colors.transparent,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  bottom: 10,
-                                                  left: 10),
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              decoration: BoxDecoration(
-                                                color: ProjectColors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              child: Text(
-                                                "Information",
-                                                style: primaryHeadingTextStyle
-                                                    .copyWith(
-                                                  letterSpacing: 2,
-                                                  color: ProjectColors.primary,
-                                                  fontFamily:
-                                                      fontFamilyJostMedium,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            if ((constraintMaxWidthForNavPop <
-                                                1230)) {
-                                              Navigator.pop(context);
-                                            }
-                                            Future.delayed(
-                                                const Duration(microseconds: 2),
-                                                () {
-                                              Scrollable.ensureVisible(
-                                                inspectionInfoKey
-                                                    .currentContext!,
-                                                duration: const Duration(
-                                                    milliseconds: 1),
-                                                curve: Curves.easeInOut,
-                                              );
-                                            });
-                                          },
-                                        ),
-                                        InkWell(
-                                          hoverColor: Colors.transparent,
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(10.0),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 10,
-                                                  bottom: 10,
-                                                  left: 10),
-                                              width: MediaQuery.of(context)
-                                                  .size
-                                                  .width,
-                                              decoration: BoxDecoration(
-                                                color: ProjectColors.white,
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              child: Text(
-                                                "Report Summary",
-                                                style: primaryHeadingTextStyle
-                                                    .copyWith(
-                                                  letterSpacing: 2,
-                                                  color: ProjectColors.primary,
-                                                  fontFamily:
-                                                      fontFamilyJostMedium,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          onTap: () {
-                                            if ((constraintMaxWidthForNavPop <
-                                                1230)) {
-                                              Navigator.pop(context);
-                                            }
-                                            summaryControllerStreamToExpand
-                                                .add(1);
-                                            Future.delayed(
-                                                const Duration(microseconds: 2),
-                                                () {
-                                              Scrollable.ensureVisible(
-                                                inspectionSummaryKey
-                                                    .currentContext!,
-                                                duration: const Duration(
-                                                    milliseconds: 1),
-                                                curve: Curves.easeInOut,
-                                              );
-                                            });
-                                          },
-                                        ),
+                                        // InkWell(
+                                        //   hoverColor: Colors.transparent,
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.all(10.0),
+                                        //     child: Container(
+                                        //       padding: const EdgeInsets.only(
+                                        //           top: 10,
+                                        //           bottom: 10,
+                                        //           left: 10),
+                                        //       width: MediaQuery.of(context)
+                                        //           .size
+                                        //           .width,
+                                        //       decoration: BoxDecoration(
+                                        //         color: ProjectColors.white,
+                                        //         borderRadius:
+                                        //             BorderRadius.circular(10.0),
+                                        //       ),
+                                        //       child: Text(
+                                        //         "Information",
+                                        //         style: primaryHeadingTextStyle
+                                        //             .copyWith(
+                                        //           letterSpacing: 2,
+                                        //           color: ProjectColors.primary,
+                                        //           fontFamily:
+                                        //               fontFamilyJostMedium,
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        //   onTap: () {
+                                        //     if ((constraintMaxWidthForNavPop <
+                                        //         1230)) {
+                                        //       Navigator.pop(context);
+                                        //     }
+                                        //     Future.delayed(
+                                        //         const Duration(microseconds: 2),
+                                        //         () {
+                                        //       Scrollable.ensureVisible(
+                                        //         inspectionInfoKey!
+                                        //             .currentContext!,
+                                        //         duration: const Duration(
+                                        //             milliseconds: 300),
+                                        //         curve: Curves.easeInOut,
+                                        //       );
+                                        //     });
+                                        //   },
+                                        // ),
+                                        // InkWell(
+                                        //   hoverColor: Colors.transparent,
+                                        //   child: Padding(
+                                        //     padding: const EdgeInsets.all(10.0),
+                                        //     child: Container(
+                                        //       padding: const EdgeInsets.only(
+                                        //           top: 10,
+                                        //           bottom: 10,
+                                        //           left: 10),
+                                        //       width: MediaQuery.of(context)
+                                        //           .size
+                                        //           .width,
+                                        //       decoration: BoxDecoration(
+                                        //         color: ProjectColors.white,
+                                        //         borderRadius:
+                                        //             BorderRadius.circular(10.0),
+                                        //       ),
+                                        //       child: Text(
+                                        //         "Report Summary",
+                                        //         style: primaryHeadingTextStyle
+                                        //             .copyWith(
+                                        //           letterSpacing: 2,
+                                        //           color: ProjectColors.primary,
+                                        //           fontFamily:
+                                        //               fontFamilyJostMedium,
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        //   onTap: () {
+                                        //     if ((constraintMaxWidthForNavPop <
+                                        //         1230)) {
+                                        //       Navigator.pop(context);
+                                        //     }
+                                        //     summaryControllerStreamToExpand
+                                        //         .add(1);
+                                        //     Future.delayed(
+                                        //         const Duration(microseconds: 2),
+                                        //         () {
+                                        //       Scrollable.ensureVisible(
+                                        //         inspectionSummaryKey!
+                                        //             .currentContext!,
+                                        //         duration: const Duration(
+                                        //             milliseconds: 300),
+                                        //         curve: Curves.easeInOut,
+                                        //       );
+                                        //     });
+                                        //   },
+                                        // ),
                                         Padding(
                                           padding: const EdgeInsets.all(20.0),
                                           child: Column(
@@ -510,7 +520,9 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                       hasSectionComments ||
                                                       hasSectionImages ||
                                                       hasSectionItemComments ||
-                                                      hasSubSections) {
+                                                      hasSubSections ||
+                                                      section.name == "Information" ||
+                                                      section.name == "Report Summary") {
                                                     return Container(
                                                       padding:
                                                           const EdgeInsets.only(

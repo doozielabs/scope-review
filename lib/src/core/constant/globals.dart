@@ -29,8 +29,7 @@ final ScrollController subSectionCommentsController = ScrollController();
 
 Map<String, GlobalKey> itemKeys = {};
 Map<String, GlobalKey> commentKeys = {};
-final inspectionInfoKey = GlobalKey();
-final inspectionSummaryKey = GlobalKey();
+bool isSummaryExpanded = false;
 bool expandSummary = false;
 const INVALID_IMAGE = "invalid image";
 double constraintMaxWidthForNavPop = 0.0;

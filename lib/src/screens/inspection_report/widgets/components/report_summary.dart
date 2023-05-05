@@ -22,7 +22,7 @@ class ReportSummary extends StatefulWidget {
 }
 
 class _ReportSummaryState extends State<ReportSummary> {
-  bool isSummaryExpanded = false;
+  
   @override
   void initState() {
     summaryControllerStreamToExpand.stream.listen((index) {

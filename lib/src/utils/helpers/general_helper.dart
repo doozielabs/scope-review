@@ -149,7 +149,7 @@ class GeneralHelper {
 
   static getMediaForHeader(ids, List<ImageShape> media) {
     int counts = 1;
-    if (ids.length == 0) {
+    if (ids.length == 0 || ids[0].contains('hgui')) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ClipRRect(
             borderRadius: BorderRadius.circular(16),
@@ -341,7 +341,7 @@ class GeneralHelper {
     return _images;
   }
 
-  static getSizeByDevicesForImages(imagetype) {
+  static getSizeByDevicesForImages(ImageType imagetype, int counts) {
     if (SizerUtil.deviceType == DeviceType.mobile) {
       return 1;
     } else if (SizerUtil.deviceType == DeviceType.tablet) {
@@ -408,10 +408,12 @@ class GeneralHelper {
   static displayMediaList(ids, List<ImageShape> media, int counts, imagetype) {
     int remainIdsCount = (ids.length - counts);
     int crossAxisCountAdjust = 1;
-    if (ids.length < GeneralHelper.getSizeByDevicesForImages(imagetype)) {
+    if(ids.length == 1 && imagetype == ImageType.sectionImage){
+      crossAxisCountAdjust = 2;
+    } else if (ids.length < GeneralHelper.getSizeByDevicesForImages(imagetype, counts)) {
       crossAxisCountAdjust = ids.length;
     } else {
-      crossAxisCountAdjust = GeneralHelper.getSizeByDevicesForImages(imagetype);
+      crossAxisCountAdjust = GeneralHelper.getSizeByDevicesForImages(imagetype, counts);
     }
     if (crossAxisCountAdjust == 0) {
       crossAxisCountAdjust = 1;
@@ -560,8 +562,7 @@ class GeneralHelper {
       var sectionIndex = 0;
       //Section Comments
       for (var section in template.sections) {
-        sectionIndex++;
-        sectionIndex = (sectionIndex - 1);
+        sectionIndex = (sectionIndex);
         if (section.comments.isNotEmpty) {
           for (var sectionComment in section.comments) {
             if (sectionComment.type == CommentType.deficiency) {
@@ -637,6 +638,7 @@ class GeneralHelper {
             }
           }
         }
+        sectionIndex++;
       }
     }
     return deficiencyCommets;

@@ -52,6 +52,7 @@ class _SectionTileState extends State<SectionTile> {
             if ((constraintMaxWidthForNavPop < 1230)) {
               Navigator.pop(context);
             }
+            summaryControllerStreamToExpand.add(1);
             controllerStream.add(widget.sectionIndex);
             Future.delayed(const Duration(microseconds: 1), () {
               Scrollable.ensureVisible(
@@ -62,6 +63,7 @@ class _SectionTileState extends State<SectionTile> {
             });
           },
         ),
+        !(widget.section.name == "Information" || widget.section.name == "Report Summary") ?
         Row(
           // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -121,6 +123,7 @@ class _SectionTileState extends State<SectionTile> {
                 : const SizedBox()
           ],
         )
+        : SizedBox.shrink() 
       ],
     );
   }
