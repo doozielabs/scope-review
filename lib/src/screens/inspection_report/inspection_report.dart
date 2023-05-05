@@ -42,18 +42,26 @@ class InspectionReportScreen extends StatefulWidget {
 class _InspectionReportScreenState extends State<InspectionReportScreen> {
   bool isLoading = false;
   List<bool> isExpanded = [];
-  late List<TemplateSection> sections = [
-      TemplateSection(name: "Information", uid: '00001'),
-      TemplateSection(name: "Report Summary",  uid: '00002' ),
-      ...widget.inspection.template!.sections
-    ];
-  // inspection.template!.sections =sections;  
+  late List<TemplateSection> sections;
+  late List<TemplateSection> filteredSection;
+  //     TemplateSection(name: "Information", uid: '00001'),
+  //     TemplateSection(name: "Report Summary",  uid: '00002' ),
+  //     ...widget.inspection.template!.sections
+  //   ];
+  // inspection.template!.sections =sections;
   Stream stream = constraintStream.stream;
   bool _showBackToTopButton = false;
   late ScrollController _scrollController;
 
   @override
   void initState() {
+    // sections = [
+    //   TemplateSection(name: "Information", uid: '00001'),
+    //   TemplateSection(name: "Report Summary", uid: '00002'),
+    //   ...widget.inspection.template!.sections
+    // ];
+    sections = widget.inspection.template!.sections;
+    filteredSection = [...sections];
     isExpandedForAllSections();
     setListOfKeys();
     _scrollController = ScrollController()
@@ -80,14 +88,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
 
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
-      widget.inspection.template!.sections.length,
+      sections.length,
       (index) => false,
     );
   }
 
   setListOfKeys() {
-    widget.inspection.template!.sections = sections;
-    for (var sectionKeys in widget.inspection.template!.sections) {
+    // widget.inspection.template!.sections = sections;
+    for (var sectionKeys in sections) {
       if (itemKeys[sectionKeys.uid] == null) {
         itemKeys[sectionKeys.uid!] = GlobalKey();
       }
@@ -98,8 +106,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
       }
     }
   }
-
-
 
   List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
       dynamic section) {
@@ -527,8 +533,10 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                       hasSectionImages ||
                                                       hasSectionItemComments ||
                                                       hasSubSections ||
-                                                      section.name == "Information" ||
-                                                      section.name == "Report Summary") {
+                                                      section.name ==
+                                                          "Information" ||
+                                                      section.name ==
+                                                          "Report Summary") {
                                                     return Container(
                                                       padding:
                                                           const EdgeInsets.only(

@@ -41,6 +41,7 @@ class _PDFReportState extends State<PDFReport> {
   List<ImageShape> media = [];
   @override
   void initState() {
+    print("Review package init");
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
@@ -53,6 +54,16 @@ class _PDFReportState extends State<PDFReport> {
       setState(() => isLoading = false);
     });
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    print("Review package dispose");
+    if (NavigationService.navigatorKey.currentState != null) {
+      NavigationService.navigatorKey.currentState!.dispose();
+    }
+    super.dispose();
   }
 
   @override
