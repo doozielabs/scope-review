@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -100,7 +98,7 @@ class _PDFReportState extends State<PDFReport> {
                             inspection: inspection,
                             media: media,
                             showDialogue: widget.showDialogue,
-                          ),
+                            sharePdf: widget.sharePdf),
               )));
     }
   }
