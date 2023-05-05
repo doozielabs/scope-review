@@ -823,7 +823,7 @@ extension TemplateExtension on Template {
         if (section.items.length > _id.item.dec) {
           _item = section.items![_id.item.dec];
         }
-        if (_id.haveComment()) {
+        if (_item != null && _id.haveComment()) {
           if (_item!.comments.length > _id.comment.dec) {
             _comment = _item!.comments[_id.comment.dec];
           }
