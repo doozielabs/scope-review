@@ -10,10 +10,6 @@ import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report
 import 'package:sizer/sizer.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 
-class NavigationService {
-  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-}
-
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final dynamic inspection;
@@ -58,11 +54,6 @@ class _PDFReportState extends State<PDFReport> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
-    print("Review package dispose");
-    if (NavigationService.navigatorKey.currentState != null) {
-      NavigationService.navigatorKey.currentState!.dispose();
-    }
     super.dispose();
   }
 
@@ -73,7 +64,6 @@ class _PDFReportState extends State<PDFReport> {
       var concatenate = inspectionID.join("");
       return Sizer(
           builder: ((context, orientation, deviceType) => MaterialApp(
-                navigatorKey: NavigationService.navigatorKey,
                 debugShowCheckedModeBanner: false,
                 title: 'Inspektify Report',
                 initialRoute: "/$concatenate",
@@ -96,7 +86,6 @@ class _PDFReportState extends State<PDFReport> {
     } else {
       return Sizer(
           builder: ((context, orientation, deviceType) => MaterialApp(
-                navigatorKey: NavigationService.navigatorKey,
                 debugShowCheckedModeBanner: false,
                 title: 'Inspektify Report',
                 home: isLoading

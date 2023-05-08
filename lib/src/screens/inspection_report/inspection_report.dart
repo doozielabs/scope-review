@@ -344,7 +344,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                             child: Column(
                               children: [
                                 Container(
-                                  width: width,
+                                  width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(
                                     boxShadow: const [
                                       BoxShadow(
@@ -537,7 +537,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                           "Information" ||
                                                       section.name ==
                                                           "Report Summary") {
-                                                    return Container(
+                                                   return Container(
                                                       padding:
                                                           const EdgeInsets.only(
                                                               top: 30,

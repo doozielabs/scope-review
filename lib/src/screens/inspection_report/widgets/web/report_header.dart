@@ -22,7 +22,7 @@ class ReportHeaderWeb extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
-        height: height * 0.6,
+        height: MediaQuery.of(context).size.height * 0.6,
         decoration: BoxDecoration(
           color: ProjectColors.firefly,
           borderRadius: BorderRadius.circular(16),

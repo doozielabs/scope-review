@@ -22,7 +22,7 @@ class ReportHeaderMobile extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
-        width: width * 1,
+        width: MediaQuery.of(context).size.width * 1,
         // height: height * 0.8,
         decoration: BoxDecoration(
           color: ProjectColors.firefly,
