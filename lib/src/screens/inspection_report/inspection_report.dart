@@ -17,6 +17,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
+
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 
 class InspectionReportScreen extends StatefulWidget {
@@ -174,6 +175,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                         media: widget.media,
                         user: widget.user,
                       ),
+                      const Legends(),
                       InspectionDescription(inspection: widget.inspection),
                       ReportSummary(
                           key: inspectionSummaryKey,
@@ -201,6 +203,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                     media: widget.media,
                     user: widget.user,
                   ),
+                  const Legends(),
                   InspectionDescription(inspection: widget.inspection),
                   ReportSummary(
                       key: inspectionSummaryKey,
@@ -258,6 +261,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                       media: widget.media,
                       user: widget.user,
                     ),
+                    const Legends(),
                     InspectionDescription(inspection: widget.inspection),
                     ReportSummary(
                         key: inspectionSummaryKey,
@@ -313,6 +317,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                       media: widget.media,
                       user: widget.user,
                     ),
+                    const Legends(),
                     InspectionDescription(inspection: widget.inspection),
                     ReportSummary(
                         key: inspectionSummaryKey,
@@ -690,7 +695,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                       .circular(
                                                                           10.0),
                                                             ),
-                                                            primary:
+                                                            backgroundColor:
                                                                 ProjectColors
                                                                     .firefly),
                                                     child: Padding(
@@ -733,7 +738,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                       .circular(
                                                                           10.0),
                                                             ),
-                                                            primary:
+                                                            backgroundColor:
                                                                 ProjectColors
                                                                     .primary),
                                                     child: Padding(
@@ -779,7 +784,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                 media: widget.media,
                                 user: widget.user,
                               ),
-                              isWeb ? const Legends() : const SizedBox(),
+                              const Legends(),
                               InspectionDescription(
                                   inspection: widget.inspection),
                               ReportSummary(
