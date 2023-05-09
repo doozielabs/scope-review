@@ -4,6 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/report_header_item.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
@@ -12,8 +13,12 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 class ReportHeaderTablet extends StatelessWidget {
   final InspectionModel inspection;
   final List<ImageShape>? media;
+  final User user;
   const ReportHeaderTablet(
-      {Key? key, required this.inspection, required this.media})
+      {Key? key,
+      required this.inspection,
+      required this.media,
+      required this.user})
       : super(key: key);
 
   @override
@@ -134,22 +139,22 @@ class ReportHeaderTablet extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text(
-                            "Home Buyer:",
+                            "Inspected By:",
                             style: secondryHeadingTextStyle,
                           ),
                           const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-user",
                               text:
-                                  "${inspection.buyerAgent!.firstname.unspecified} ${inspection.buyerAgent?.lastname ?? ""}"),
+                                  "${user.firstname.unspecified} ${user.lastname ?? ""}"),
                           const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-mail",
-                              text: inspection.buyerAgent!.email.unspecified),
+                              text: user.email.unspecified),
                           const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-cell",
-                              text: inspection.buyerAgent!.phone.unspecified)
+                              text: user.phone.unspecified)
                         ],
                       ),
                     ),

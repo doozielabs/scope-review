@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
-import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/report_header_item.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
@@ -13,8 +13,12 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 class ReportHeaderMobile extends StatelessWidget {
   final InspectionModel inspection;
   final List<ImageShape>? media;
+  final User user;
   const ReportHeaderMobile(
-      {Key? key, required this.inspection, required this.media})
+      {Key? key,
+      required this.inspection,
+      required this.media,
+      required this.user})
       : super(key: key);
 
   @override
@@ -127,23 +131,20 @@ class ReportHeaderMobile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Home Buyer:",
+                    "Inspected By:",
                     style: secondryHeadingTextStyle,
                   ),
                   const SizedBox(height: 10),
                   HeaderInfoItem(
                       iconName: "icon-user",
-                      text: inspection.buyerAgent!.firstname.unspecified +
-                          " " +
-                          (inspection.buyerAgent?.lastname ?? "")),
+                      text:
+                          "${user.firstname.unspecified} ${user.lastname ?? ""}"),
                   const SizedBox(height: 10),
                   HeaderInfoItem(
-                      iconName: "icon-mail",
-                      text: inspection.buyerAgent!.email.unspecified),
+                      iconName: "icon-mail", text: user.email.unspecified),
                   const SizedBox(height: 10),
                   HeaderInfoItem(
-                      iconName: "icon-cell",
-                      text: inspection.buyerAgent!.phone.unspecified)
+                      iconName: "icon-cell", text: user.phone.unspecified),
                 ],
               ),
             ),
@@ -172,9 +173,6 @@ class ReportHeaderMobile extends StatelessWidget {
                       iconName: "icon-cell",
                       text: inspection.client!.phone.unspecified),
                   const SizedBox(height: 10),
-                  // HeaderInfoItem(
-                  //     iconName: "icon-company",
-                  //     text: inspection.client!.organization.unspecified)
                 ],
               ),
             ),

@@ -8,6 +8,7 @@ import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
+import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/inspection_description.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/legend.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_header.dart';
@@ -25,15 +26,17 @@ class InspectionReportScreen extends StatefulWidget {
   final Function? printCallBack;
   final Function? downloadCallBack;
   final Function? sharePdf;
-  const InspectionReportScreen(
-      {Key? key,
-      required this.inspection,
-      required this.media,
-      required this.showDialogue,
-      this.printCallBack,
-      this.downloadCallBack,
-      this.sharePdf})
-      : super(key: key);
+  final User user;
+  const InspectionReportScreen({
+    Key? key,
+    required this.inspection,
+    required this.media,
+    required this.showDialogue,
+    this.printCallBack,
+    this.downloadCallBack,
+    this.sharePdf,
+    required this.user,
+  }) : super(key: key);
 
   @override
   State<InspectionReportScreen> createState() => _InspectionReportScreenState();
@@ -166,9 +169,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                   child: Column(
                     children: [
                       ReportHeader(
-                          key: inspectionInfoKey,
-                          inspection: widget.inspection,
-                          media: widget.media),
+                        key: inspectionInfoKey,
+                        inspection: widget.inspection,
+                        media: widget.media,
+                        user: widget.user,
+                      ),
                       InspectionDescription(inspection: widget.inspection),
                       ReportSummary(
                           key: inspectionSummaryKey,
@@ -191,9 +196,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
               child: Column(
                 children: [
                   ReportHeader(
-                      key: inspectionInfoKey,
-                      inspection: widget.inspection,
-                      media: widget.media),
+                    key: inspectionInfoKey,
+                    inspection: widget.inspection,
+                    media: widget.media,
+                    user: widget.user,
+                  ),
                   InspectionDescription(inspection: widget.inspection),
                   ReportSummary(
                       key: inspectionSummaryKey,
@@ -246,9 +253,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 child: Column(
                   children: [
                     ReportHeader(
-                        key: inspectionInfoKey,
-                        inspection: widget.inspection,
-                        media: widget.media),
+                      key: inspectionInfoKey,
+                      inspection: widget.inspection,
+                      media: widget.media,
+                      user: widget.user,
+                    ),
                     InspectionDescription(inspection: widget.inspection),
                     ReportSummary(
                         key: inspectionSummaryKey,
@@ -299,9 +308,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 child: Column(
                   children: [
                     ReportHeader(
-                        key: inspectionInfoKey,
-                        inspection: widget.inspection,
-                        media: widget.media),
+                      key: inspectionInfoKey,
+                      inspection: widget.inspection,
+                      media: widget.media,
+                      user: widget.user,
+                    ),
                     InspectionDescription(inspection: widget.inspection),
                     ReportSummary(
                         key: inspectionSummaryKey,
@@ -537,7 +548,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                           "Information" ||
                                                       section.name ==
                                                           "Report Summary") {
-                                                   return Container(
+                                                    return Container(
                                                       padding:
                                                           const EdgeInsets.only(
                                                               top: 30,
@@ -763,9 +774,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           child: Column(
                             children: [
                               ReportHeader(
-                                  key: inspectionInfoKey,
-                                  inspection: widget.inspection,
-                                  media: widget.media),
+                                key: inspectionInfoKey,
+                                inspection: widget.inspection,
+                                media: widget.media,
+                                user: widget.user,
+                              ),
                               isWeb ? const Legends() : const SizedBox(),
                               InspectionDescription(
                                   inspection: widget.inspection),

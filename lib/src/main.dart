@@ -1,18 +1,21 @@
 import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report.dart';
 import 'package:sizer/sizer.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final dynamic inspection;
+  final dynamic user;
   final List media;
   final Function? printCallBack;
   final Function? downloadCallBack;
@@ -24,7 +27,8 @@ class PDFReport extends StatefulWidget {
       required this.media,
       this.printCallBack,
       this.downloadCallBack,
-      this.sharePdf})
+      this.sharePdf,
+      this.user})
       : super(key: key);
 
   @override
@@ -33,6 +37,7 @@ class PDFReport extends StatefulWidget {
 
 class _PDFReportState extends State<PDFReport> {
   InspectionModel inspection = InspectionModel();
+  User user = User();
   bool isLoading = false;
   List<ImageShape> media = [];
   @override
@@ -41,6 +46,7 @@ class _PDFReportState extends State<PDFReport> {
     Future.delayed(const Duration(), () async {
       setState(() => isLoading = true);
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
+      user = User.fromJson(jsonDecode(widget.user));
       for (var image in widget.media) {
         media.add(ImageShape.fromJson(image));
       }
@@ -80,7 +86,9 @@ class _PDFReportState extends State<PDFReport> {
                               showDialogue: widget.showDialogue,
                               printCallBack: widget.printCallBack,
                               downloadCallBack: widget.downloadCallBack,
-                              sharePdf: widget.sharePdf),
+                              sharePdf: widget.sharePdf,
+                              user: user,
+                            ),
                 },
               )));
     } else {
@@ -98,7 +106,9 @@ class _PDFReportState extends State<PDFReport> {
                             inspection: inspection,
                             media: media,
                             showDialogue: widget.showDialogue,
-                            sharePdf: widget.sharePdf),
+                            sharePdf: widget.sharePdf,
+                            user: user,
+                          ),
               )));
     }
   }
