@@ -13,25 +13,9 @@ class ShowMenuDialogue {
 
   void showMenu(BuildContext context, dynamic inspection,
       {Function? sharepdf}) {
-InspectionModel inspectionModel =
+    InspectionModel inspectionModel =
         InspectionModel.fromJson(jsonDecode(inspection));
-     inspectionModel.template!.sections =  [
-      TemplateSection(name: "Information", uid: '00001'),
-      TemplateSection(name: "Report Summary",  uid: '00002' ),
-      ...inspectionModel.template!.sections
-    ];
 
-    for (var sectionKeys in inspectionModel.template!.sections) {
-      if (itemKeys[sectionKeys.uid] == null) {
-        itemKeys[sectionKeys.uid!] = GlobalKey();
-      }
-      for (var subSectionKeys in sectionKeys.subSections) {
-        if (itemKeys[subSectionKeys.uid] == null) {
-          itemKeys[subSectionKeys.uid!] = GlobalKey();
-        }
-      }
-    }
-    
     if (_showDialog && inspectionModel.template!.sections.isNotEmpty) {
       showDialog(
           context: context,

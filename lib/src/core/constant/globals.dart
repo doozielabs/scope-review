@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/pdf_report_scope.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
+import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:sizer/sizer.dart';
 
 const baseUrlLive = 'https://api.scopeinspectapp.com/';
@@ -29,8 +30,14 @@ final ScrollController subSectionCommentsController = ScrollController();
 
 Map<String, GlobalKey> itemKeys = {};
 Map<String, GlobalKey> commentKeys = {};
+final inspectionInfoKey = GlobalKey();
+final inspectionSummaryKey = GlobalKey();
+const inspectionInfoIndex = 0;
+const inspectionSummaryIndex = 1;
 bool isSummaryExpanded = false;
 bool expandSummary = false;
+bool isSearchValueChanged = false;
+late List<TemplateSection> filteredSection;
 const INVALID_IMAGE = "invalid image";
 double constraintMaxWidthForNavPop = 0.0;
 StreamController<double> constraintStream =
@@ -76,6 +83,19 @@ enum ImageType {
 //   }
 //   return height;
 // }
+
+setKeysForFilteredSection(sections) {
+  for (var sectionKeys in sections) {
+    if (itemKeys[sectionKeys.uid] == null) {
+      itemKeys[sectionKeys.uid!] = GlobalKey();
+    }
+    for (var subSectionKeys in sectionKeys.subSections) {
+      if (itemKeys[subSectionKeys.uid] == null) {
+        itemKeys[subSectionKeys.uid!] = GlobalKey();
+      }
+    }
+  }
+}
 
 List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
   double imageWidth;

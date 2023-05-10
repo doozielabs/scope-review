@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
+import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class SectionTile extends StatefulWidget {
@@ -14,8 +15,10 @@ class SectionTile extends StatefulWidget {
     required this.totalComments,
     required this.diffencyCount,
     required this.sectionIndex,
+    required this.inspection,
   }) : super(key: key);
 
+  final InspectionModel inspection;
   final dynamic section;
   final List<bool> isExpanded;
   final bool hasSubsections;
@@ -52,17 +55,95 @@ class _SectionTileState extends State<SectionTile> {
             if ((constraintMaxWidthForNavPop < 1230)) {
               Navigator.pop(context);
             }
-            if(widget.section.name == "Report Summary"){
-              summaryControllerStreamToExpand.add(1);
+            if (isSearchValueChanged) {
+              if (widget.section.name == 'Information') {
+                setState(() {
+                  Future.delayed(const Duration(microseconds: 1), () {
+                    Scrollable.ensureVisible(
+                      inspectionInfoKey.currentContext!,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                  });
+                });
+              } else if (widget.section.name == 'Report Summary') {
+                setState(() {
+                  summaryControllerStreamToExpand.add(1);
+                  Future.delayed(const Duration(microseconds: 1), () {
+                    Scrollable.ensureVisible(
+                      inspectionSummaryKey.currentContext!,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                  });
+                });
+              } else {
+                int currentSectionIndex = widget.inspection.template!.sections
+                    .indexWhere((currentSection) =>
+                        currentSection.name == widget.section.name);
+                setState(() {
+                  controllerStream.add(currentSectionIndex);
+                  Future.delayed(const Duration(microseconds: 1), () {
+                    Scrollable.ensureVisible(
+                      itemKeys[widget.inspection.template!
+                              .sections[currentSectionIndex].uid!]!
+                          .currentContext!,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                  });
+                });
+              }
+            } else if (widget.sectionIndex == 0) {
+              setState(() {
+                Future.delayed(const Duration(microseconds: 1), () {
+                  Scrollable.ensureVisible(
+                    inspectionInfoKey.currentContext!,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                });
+              });
+            } else if (widget.sectionIndex == 1) {
+              setState(() {
+                summaryControllerStreamToExpand.add(1);
+                Future.delayed(const Duration(microseconds: 1), () {
+                  Scrollable.ensureVisible(
+                    inspectionSummaryKey.currentContext!,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
+                });
+              });
+            } else {
+              if (isSearchValueChanged) {
+                // print(
+                //     "${widget.isExpanded} search --index:${widget.sectionIndex}");
+                // // int searchIndex = (widgetisExpanded);
+                // setState(() {
+                //   controllerStream.add(widget.sectionIndex - 2);
+                //   Future.delayed(const Duration(microseconds: 1), () {
+                //     Scrollable.ensureVisible(
+                //       itemKeys[widget.section.uid!]!.currentContext!,
+                //       duration: const Duration(milliseconds: 400),
+                //       curve: Curves.easeInOut,
+                //     );
+                //   });
+                // });
+              } else {
+                print("baki sare --index:${widget.sectionIndex}");
+                setState(() {
+                  controllerStream.add(widget.sectionIndex - 2);
+                  Future.delayed(const Duration(microseconds: 1), () {
+                    Scrollable.ensureVisible(
+                      itemKeys[widget.section.uid!]!.currentContext!,
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeInOut,
+                    );
+                  });
+                });
+              }
             }
-            controllerStream.add(widget.sectionIndex);
-            Future.delayed(const Duration(microseconds: 1), () {
-              Scrollable.ensureVisible(
-                itemKeys[widget.section.uid!]!.currentContext!,
-                duration: const Duration(milliseconds: 400),
-                curve: Curves.easeInOut,
-              );
-            });
           },
         ),
         !(widget.section.name == "Information" ||

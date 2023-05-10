@@ -25,15 +25,27 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
   late List<TemplateSection> sections = widget.inspection.template!.sections;
+  late List<TemplateSection> appendedSections = [];
+
+  void setSectionData() {
+    appendedSections = [
+      TemplateSection(name: "Information", uid: '00001'),
+      TemplateSection(name: "Report Summary", uid: '00002'),
+      ...widget.inspection.template!.sections
+    ];
+  }
+
   List<bool> isExpanded = [];
   _search(text) async {
-    sections = await widget.inspection.template!.sections.filter(text);
+    setSectionData();
+    isSearchValueChanged = true;
+    appendedSections = await appendedSections.filter(text);
     setState(() {});
   }
 
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
-      widget.inspection.template!.sections.length,
+      appendedSections.length,
       (index) => false,
     );
   }
@@ -61,6 +73,8 @@ class _SectionEyeShotForMobileState
 
   @override
   void initState() {
+    setSectionData();
+    setKeysForFilteredSection(sections);
     isExpandedForAllSections();
     super.initState();
   }
@@ -180,24 +194,23 @@ class _SectionEyeShotForMobileState
                     //     });
                     //   },
                     // ),
-                    ...List.generate(sections.length, (sectionIndex) {
-                      // final bool hasSubSections =
-                      //     sections[sectionIndex].subSections.isNotEmpty;
-                      final section = sections[sectionIndex];
-                      bool hasSectionItemComments = sections[sectionIndex]
-                          .items
-                          .any((item) => item.comments.isNotEmpty);
+                    ...List.generate(appendedSections.length, (sectionIndex) {
+                      final section = appendedSections[sectionIndex];
+                      bool hasSectionItemComments =
+                          appendedSections[sectionIndex]
+                              .items
+                              .any((item) => item.comments.isNotEmpty);
                       bool hasSectionImages =
-                          sections[sectionIndex].images.isNotEmpty;
+                          appendedSections[sectionIndex].images.isNotEmpty;
                       bool hasSectionComments =
-                          sections[sectionIndex].comments.isNotEmpty;
+                          appendedSections[sectionIndex].comments.isNotEmpty;
                       bool hasSectionItems = false;
-                      for (var item in sections[sectionIndex].items) {
+                      for (var item in appendedSections[sectionIndex].items) {
                         if (!item.unspecified) {
                           hasSectionItems = true;
                         }
                       }
-                      bool hasSubSections = sections[sectionIndex]
+                      bool hasSubSections = appendedSections[sectionIndex]
                           .subSections
                           .any((subsection) => (subsection.items
                                   .any((item) => !item.unspecified) ||
@@ -227,23 +240,48 @@ class _SectionEyeShotForMobileState
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    setState(() {
-                                      controllerStream.add(sectionIndex);
-                                      isExpanded[sectionIndex] =
-                                          !isExpanded[sectionIndex];
-                                    });
+                                    // print("Ma hu chussu");
+                                    // if (sectionIndex == 0) {
+                                    //   print("info--index:$sectionIndex");
+                                    //   setState(() {
+                                    //     controllerStream
+                                    //         .add(inspectionInfoIndex);
+                                    //     isExpanded[inspectionInfoIndex] =
+                                    //         !isExpanded[inspectionInfoIndex];
+                                    //   });
+                                    //   //TODO: Jump to info
+                                    // } else if (sectionIndex == 1) {
+                                    //   print("Summary--index:$sectionIndex");
+                                    //   setState(() {
+                                    //     controllerStream
+                                    //         .add(inspectionSummaryIndex);
+                                    //     isExpanded[inspectionSummaryIndex] =
+                                    //         !isExpanded[inspectionSummaryIndex];
+                                    //   });
+                                    //   //TODO: Summary
+                                    // } else {
+                                    //   print("baki sare --index:$sectionIndex");
+                                    //   setState(() {
+                                    //     controllerStream.add(sectionIndex);
+                                    //     isExpanded[sectionIndex] =
+                                    //         !isExpanded[sectionIndex];
+                                    //   });
+                                    // }
+                                    // print(
+                                    //     " ${sections[indexCount].name} --- sectionIndex --  $indexCount");
                                   },
                                   child: SectionTile(
                                     diffencyCount:
                                         numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                            sections[sectionIndex])[0],
+                                            appendedSections[sectionIndex])[0],
                                     totalComments:
                                         numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                            sections[sectionIndex])[1],
+                                            appendedSections[sectionIndex])[1],
                                     isExpanded: isExpanded,
                                     hasSubsections: hasSubSections,
                                     section: section,
                                     sectionIndex: sectionIndex,
+                                    inspection: widget.inspection,
                                   ),
                                 ),
                                 isExpanded[sectionIndex]
@@ -273,7 +311,8 @@ class _SectionEyeShotForMobileState
                                               itemBuilder:
                                                   (context, subSectionIndex) {
                                                 final subSection =
-                                                    sections[sectionIndex]
+                                                    appendedSections[
+                                                                sectionIndex]
                                                             .subSections[
                                                         subSectionIndex];
                                                 return Padding(
@@ -292,6 +331,8 @@ class _SectionEyeShotForMobileState
                                                     diffencyCount:
                                                         numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
                                                             subSection)[0],
+                                                    inspection:
+                                                        widget.inspection,
                                                   ),
                                                 );
                                               })

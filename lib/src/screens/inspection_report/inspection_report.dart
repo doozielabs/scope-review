@@ -46,28 +46,27 @@ class InspectionReportScreen extends StatefulWidget {
 class _InspectionReportScreenState extends State<InspectionReportScreen> {
   bool isLoading = false;
   List<bool> isExpanded = [];
-  late List<TemplateSection> sections;
-  late List<TemplateSection> filteredSection;
-  //     TemplateSection(name: "Information", uid: '00001'),
-  //     TemplateSection(name: "Report Summary",  uid: '00002' ),
-  //     ...widget.inspection.template!.sections
-  //   ];
-  // inspection.template!.sections =sections;
+
+  late List<TemplateSection> sections = widget.inspection.template!.sections;
+
+  late List<TemplateSection> appendedSections = [];
   Stream stream = constraintStream.stream;
   bool _showBackToTopButton = false;
   late ScrollController _scrollController;
 
+  void setSectionData() {
+    appendedSections = [
+      TemplateSection(name: "Information", uid: '00001'),
+      TemplateSection(name: "Report Summary", uid: '00002'),
+      ...widget.inspection.template!.sections
+    ];
+  }
+
   @override
   void initState() {
-    // sections = [
-    //   TemplateSection(name: "Information", uid: '00001'),
-    //   TemplateSection(name: "Report Summary", uid: '00002'),
-    //   ...widget.inspection.template!.sections
-    // ];
-    sections = widget.inspection.template!.sections;
-    filteredSection = [...sections];
+    setSectionData();
     isExpandedForAllSections();
-    setListOfKeys();
+    setKeysForFilteredSection(sections);
     _scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.offset >= 400) {
@@ -86,29 +85,17 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   }
 
   _search(text) async {
-    sections = await widget.inspection.template!.sections.filter(text);
+    setSectionData();
+    isSearchValueChanged = true;
+    appendedSections = await appendedSections.filter(text);
     setState(() {});
   }
 
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
-      sections.length,
+      appendedSections.length,
       (index) => false,
     );
-  }
-
-  setListOfKeys() {
-    // widget.inspection.template!.sections = sections;
-    for (var sectionKeys in sections) {
-      if (itemKeys[sectionKeys.uid] == null) {
-        itemKeys[sectionKeys.uid!] = GlobalKey();
-      }
-      for (var subSectionKeys in sectionKeys.subSections) {
-        if (itemKeys[subSectionKeys.uid] == null) {
-          itemKeys[subSectionKeys.uid!] = GlobalKey();
-        }
-      }
-    }
   }
 
   List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
@@ -132,14 +119,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     return [diffencyCount, totalNumberOfSectionComments];
   }
 
-  void downloadFile(String url) {
-    //  if(kIsWeb){
-    //     html.AnchorElement anchorElement = html.AnchorElement(href: url);
-    //     anchorElement.target = "_blank";
-    //     anchorElement.click();
-    //  }
-  }
-
   @override
   void dispose() {
     isExpanded.clear();
@@ -154,8 +133,6 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final inspectionInfoKey = itemKeys['00001'];
-    final inspectionSummaryKey = itemKeys['00002'];
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       constraintStream.add(constraints.maxWidth);
@@ -505,33 +482,38 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                           child: Column(
                                             children: [
                                               ...List.generate(
-                                                sections.length,
+                                                appendedSections.length,
                                                 (sectionIndex) {
                                                   final section =
-                                                      sections[sectionIndex];
+                                                      appendedSections[
+                                                          sectionIndex];
                                                   bool hasSectionItemComments =
-                                                      sections[sectionIndex]
+                                                      appendedSections[
+                                                              sectionIndex]
                                                           .items
                                                           .any((item) => item
                                                               .comments
                                                               .isNotEmpty);
                                                   bool hasSectionImages =
-                                                      sections[sectionIndex]
+                                                      appendedSections[
+                                                              sectionIndex]
                                                           .images
                                                           .isNotEmpty;
                                                   bool hasSectionComments =
-                                                      sections[sectionIndex]
+                                                      appendedSections[
+                                                              sectionIndex]
                                                           .comments
                                                           .isNotEmpty;
                                                   bool hasSectionItems = false;
                                                   for (var item
-                                                      in sections[sectionIndex]
+                                                      in appendedSections[
+                                                              sectionIndex]
                                                           .items) {
                                                     if (!item.unspecified) {
                                                       hasSectionItems = true;
                                                     }
                                                   }
-                                                  bool hasSubSections = sections[
+                                                  bool hasSubSections = appendedSections[
                                                           sectionIndex]
                                                       .subSections
                                                       .any((subsection) =>
@@ -604,11 +586,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                   SectionTile(
                                                                 diffencyCount:
                                                                     numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                                        sections[
+                                                                        appendedSections[
                                                                             sectionIndex])[0],
                                                                 totalComments:
                                                                     numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                                        sections[
+                                                                        appendedSections[
                                                                             sectionIndex])[1],
                                                                 isExpanded:
                                                                     isExpanded,
@@ -618,6 +600,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                     section,
                                                                 sectionIndex:
                                                                     sectionIndex,
+                                                                inspection: widget
+                                                                    .inspection,
                                                               ),
                                                             ),
                                                           ),
@@ -647,7 +631,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                         crossAxisCount: 1,
                                                                         itemBuilder: (context, subSectionIndex) {
                                                                           final subSection =
-                                                                              sections[sectionIndex].subSections[subSectionIndex];
+                                                                              appendedSections[sectionIndex].subSections[subSectionIndex];
                                                                           return Padding(
                                                                             padding:
                                                                                 const EdgeInsets.only(top: 13.0, bottom: 13.0),
@@ -659,6 +643,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                               hasSubsections: false,
                                                                               totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[1],
                                                                               diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[0],
+                                                                              inspection: widget.inspection,
                                                                             ),
                                                                           );
                                                                         }),
