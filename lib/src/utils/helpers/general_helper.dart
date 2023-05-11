@@ -343,13 +343,13 @@ class GeneralHelper {
 
   static getSizeByDevicesForImages(ImageType imagetype, int counts) {
     if (SizerUtil.deviceType == DeviceType.mobile) {
-      return 1;
+      return 2;
     } else if (SizerUtil.deviceType == DeviceType.tablet) {
       return 2;
     } else {
       if (globalConstraints.maxWidth < 600) {
         //Mobile
-        return 1;
+        return 2;
       }
       if (globalConstraints.maxWidth < 1230) {
         //Tablet
@@ -400,7 +400,7 @@ class GeneralHelper {
         return 2;
       } else {
         //Web
-        return 2;
+        return 3;
       }
     }
   }
@@ -408,12 +408,14 @@ class GeneralHelper {
   static displayMediaList(ids, List<ImageShape> media, int counts, imagetype) {
     int remainIdsCount = (ids.length - counts);
     int crossAxisCountAdjust = 1;
-    if(ids.length == 1 && imagetype == ImageType.sectionImage){
+    if (ids.length == 1 && imagetype == ImageType.sectionImage) {
       crossAxisCountAdjust = 2;
-    } else if (ids.length < GeneralHelper.getSizeByDevicesForImages(imagetype, counts)) {
+    } else if (ids.length <
+        GeneralHelper.getSizeByDevicesForImages(imagetype, counts)) {
       crossAxisCountAdjust = ids.length;
     } else {
-      crossAxisCountAdjust = GeneralHelper.getSizeByDevicesForImages(imagetype, counts);
+      crossAxisCountAdjust =
+          GeneralHelper.getSizeByDevicesForImages(imagetype, counts);
     }
     if (crossAxisCountAdjust == 0) {
       crossAxisCountAdjust = 1;

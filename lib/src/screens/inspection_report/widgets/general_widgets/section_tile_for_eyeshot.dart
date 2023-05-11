@@ -65,6 +65,7 @@ class _SectionTileState extends State<SectionTile> {
                       curve: Curves.easeInOut,
                     );
                   });
+                  isSearchValueChanged = false;
                 });
               } else if (widget.section.name == 'Report Summary') {
                 setState(() {
@@ -194,12 +195,12 @@ class _SectionTileState extends State<SectionTile> {
                       : const SizedBox(),
                   widget.hasSubsections
                       ? Container(
-                          width: 20.0,
+                          width: 30.0,
                           height: 30.0,
                           color: Colors.transparent,
                           child: Center(
                             child: SvgPicture.asset(
-                              "assets/svg/${widget.isExpanded[widget.sectionIndex] ? "expand_withoutbackground" : "unexpand_withoutbackground"}.svg",
+                              "${widget.isExpanded[widget.sectionIndex] ? "assets/svg/expand_withoutbackground" : "assets/svg/unexpand_withoutbackground"}.svg",
                               package: "pdf_report_scope",
                             ),
                           ),

@@ -214,8 +214,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return SectionEyeShotForMobileAndTablet(
-                                inspection: widget.inspection,
-                                sharePdf: widget.sharePdf);
+                              inspection: widget.inspection,
+                              sharePdf: widget.sharePdf,
+                              printCallBack: widget.printCallBack,
+                              downloadCallBack: widget.downloadCallBack,
+                            );
                           });
                     },
                     child: Padding(
@@ -270,8 +273,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return SectionEyeShotForMobileAndTablet(
-                                inspection: widget.inspection,
-                                sharePdf: widget.sharePdf);
+                              inspection: widget.inspection,
+                              sharePdf: widget.sharePdf,
+                              printCallBack: widget.printCallBack,
+                              downloadCallBack: widget.downloadCallBack,
+                            );
                           });
                     },
                     child: Padding(

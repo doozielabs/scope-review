@@ -22,7 +22,6 @@ class ReportSummary extends StatefulWidget {
 }
 
 class _ReportSummaryState extends State<ReportSummary> {
-  
   @override
   void initState() {
     summaryControllerStreamToExpand.stream.listen((index) {
@@ -106,15 +105,17 @@ class _ReportSummaryState extends State<ReportSummary> {
                           const HorizontalDividerWidget(
                             color: ProjectColors.pickledBluewood,
                           ),
-                           MasonryGridView.count(
+                          MasonryGridView.count(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             itemCount: deficiencyComments.length,
-                            crossAxisCount: isMobile
-                                ? 1
-                                : isTablet
-                                    ? 2
-                                    : 3,
+                            crossAxisCount:
+                                GeneralHelper.getSizeByDevicesForComments(),
+                            // isMobile
+                            //     ? 1
+                            //     : isTablet
+                            //         ? 2
+                            //         : 3,
                             mainAxisSpacing: 4,
                             crossAxisSpacing: 4,
                             itemBuilder: (context, index) {
@@ -122,7 +123,8 @@ class _ReportSummaryState extends State<ReportSummary> {
                                   // key:itemKeys[inspection
                                   //     .template!.sections[sectionIndex].comments[sectionCommentIndex].uid!],
                                   needJumpToSectionButton: true,
-                                  commentTitle:widget.inspection.template!.commentTitle(deficiencyComments[index]),
+                                  commentTitle: widget.inspection.template!
+                                      .commentTitle(deficiencyComments[index]),
                                   comment: deficiencyComments[index],
                                   media: widget.media!);
                             },

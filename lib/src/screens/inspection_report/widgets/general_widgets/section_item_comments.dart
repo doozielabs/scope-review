@@ -5,6 +5,7 @@ import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comment_card.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class SectionItemComments extends StatelessWidget {
   const SectionItemComments({
@@ -31,11 +32,12 @@ class SectionItemComments extends StatelessWidget {
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
         itemCount: sectionItemComments.length,
-        crossAxisCount: isMobile
-            ? 1
-            : isTablet
-                ? 2
-                : 3,
+        crossAxisCount: GeneralHelper.getSizeByDevicesForComments(),
+        // isMobile
+        //     ? 1
+        //     : isTablet
+        //         ? 2
+        //         : 3,
         mainAxisSpacing: 4,
         crossAxisSpacing: 4,
         itemBuilder: (context, sectionCommentIndex) {

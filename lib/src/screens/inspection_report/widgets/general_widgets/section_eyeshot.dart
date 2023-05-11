@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -9,12 +10,19 @@ import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_tile_for_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
+import 'package:sizer/sizer.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final InspectionModel inspection;
   final Function? sharePdf;
+  final Function? printCallBack;
+  final Function? downloadCallBack;
   const SectionEyeShotForMobileAndTablet(
-      {Key? key, required this.inspection, this.sharePdf})
+      {Key? key,
+      required this.inspection,
+      this.sharePdf,
+      this.printCallBack,
+      this.downloadCallBack})
       : super(key: key);
 
   @override
@@ -352,39 +360,106 @@ class _SectionEyeShotForMobileState
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                  onPressed: () {
-                    // add your onPressed function here
-                    if (widget.sharePdf != null) widget.sharePdf!();
-                  },
-                  style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      primary: ProjectColors.primary),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.share,
-                          color: ProjectColors.white,
+            !kIsWeb
+                ? Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // add your onPressed function here
+                          if (widget.sharePdf != null) widget.sharePdf!();
+                        },
+                        style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                            ),
+                            primary: ProjectColors.primary),
+                        child: Padding(
+                          padding: const EdgeInsets.all(12.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(
+                                Icons.share,
+                                color: ProjectColors.white,
+                              ),
+                              const SizedBox(width: 10),
+                              Text('Share PDF',
+                                  style: b2Medium.copyWith(
+                                      color: ProjectColors.white)),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 10),
-                        Text('Share PDF',
-                            style:
-                                b2Medium.copyWith(color: ProjectColors.white)),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-              ),
-            ),
+                  )
+                : Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      padding: const EdgeInsets.all(12.0),
+                      color: const Color.fromARGB(255, 245, 247, 249),
+                      width: 70.w,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          ElevatedButton(
+                            onPressed: () {
+                              if (widget.printCallBack != null) {
+                                widget.printCallBack!();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                backgroundColor: ProjectColors.firefly),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.print),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text('Print', style: b2Medium),
+                                ],
+                              ),
+                            ),
+                          ),
+                          ElevatedButton(
+                            onPressed: () {
+                              print("I am called");
+                              if (widget.downloadCallBack != null) {
+                                widget.downloadCallBack!();
+                              }
+                              // downloadFile(
+                              //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                backgroundColor: ProjectColors.primary),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Icon(Icons.cloud_download),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Text('PDF', style: b2Medium),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
           ],
         ));
 
