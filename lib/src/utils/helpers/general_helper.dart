@@ -947,87 +947,7 @@ class _CustomDialogState extends State<CustomDialog> {
     } else {
       if (globalConstraints.maxWidth < 600) {
         //Mobile (Done)
-        return AlertDialog(
-            title: Padding(
-              padding: EdgeInsets.only(top: 7.h, bottom: 7.h),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  InkWell(
-                    onTap: () => Navigator.pop(context),
-                    child: SvgPicture.asset(
-                      "assets/svg/close.svg",
-                      package: "pdf_report_scope",
-                      color: ProjectColors.white,
-                    ),
-                  )
-                ],
-              ),
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            content: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      CarouselSlider(
-                        carouselController: _controller,
-                        options: CarouselOptions(
-                          aspectRatio: 1,
-                          enlargeCenterPage: true,
-                          clipBehavior: Clip.none,
-                          enableInfiniteScroll: false,
-                          enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                          onPageChanged: (indexed, r) =>
-                              setState(() => _current = indexed),
-                        ),
-                        items: imageUrl
-                            .map((item) => ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: GeneralHelper
-                                      .imageHandlerForRoundedConner(
-                                    item,
-                                    getImageWidthHeight(
-                                        ImageType.sectionImage, imageUrl)[0],
-                                    getImageWidthHeight(
-                                        ImageType.sectionImage, imageUrl)[1],
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                      const SizedBox(height: 24.0),
-                      Wrap(
-                        direction: Axis.horizontal,
-                        children: List.generate(
-                          imageUrl.length,
-                          (index) => GestureDetector(
-                            onTap: () => _controller.animateToPage(
-                              index,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            ),
-                            child: Container(
-                              width: 10,
-                              height: 10,
-                              margin:
-                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .scaffoldBackgroundColor
-                                    .withOpacity(_current == index ? 1.0 : 0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                )));
+        return MyDialogue(media: imageUrl);
       } else if (globalConstraints.maxWidth < 900) {
         //Tablet
         return AlertDialog(
@@ -1337,5 +1257,121 @@ class _CustomDialogState extends State<CustomDialog> {
             ));
       }
     }
+  }
+}
+
+class MyDialogue extends StatefulWidget {
+  final List<ImageShape> media;
+
+  const MyDialogue({Key? key, required this.media}) : super(key: key);
+
+  @override
+  State<MyDialogue> createState() => _MyDialogueState();
+}
+
+class _MyDialogueState extends State<MyDialogue> {
+  int _current = 0;
+  final CarouselController _controller = CarouselController();
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        backgroundColor: Colors.grey.withOpacity(0.3),
+        body: Padding(
+          padding: EdgeInsets.all(3.sp),
+          child: Column(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  // color: Colors.red,
+                  width: 100.w,
+                  // height: 60.h,
+                  child: SizedBox(
+                      width: 100.w,
+                      child: SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(top: 7.h, bottom: 7.h),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  InkWell(
+                                    onTap: () => Navigator.pop(context),
+                                    child: SvgPicture.asset(
+                                      "assets/svg/close.svg",
+                                      package: "pdf_report_scope",
+                                      color: ProjectColors.white,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                            CarouselSlider(
+                              carouselController: _controller,
+                              options: CarouselOptions(
+                                aspectRatio: 1,
+                                enlargeCenterPage: true,
+                                clipBehavior: Clip.none,
+                                enableInfiniteScroll: false,
+                                enlargeStrategy:
+                                    CenterPageEnlargeStrategy.scale,
+                                onPageChanged: (indexed, r) =>
+                                    setState(() => _current = indexed),
+                              ),
+                              items: widget.media
+                                  .map((item) => ClipRRect(
+                                        borderRadius: BorderRadius.circular(10),
+                                        child: GeneralHelper
+                                            .imageHandlerForRoundedConner(
+                                                item,
+                                                getImageWidthHeight(
+                                                    ImageType.sectionImage,
+                                                    widget.media)[0],
+                                                getImageWidthHeight(
+                                                    ImageType.sectionImage,
+                                                    widget.media)[1]),
+                                      ))
+                                  .toList(),
+                            ),
+                            const SizedBox(height: 24.0),
+                            Wrap(
+                              direction: Axis.horizontal,
+                              children: List.generate(
+                                widget.media.length,
+                                (index) => GestureDetector(
+                                  onTap: () => _controller.animateToPage(
+                                    index,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: const Duration(milliseconds: 800),
+                                  ),
+                                  child: Container(
+                                    width: 10,
+                                    height: 10,
+                                    margin: EdgeInsets.only(
+                                        left: index.isZero ? 0 : 10),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Theme.of(context)
+                                          .scaffoldBackgroundColor
+                                          .withOpacity(
+                                              _current == index ? 1.0 : 0.4),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
+                ),
+              ),
+            ],
+          ),
+        ));
   }
 }
