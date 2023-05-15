@@ -4,6 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class SectionTile extends StatefulWidget {
@@ -52,36 +53,37 @@ class _SectionTileState extends State<SectionTile> {
             ),
           ),
           onTap: () {
+            int currentSectionIndex = 0;
             if ((constraintMaxWidthForNavPop < 1230)) {
               Navigator.pop(context);
             }
-            if (isSearchValueChanged) {
-              if (widget.section.name == 'Information') {
-                setState(() {
-                  Future.delayed(const Duration(microseconds: 1), () {
-                    Scrollable.ensureVisible(
-                      inspectionInfoKey.currentContext!,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
-                  });
-                  isSearchValueChanged = false;
+            if (widget.section.name == 'Information') {
+              setState(() {
+                Future.delayed(const Duration(microseconds: 1), () {
+                  Scrollable.ensureVisible(
+                    inspectionInfoKey.currentContext!,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
                 });
-              } else if (widget.section.name == 'Report Summary') {
-                setState(() {
-                  summaryControllerStreamToExpand.add(1);
-                  Future.delayed(const Duration(microseconds: 1), () {
-                    Scrollable.ensureVisible(
-                      inspectionSummaryKey.currentContext!,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
-                  });
+                isSearchValueChanged = false;
+              });
+            } else if (widget.section.name == 'Report Summary') {
+              setState(() {
+                summaryControllerStreamToExpand.add(1);
+                Future.delayed(const Duration(microseconds: 1), () {
+                  Scrollable.ensureVisible(
+                    inspectionSummaryKey.currentContext!,
+                    duration: const Duration(milliseconds: 400),
+                    curve: Curves.easeInOut,
+                  );
                 });
-              } else {
-                int currentSectionIndex = widget.inspection.template!.sections
-                    .indexWhere((currentSection) =>
-                        currentSection.name == widget.section.name);
+              });
+            } else {
+              currentSectionIndex = widget.inspection.template!.sections
+                  .indexWhere((currentSection) =>
+                      currentSection.uid == widget.section.uid);
+              if (currentSectionIndex != -1) {
                 setState(() {
                   controllerStream.add(currentSectionIndex);
                   Future.delayed(const Duration(microseconds: 1), () {
@@ -95,54 +97,33 @@ class _SectionTileState extends State<SectionTile> {
                   });
                 });
               }
-            } else if (widget.sectionIndex == 0) {
-              setState(() {
-                Future.delayed(const Duration(microseconds: 1), () {
-                  Scrollable.ensureVisible(
-                    inspectionInfoKey.currentContext!,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                });
-              });
-            } else if (widget.sectionIndex == 1) {
-              setState(() {
-                summaryControllerStreamToExpand.add(1);
-                Future.delayed(const Duration(microseconds: 1), () {
-                  Scrollable.ensureVisible(
-                    inspectionSummaryKey.currentContext!,
-                    duration: const Duration(milliseconds: 400),
-                    curve: Curves.easeInOut,
-                  );
-                });
-              });
-            } else {
-              if (isSearchValueChanged) {
-                // print(
-                //     "${widget.isExpanded} search --index:${widget.sectionIndex}");
-                // // int searchIndex = (widgetisExpanded);
-                // setState(() {
-                //   controllerStream.add(widget.sectionIndex - 2);
-                //   Future.delayed(const Duration(microseconds: 1), () {
-                //     Scrollable.ensureVisible(
-                //       itemKeys[widget.section.uid!]!.currentContext!,
-                //       duration: const Duration(milliseconds: 400),
-                //       curve: Curves.easeInOut,
-                //     );
-                //   });
-                // });
-              } else {
-                print("baki sare --index:${widget.sectionIndex}");
-                setState(() {
-                  controllerStream.add(widget.sectionIndex - 2);
-                  Future.delayed(const Duration(microseconds: 1), () {
-                    Scrollable.ensureVisible(
-                      itemKeys[widget.section.uid!]!.currentContext!,
-                      duration: const Duration(milliseconds: 400),
-                      curve: Curves.easeInOut,
-                    );
-                  });
-                });
+              if (currentSectionIndex == -1) {
+                for (int i = 0;
+                    i < widget.inspection.template!.sections.length;
+                    i++) {
+                  for (int k = 0;
+                      k <
+                          widget.inspection.template!.sections[i].subSections
+                              .length;
+                      k++) {
+                    if (widget.inspection.template!.sections[i].subSections[k]
+                            .uid ==
+                        widget.section.uid) {
+                      setState(() {
+                        controllerStream.add(i);
+                        Future.delayed(const Duration(microseconds: 1), () {
+                          Scrollable.ensureVisible(
+                            itemKeys[widget.inspection.template!.sections[i]
+                                    .subSections[k].uid!]!
+                                .currentContext!,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
+                        });
+                      });
+                    }
+                  }
+                }
               }
             }
           },
@@ -195,7 +176,7 @@ class _SectionTileState extends State<SectionTile> {
                       : const SizedBox(),
                   widget.hasSubsections
                       ? Container(
-                          width: 30.0,
+                          width: 50.0,
                           height: 30.0,
                           color: Colors.transparent,
                           child: Center(

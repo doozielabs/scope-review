@@ -638,20 +638,44 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                         itemBuilder: (context, subSectionIndex) {
                                                                           final subSection =
                                                                               appendedSections[sectionIndex].subSections[subSectionIndex];
-                                                                          return Padding(
-                                                                            padding:
-                                                                                const EdgeInsets.only(top: 13.0, bottom: 13.0),
-                                                                            child:
-                                                                                SectionTile(
-                                                                              section: subSection,
-                                                                              isExpanded: isExpanded,
-                                                                              sectionIndex: sectionIndex,
-                                                                              hasSubsections: false,
-                                                                              totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[1],
-                                                                              diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[0],
-                                                                              inspection: widget.inspection,
-                                                                            ),
-                                                                          );
+
+                                                                          bool
+                                                                              hasSubSectionItems =
+                                                                              false;
+                                                                          for (var item
+                                                                              in subSection.items) {
+                                                                            if (!item.unspecified) {
+                                                                              hasSubSectionItems = true;
+                                                                            }
+                                                                          }
+                                                                          bool hasSubSectionImages = subSection
+                                                                              .images
+                                                                              .isNotEmpty;
+                                                                          bool hasSubSectionComments = subSection
+                                                                              .comments
+                                                                              .isNotEmpty;
+                                                                          bool
+                                                                              hasSectionItemComments =
+                                                                              subSection.items.any((item) => item.comments.isNotEmpty);
+                                                                          if (hasSubSectionItems ||
+                                                                              hasSubSectionImages ||
+                                                                              hasSubSectionComments ||
+                                                                              hasSectionItemComments) {
+                                                                            return Padding(
+                                                                              padding: const EdgeInsets.only(top: 13.0, bottom: 13.0),
+                                                                              child: SectionTile(
+                                                                                section: subSection,
+                                                                                isExpanded: isExpanded,
+                                                                                sectionIndex: sectionIndex,
+                                                                                hasSubsections: false,
+                                                                                totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[1],
+                                                                                diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[0],
+                                                                                inspection: widget.inspection,
+                                                                              ),
+                                                                            );
+                                                                          } else {
+                                                                            return const SizedBox.shrink();
+                                                                          }
                                                                         }),
                                                                   ],
                                                                 )

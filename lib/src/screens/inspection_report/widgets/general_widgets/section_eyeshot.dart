@@ -248,35 +248,26 @@ class _SectionEyeShotForMobileState
                               children: [
                                 GestureDetector(
                                   onTap: () {
-                                    // print("Ma hu chussu");
-                                    // if (sectionIndex == 0) {
-                                    //   print("info--index:$sectionIndex");
-                                    //   setState(() {
-                                    //     controllerStream
-                                    //         .add(inspectionInfoIndex);
-                                    //     isExpanded[inspectionInfoIndex] =
-                                    //         !isExpanded[inspectionInfoIndex];
-                                    //   });
-                                    //   //TODO: Jump to info
-                                    // } else if (sectionIndex == 1) {
-                                    //   print("Summary--index:$sectionIndex");
-                                    //   setState(() {
-                                    //     controllerStream
-                                    //         .add(inspectionSummaryIndex);
-                                    //     isExpanded[inspectionSummaryIndex] =
-                                    //         !isExpanded[inspectionSummaryIndex];
-                                    //   });
-                                    //   //TODO: Summary
-                                    // } else {
-                                    //   print("baki sare --index:$sectionIndex");
-                                    //   setState(() {
-                                    //     controllerStream.add(sectionIndex);
-                                    //     isExpanded[sectionIndex] =
-                                    //         !isExpanded[sectionIndex];
-                                    //   });
-                                    // }
-                                    // print(
-                                    //     " ${sections[indexCount].name} --- sectionIndex --  $indexCount");
+                                    if (isSearchValueChanged) {
+                                      int currentSectionIndex = widget
+                                          .inspection.template!.sections
+                                          .indexWhere((currentSection) =>
+                                              currentSection.uid ==
+                                              section.uid);
+                                      setState(() {
+                                        controllerStream.add(sectionIndex);
+                                        isExpanded[sectionIndex] =
+                                            !isExpanded[sectionIndex];
+                                        isSearchValueChanged = false;
+                                      });
+                                    } else {
+                                      setState(() {
+                                        controllerStream.add(sectionIndex);
+                                        isExpanded[sectionIndex] =
+                                            !isExpanded[sectionIndex];
+                                        isSearchValueChanged = false;
+                                      });
+                                    }
                                   },
                                   child: SectionTile(
                                     diffencyCount:
@@ -323,26 +314,53 @@ class _SectionEyeShotForMobileState
                                                                 sectionIndex]
                                                             .subSections[
                                                         subSectionIndex];
-                                                return Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                          top: 13.0,
-                                                          bottom: 13.0),
-                                                  child: SectionTile(
-                                                    section: subSection,
-                                                    isExpanded: isExpanded,
-                                                    sectionIndex: sectionIndex,
-                                                    hasSubsections: false,
-                                                    totalComments:
-                                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                            subSection)[1],
-                                                    diffencyCount:
-                                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                            subSection)[0],
-                                                    inspection:
-                                                        widget.inspection,
-                                                  ),
-                                                );
+
+                                                bool hasSubSectionItems = false;
+                                                for (var item
+                                                    in subSection.items) {
+                                                  if (!item.unspecified) {
+                                                    hasSubSectionItems = true;
+                                                  }
+                                                }
+                                                bool hasSubSectionImages =
+                                                    subSection
+                                                        .images.isNotEmpty;
+                                                bool hasSubSectionComments =
+                                                    subSection
+                                                        .comments.isNotEmpty;
+                                                bool hasSectionItemComments =
+                                                    subSection.items.any(
+                                                        (item) => item.comments
+                                                            .isNotEmpty);
+                                                if (hasSubSectionItems ||
+                                                    hasSubSectionImages ||
+                                                    hasSubSectionComments ||
+                                                    hasSectionItemComments) {
+                                                  return Padding(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            top: 13.0,
+                                                            bottom: 13.0),
+                                                    child: SectionTile(
+                                                      section: subSection,
+                                                      isExpanded: isExpanded,
+                                                      sectionIndex:
+                                                          sectionIndex,
+                                                      hasSubsections: false,
+                                                      totalComments:
+                                                          numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                                              subSection)[1],
+                                                      diffencyCount:
+                                                          numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                                              subSection)[0],
+                                                      inspection:
+                                                          widget.inspection,
+                                                    ),
+                                                  );
+                                                } else {
+                                                  return const SizedBox
+                                                      .shrink();
+                                                }
                                               })
                                         ],
                                       )
@@ -396,67 +414,80 @@ class _SectionEyeShotForMobileState
                   )
                 : Align(
                     alignment: Alignment.bottomCenter,
-                    child: Container(
-                      padding: const EdgeInsets.all(12.0),
-                      color: const Color.fromARGB(255, 245, 247, 249),
-                      width: 70.w,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              if (widget.printCallBack != null) {
-                                widget.printCallBack!();
-                              }
-                            },
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                backgroundColor: ProjectColors.firefly),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.print),
-                                  SizedBox(
-                                    width: 10,
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                          top: 10, bottom: 5, left: 10, right: 10),
+                      child: Container(
+                        padding: const EdgeInsets.only(
+                            top: 10, bottom: 0, left: 10, right: 10),
+                        color: Color.fromARGB(158, 233, 234, 231),
+                        width: MediaQuery.of(context).size.width,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              width: (MediaQuery.of(context).size.width / 2 -
+                                  10.w),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  if (widget.printCallBack != null) {
+                                    widget.printCallBack!();
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    backgroundColor: ProjectColors.firefly),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.print),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Text('Print', style: b2Medium),
+                                    ],
                                   ),
-                                  Text('Print', style: b2Medium),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
-                          ElevatedButton(
-                            onPressed: () {
-                              print("I am called");
-                              if (widget.downloadCallBack != null) {
-                                widget.downloadCallBack!();
-                              }
-                              // downloadFile(
-                              //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
-                            },
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                backgroundColor: ProjectColors.primary),
-                            child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Icon(Icons.cloud_download),
-                                  SizedBox(
-                                    width: 10,
+                            Container(
+                              width: (MediaQuery.of(context).size.width / 2 -
+                                  10.w),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  print("I am called");
+                                  if (widget.downloadCallBack != null) {
+                                    widget.downloadCallBack!();
+                                  }
+                                  // downloadFile(
+                                  //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
+                                    backgroundColor: ProjectColors.primary),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.cloud_download),
+                                      SizedBox(
+                                        width: 5.w,
+                                      ),
+                                      Text('PDF', style: b2Medium),
+                                    ],
                                   ),
-                                  Text('PDF', style: b2Medium),
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   )
