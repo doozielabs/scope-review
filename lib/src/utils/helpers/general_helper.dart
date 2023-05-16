@@ -148,7 +148,6 @@ class GeneralHelper {
   }
 
   static getMediaForHeader(ids, List<ImageShape> media) {
-    String lastMedia = ids.last;
     int counts = 1;
     if (ids.length == 0 || ids[0].contains('hgui')) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
@@ -180,6 +179,7 @@ class GeneralHelper {
             ));
       }
     } else {
+      String lastMedia = ids.last;
       int remainIdsCount = (ids.length - 1);
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ImageWithRoundedCornersForHeader(
