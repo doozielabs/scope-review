@@ -59,17 +59,24 @@ class SectionCommentCard extends StatelessWidget {
             ),
             const SizedBox(height: 14),
             needJumpToSectionButton
-                ? Text(comment.comment, style: secondryHeadingTextStyle.copyWith( color: ProjectColors.pickledBluewood, ))
-                : Text(comment.comment, key: thisCommentKey, style: secondryHeadingTextStyle.copyWith(color: ProjectColors.pickledBluewood,)),
+                ? Text(comment.comment,
+                    style: secondryHeadingTextStyle.copyWith(
+                      color: ProjectColors.pickledBluewood,
+                    ))
+                : Text(comment.comment,
+                    key: thisCommentKey,
+                    style: secondryHeadingTextStyle.copyWith(
+                      color: ProjectColors.pickledBluewood,
+                    )),
             Padding(
               padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
               child: Wrap(
                 direction: Axis.horizontal,
                 children: [
-                  comment.images.isNotEmpty 
-                  ? GeneralHelper.displayMediaList(
-                      comment.images, media, 2, ImageType.commentImage)
-                  : const SizedBox.shrink()    
+                  comment.images.isNotEmpty
+                      ? GeneralHelper.displayMediaList(
+                          comment.images, media, 2, ImageType.commentImage)
+                      : const SizedBox.shrink()
                   // ...List.generate(comment.images.length, (index) {
                   //   return Padding(
                   //     padding: const EdgeInsets.only(left: 5.0, bottom: 5.0),
@@ -106,14 +113,13 @@ class SectionCommentCard extends StatelessWidget {
                     child: GestureDetector(
                       onTap: () {
                         controllerStream.add(comment.serverTimestamp!);
-                        Future.delayed(const Duration(microseconds: 1), () {
+                        Future.delayed(const Duration(milliseconds: 100), () {
                           Scrollable.ensureVisible(
                             thisCommentKey!.currentContext!,
                             duration: const Duration(milliseconds: 400),
                             curve: Curves.easeInOut,
                           );
                         });
-                        //TODO: Jump to Section Comment Callback
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,

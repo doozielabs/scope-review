@@ -3,7 +3,6 @@ import 'package:pdf_report_scope/src/data/models/general_models.dart';
 import 'package:pdf_report_scope/src/data/models/payment_info_model.dart';
 import 'package:pdf_report_scope/src/data/models/person_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
-import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
@@ -27,7 +26,7 @@ class InspectionModel {
   late List<InspectinCleintWithAgreement> preInspectionAgreement;
   late bool trash;
   late String? id;
-  late String? invoice;
+  // late InvoiceReceipt? invoice;
   late bool isManual;
   late int? serverTimestamp;
   late int? lastModified;
@@ -37,7 +36,7 @@ class InspectionModel {
       {this.id,
       this.client,
       this.address,
-      this.invoice,
+      // this.invoice,
       this.template,
       this.coordinates,
       this.buyerAgent,
@@ -72,7 +71,10 @@ class InspectionModel {
       inspectionHashMap = <String, String>{};
     }
     name = json['name'];
-    invoice = json['invoice'];
+    // invoice = json['invoice'] != null
+    //     ? InvoiceReceipt.fromJson(json['invoice'])
+    //     : null;
+
     description = json['description'];
     address =
         json['address'] != null ? Address.fromJson(json['address']) : null;
@@ -145,7 +147,7 @@ class InspectionModel {
     //   data['user'] = user!.toJson();
     // }
     data['status'] = GeneralHelper.typeValue(status);
-    data['invoice'] = invoice;
+    // data['invoice'] = this.invoice!.toJson(deep: false);
     data["template"] = template!.toJson();
     data['trash'] = trash;
     data['isManual'] = isManual;
@@ -192,7 +194,7 @@ class InspectionModel {
     //Inspection trash
     originalInspection.trash = updatedInspection.trash;
     //Inspection invoice
-    originalInspection.invoice = updatedInspection.invoice;
+    // originalInspection.invoice = updatedInspection.invoice;
     //Inspection isManual
     originalInspection.isManual = updatedInspection.isManual;
     //Inspection Template
@@ -205,7 +207,7 @@ class InspectionModel {
     originalInspection.inspectionHashMap = updatedInspection.inspectionHashMap;
   }
 
-  bool get invoiceAssigned => (invoice ?? "").isNotEmpty;
+  // bool get invoiceAssigned => invoice != null ? true : false;
 
   List<String> get inspectionImages {
     List<String> images = [];

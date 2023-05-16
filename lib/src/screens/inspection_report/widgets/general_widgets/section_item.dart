@@ -113,7 +113,10 @@ class SectionItem extends StatelessWidget {
             ),
           );
         case TemplateItemType.text:
-          return Text(_value);
+          return Text(
+            _value,
+            style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
+          );
         case TemplateItemType.signature:
           return image(
             Uint8List.fromList(_value.cast<int>()),
@@ -153,11 +156,14 @@ class SectionItem extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   //Item value
-                  item.unspecified ? const Padding(padding: EdgeInsets.all(0)) : getItemValue(),
+                  item.unspecified
+                      ? const Padding(padding: EdgeInsets.all(0))
+                      : getItemValue(),
                   const SizedBox(height: 14),
                   item.images.isNotEmpty
-                       ? GeneralHelper.displayMediaList(item.images, media!, 2, ImageType.itemImage)
-                       : const SizedBox.shrink(),
+                      ? GeneralHelper.displayMediaList(
+                          item.images, media!, 2, ImageType.itemImage)
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),

@@ -148,6 +148,7 @@ class GeneralHelper {
   }
 
   static getMediaForHeader(ids, List<ImageShape> media) {
+    String lastMedia = ids.last;
     int counts = 1;
     if (ids.length == 0 || ids[0].contains('hgui')) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
@@ -182,7 +183,7 @@ class GeneralHelper {
       int remainIdsCount = (ids.length - 1);
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(ids[0], media),
+          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
           // width: 130.sp,
           // boxFit: BoxFit.fill,
           // height: 55.h,
@@ -193,7 +194,7 @@ class GeneralHelper {
         );
       } else if (SizerUtil.deviceType == DeviceType.tablet) {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(ids[0], media),
+          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
           width: 130.sp,
           boxFit: BoxFit.fill,
           height: 55.h,
@@ -204,7 +205,7 @@ class GeneralHelper {
         );
       } else {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(ids[0], media),
+          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
           boxFit: BoxFit.fill,
           width: getHeaderImageSizesForWeb()[0],
           height: getHeaderImageSizesForWeb()[1],
