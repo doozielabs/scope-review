@@ -53,7 +53,10 @@ class InspectionDescription extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text("${inspection.template?.reportHeader.replaceAll('	', '\n')}",
-                  style: b3Regular),
+                  style: secondryHeadingTextStyle.copyWith(
+                    color: ProjectColors.pickledBluewood,
+                    fontWeight: FontWeight.bold,
+                  )),
             ],
           ),
         ),
