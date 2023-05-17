@@ -55,7 +55,6 @@ class InspectionDescription extends StatelessWidget {
               Text("${inspection.template?.reportHeader.replaceAll('	', '\n')}",
                   style: secondryHeadingTextStyle.copyWith(
                     color: ProjectColors.pickledBluewood,
-                    fontWeight: FontWeight.bold,
                   )),
             ],
           ),

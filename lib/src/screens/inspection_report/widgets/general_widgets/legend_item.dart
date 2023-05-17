@@ -36,7 +36,7 @@ class LegendItem extends StatelessWidget {
                 title,
                 style: primaryHeadingTextStyle.copyWith(
                     fontFamily: fontFamilyJostMedium,
-                    color: ProjectColors.black),
+                    color: ProjectColors.firefly),
               ),
               Text(
                 value,

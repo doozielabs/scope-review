@@ -150,10 +150,12 @@ class SectionItem extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   //Item Label
-                  Text(
-                    "${item.label.toString()} :",
-                    style: b3Medium,
-                  ),
+                  Text("${item.label.toString()} :",
+                      style: secondryHeadingTextStyle.copyWith(
+                        fontFamily: fontFamilyJostMedium,
+                        fontWeight: FontWeight.w500,
+                        color: ProjectColors.pickledBluewood,
+                      )),
                   const SizedBox(height: 8),
                   //Item value
                   item.unspecified
