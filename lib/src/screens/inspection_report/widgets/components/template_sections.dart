@@ -35,9 +35,8 @@ class _TemplateSectionsState extends State<TemplateSections> {
     inspection = widget.inspection;
     media = widget.media;
     controllerStream.stream.listen((index) {
-        isExpanded[index] = true;
-      setState(() {
-      });
+      isExpanded[index] = true;
+      setState(() {});
     });
     isExpandedForAllSections();
     super.initState();
@@ -111,6 +110,9 @@ class _TemplateSectionsState extends State<TemplateSections> {
                     bool hasSectionItemComments = inspection
                         .template!.sections[sectionIndex].items
                         .any((item) => item.comments.isNotEmpty);
+                    bool hasSectionItemImages = inspection
+                        .template!.sections[sectionIndex].items
+                        .any((item) => item.images.isNotEmpty);
                     bool hasSectionImages = inspection
                         .template!.sections[sectionIndex].images.isNotEmpty;
                     bool hasSectionComments = inspection
@@ -118,7 +120,9 @@ class _TemplateSectionsState extends State<TemplateSections> {
                     bool hasSectionItems = false;
                     for (var item
                         in inspection.template!.sections[sectionIndex].items) {
-                      if (!item.unspecified) {
+                      if (!item.unspecified ||
+                          hasSectionItemComments ||
+                          hasSectionItemImages) {
                         hasSectionItems = true;
                       }
                     }
@@ -337,14 +341,12 @@ class SectionImages extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return 
-    inspection.template!.sections[sectionIndex].images.isNotEmpty
-    ? GeneralHelper.displayMediaList(
-        inspection.template!.sections[sectionIndex].images,
-        media,
-        4,
-        ImageType.sectionImage)
-    : 
-    SizedBox.shrink();
+    return inspection.template!.sections[sectionIndex].images.isNotEmpty
+        ? GeneralHelper.displayMediaList(
+            inspection.template!.sections[sectionIndex].images,
+            media,
+            4,
+            ImageType.sectionImage)
+        : SizedBox.shrink();
   }
 }
