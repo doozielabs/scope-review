@@ -1297,7 +1297,8 @@ class _MyDialogueState extends State<MyDialogue> {
                         child: Column(
                           children: [
                             Padding(
-                              padding: EdgeInsets.only(top: 7.h, bottom: 7.h),
+                              padding: EdgeInsets.only(
+                                  top: 20.h, bottom: 5.h, right: 10.w),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [

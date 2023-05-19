@@ -107,7 +107,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile SinlgeImage -- Comment Image
           imageWidth = 100.w;
-          imageHeight = 50.h;
+          imageHeight = 26.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet SinlgeImage -- Comment
           imageWidth = 100.w;
@@ -115,7 +115,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         } else {
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
-            imageHeight = 50.h;
+            imageHeight = 26.h;
           } else if (globalConstraints.maxWidth < 1230) {
             imageWidth = 100.w;
             imageHeight = 25.h;
@@ -128,7 +128,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile multiple Images -- Comment Image
           imageWidth = 100.w;
-          imageHeight = 40.h;
+          imageHeight = 26.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet multiple Images -- Comment Image
           imageWidth = 100.w;
@@ -137,7 +137,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
           //Web multiple Images -- Comment Image
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 26.h;
           } else if (globalConstraints.maxWidth < 1230) {
             imageWidth = 100.w;
             imageHeight = 20.h;
@@ -153,7 +153,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile SinlgeImage -- Section Image
           imageWidth = 100.w;
-          imageHeight = 50.h;
+          imageHeight = 25.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet SinlgeImage -- Section Image
           imageWidth = 100.w;
@@ -162,7 +162,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
           //Web SinlgeImage -- Section Image
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
-            imageHeight = 50.h;
+            imageHeight = 25.h;
 
             /// 4;
           } else if (globalConstraints.maxWidth < 1230) {
@@ -177,7 +177,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile multiple Images -- Section Image
           imageWidth = 100.w;
-          imageHeight = 40.h;
+          imageHeight = 25.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet multiple Images -- Section Image
           imageWidth = 100.w;
@@ -186,10 +186,10 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
           //Web multiple Images -- Section Image
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 25.h;
           } else if (globalConstraints.maxWidth < 1230) {
             imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 25.h;
           } else {
             imageWidth = 100.w;
             imageHeight = 40.h;
@@ -201,7 +201,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
       if (isSingleImage) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           imageWidth = 100.w;
-          imageHeight = 50.h;
+          imageHeight = 26.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           imageWidth = 100.w;
           imageHeight = 30.h;
@@ -209,7 +209,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
           //Web Single Images -- Item Image
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
-            imageHeight = 50.h;
+            imageHeight = 26.h;
           } else if (globalConstraints.maxWidth < 1230) {
             imageWidth = 100.w;
             imageHeight = 30.h;
@@ -222,7 +222,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
           //Mobile multiple Images -- Item Image
           imageWidth = 100.w;
-          imageHeight = 40.h;
+          imageHeight = 26.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
           //Tablet multiple Images -- Item Image
           imageWidth = 100.w;
@@ -231,7 +231,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
           //Web multiple Images -- Item Image
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
-            imageHeight = 40.h;
+            imageHeight = 26.h;
           } else if (globalConstraints.maxWidth < 1230) {
             imageWidth = 100.w;
             imageHeight = 25.h;
