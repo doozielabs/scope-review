@@ -1,9 +1,13 @@
 import 'dart:io';
+
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
+import 'package:intl/intl.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
@@ -14,9 +18,6 @@ import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
-// import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
-import 'package:intl/intl.dart';
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/constant/globals.dart';
@@ -45,16 +46,16 @@ class GeneralHelper {
       addressString = (addressString + address.street);
     }
     if (address.zipcode.isNotEmpty) {
-      if (address != "") (addressString + ", ");
-      addressString = (addressString + ' ' + address.zipcode);
+      if (address != "") ("$addressString, ");
+      addressString = ('$addressString ' + address.zipcode);
     }
     if (address.state.isNotEmpty) {
-      if (address != "") (addressString + ", ");
-      addressString = (addressString + ' ' + address.state);
+      if (address != "") ("$addressString, ");
+      addressString = ('$addressString ' + address.state);
     }
     if (address.city.isNotEmpty) {
-      if (address != "") (addressString + ", ");
-      addressString = (addressString + ' ' + address.city);
+      if (address != "") ("$addressString, ");
+      addressString = ('$addressString ' + address.city);
     }
     return addressString;
   }
@@ -117,7 +118,7 @@ class GeneralHelper {
       for (var id in ids) {
         for (var image in media) {
           if (image.id == id) {
-            imageUrl = 'https://api.scopeinspectapp.com' + image.original;
+            imageUrl = 'https://api.scopeinspectapp.com${image.original}';
           }
         }
       }
@@ -148,7 +149,7 @@ class GeneralHelper {
   }
 
   static getMediaForHeader(ids, List<ImageShape> media) {
-    int counts = 1;
+    String lastMedia = ids.last;
     if (ids.length == 0 || ids[0].contains('hgui')) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ClipRRect(
@@ -184,9 +185,8 @@ class GeneralHelper {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ImageWithRoundedCornersForHeader(
           imageUrl: GeneralHelper.getMediaById(lastMedia, media),
-          // width: 130.sp,
-          // boxFit: BoxFit.fill,
-          // height: 55.h,
+          width: 100.w,
+          boxFit: BoxFit.fill,
           remain: remainIdsCount,
           lastItem: true,
           ids: ids,
@@ -329,17 +329,17 @@ class GeneralHelper {
   }
 
   static getMediaList(List ids, List<ImageShape> media) {
-    List<ImageShape> _images = [];
+    List<ImageShape> images = [];
     if (ids.isNotEmpty && media.isNotEmpty) {
       for (var id in ids) {
         for (var image in media) {
           if (image.id == id) {
-            _images.add(image);
+            images.add(image);
           }
         }
       }
     }
-    return _images;
+    return images;
   }
 
   static getSizeByDevicesForImages(ImageType imagetype, int counts) {
@@ -672,59 +672,59 @@ class Id {
 
   static Id decode(String id) {
     if (isValidId(id)) {
-      var _ids = id.split(connector).map((_) => int.parse(_)).toList();
-      var _id = Id();
-      _id.section = _ids[sectionPosition];
-      _id.subSection = _ids[subSectionPosition];
-      _id.item = _ids[itemPosition];
-      _id.comment = _ids[commentPosition];
-      _id.image = _ids[imagePosition];
-      return _id;
+      var ids = id.split(connector).map((_) => int.parse(_)).toList();
+      var id0 = Id();
+      id0.section = ids[sectionPosition];
+      id0.subSection = ids[subSectionPosition];
+      id0.item = ids[itemPosition];
+      id0.comment = ids[commentPosition];
+      id0.image = ids[imagePosition];
+      return id0;
     } else {
-      var _id = Id();
-      _id.section = 0;
-      _id.subSection = 0;
-      _id.item = 0;
-      _id.comment = 0;
-      _id.image = 0;
-      return _id;
+      var id0 = Id();
+      id0.section = 0;
+      id0.subSection = 0;
+      id0.item = 0;
+      id0.comment = 0;
+      id0.image = 0;
+      return id0;
     }
   }
 
   static Id mapOnArrayIndex(String id) {
     if (isValidId(id)) {
-      var _ids = id.split(connector).map((_) => int.parse(_)).toList();
-      var _id = Id();
-      _id.section = _ids[sectionPosition] - 1;
-      _id.subSection = _ids[subSectionPosition] - 1;
-      _id.item = _ids[itemPosition] - 1;
-      _id.comment = _ids[commentPosition] - 1;
-      _id.image = _ids[imagePosition] - 1;
-      return _id;
+      var ids = id.split(connector).map((_) => int.parse(_)).toList();
+      var id0 = Id();
+      id0.section = ids[sectionPosition] - 1;
+      id0.subSection = ids[subSectionPosition] - 1;
+      id0.item = ids[itemPosition] - 1;
+      id0.comment = ids[commentPosition] - 1;
+      id0.image = ids[imagePosition] - 1;
+      return id0;
     } else {
-      var _id = Id();
-      _id.section = -1;
-      _id.subSection = -1;
-      _id.item = -1;
-      _id.comment = -1;
-      _id.image = -1;
-      return _id;
+      var id0 = Id();
+      id0.section = -1;
+      id0.subSection = -1;
+      id0.item = -1;
+      id0.comment = -1;
+      id0.image = -1;
+      return id0;
     }
   }
 
   /// check if the string contains only numbers
   static bool isNumeric(String str) {
-    RegExp _numeric = RegExp(r'^-?[0-9]+$');
-    return _numeric.hasMatch(str);
+    RegExp numeric = RegExp(r'^-?[0-9]+$');
+    return numeric.hasMatch(str);
   }
 
   static bool isValidId(String? id) {
     bool isValid = true;
     if (!id.isNull && id is String) {
       if (id.contains(connector)) {
-        var _ids = id.split(connector).map((_) => _).toList();
-        if (_ids.length == 5) {
-          for (var val in _ids) {
+        var ids = id.split(connector).map((_) => _).toList();
+        if (ids.length == 5) {
+          for (var val in ids) {
             if (!isNumeric(val)) {
               isValid = false;
             }
@@ -742,13 +742,13 @@ class Id {
   }
 
   String id() {
-    var _ids = List.generate(imagePosition.inc, (_) => 0);
-    _ids[sectionPosition] = section;
-    _ids[subSectionPosition] = subSection;
-    _ids[itemPosition] = item;
-    _ids[commentPosition] = comment;
-    _ids[imagePosition] = image;
-    return _ids.join(connector);
+    var ids = List.generate(imagePosition.inc, (_) => 0);
+    ids[sectionPosition] = section;
+    ids[subSectionPosition] = subSection;
+    ids[itemPosition] = item;
+    ids[commentPosition] = comment;
+    ids[imagePosition] = image;
+    return ids.join(connector);
   }
 
   List<int> collection() =>
