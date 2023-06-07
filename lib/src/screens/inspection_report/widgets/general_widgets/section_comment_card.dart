@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/comment_info_card.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class SectionCommentCard extends StatelessWidget {
   final String commentTitle;
@@ -24,6 +23,14 @@ class SectionCommentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String getCommentLevelValue() {
+      if (comment.level.name == "homeBuyer") {
+        return "Home Buyer";
+      } else {
+        return "Contractor";
+      }
+    }
+
     var thisCommentKey =
         commentKeys[comment.id.toString() + comment.uid.toString()];
     return Container(
@@ -105,7 +112,7 @@ class SectionCommentCard extends StatelessWidget {
                 ? const SizedBox()
                 : CommentInfoCard(
                     primaryText: "Remediation Level",
-                    secondaryText: comment.level.name,
+                    secondaryText: getCommentLevelValue(),
                   ),
             needJumpToSectionButton
                 ? Padding(
