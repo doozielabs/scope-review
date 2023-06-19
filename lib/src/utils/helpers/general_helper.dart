@@ -156,7 +156,7 @@ class GeneralHelper {
             child: Image.asset(
               "assets/images/default_image.png",
               package: "pdf_report_scope",
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ));
       } else if (SizerUtil.deviceType == DeviceType.tablet) {
         return ClipRRect(
@@ -164,7 +164,7 @@ class GeneralHelper {
             child: Image.asset(
               "assets/images/default_image.png",
               package: "pdf_report_scope",
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               width: 120.sp,
               height: 55.h,
             ));
@@ -173,7 +173,7 @@ class GeneralHelper {
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
               baseUrlLive + defaultHeaderImage1,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
               width: getHeaderImageSizesForWeb()[0],
               height: getHeaderImageSizesForWeb()[1],
             ));
@@ -185,7 +185,7 @@ class GeneralHelper {
         return ImageWithRoundedCornersForHeader(
           imageUrl: GeneralHelper.getMediaById(lastMedia, media),
           width: 100.w,
-          boxFit: BoxFit.fill,
+          boxFit: BoxFit.cover,
           remain: remainIdsCount,
           lastItem: true,
           ids: ids,
@@ -195,7 +195,7 @@ class GeneralHelper {
         return ImageWithRoundedCornersForHeader(
           imageUrl: GeneralHelper.getMediaById(lastMedia, media),
           width: 130.sp,
-          boxFit: BoxFit.fill,
+          boxFit: BoxFit.cover,
           height: 55.h,
           remain: remainIdsCount,
           lastItem: true,
@@ -205,7 +205,7 @@ class GeneralHelper {
       } else {
         return ImageWithRoundedCornersForHeader(
           imageUrl: GeneralHelper.getMediaById(lastMedia, media),
-          boxFit: BoxFit.fill,
+          boxFit: BoxFit.cover,
           width: getHeaderImageSizesForWeb()[0],
           height: getHeaderImageSizesForWeb()[1],
           remain: remainIdsCount,
@@ -267,7 +267,7 @@ class GeneralHelper {
       return Image.network(baseUrlLive + image.url,
           width: width,
           height: height,
-          fit: BoxFit.fill, loadingBuilder: (context, child, loadingProgress) {
+          fit: BoxFit.cover, loadingBuilder: (context, child, loadingProgress) {
         if (loadingProgress == null) {
           return child;
         } else {
@@ -295,7 +295,7 @@ class GeneralHelper {
       //   baseUrlLive + image.url,
       //   width: width,
       //   height: height,
-      //   fit: BoxFit.fill,
+      //   fit: BoxFit.contain,
       // );
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
@@ -303,14 +303,14 @@ class GeneralHelper {
           File(image.url.envRelativePath()),
           width: width,
           height: height,
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
         );
       } else {
         return Image.asset(
           image.url,
           width: width,
           height: height,
-          fit: BoxFit.fill,
+          fit: BoxFit.cover,
         );
       }
     }

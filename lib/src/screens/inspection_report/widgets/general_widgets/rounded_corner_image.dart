@@ -17,7 +17,7 @@ class ImageWithRoundedCorners extends StatelessWidget {
       this.height = 300,
       this.borderRadius = 16.0,
       this.counts = 0,
-      this.boxFit = BoxFit.fill})
+      this.boxFit = BoxFit.cover})
       : super(key: key);
 
   @override
@@ -58,7 +58,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
       this.borderRadius = 16.0,
       this.ids,
       this.media,
-      this.boxFit = BoxFit.fill})
+      this.boxFit = BoxFit.cover})
       : super(key: key);
 
   @override
@@ -101,19 +101,19 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
       );
     } else {
       if (imageUrl is ImageShape) {
-        return GestureDetector(	
-          onTap: () async {	
-            showDialog(	
-                context: context,	
-                builder: (BuildContext context) {	
-                  return CustomDialog(ids: ids!, media: media!);	
-                });	
-          },	
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(borderRadiusValue),
-          child: GeneralHelper.imageHandlerForRoundedConner(
-              imageUrl, width, height),
-        ));
+        return GestureDetector(
+            onTap: () async {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CustomDialog(ids: ids!, media: media!);
+                  });
+            },
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(borderRadiusValue),
+              child: GeneralHelper.imageHandlerForRoundedConner(
+                  imageUrl, width, height),
+            ));
       } else {
         return GeneralHelper.invalidImageText();
       }
@@ -144,7 +144,7 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
       this.borderRadius = 16.0,
       this.ids,
       this.media,
-      this.boxFit = BoxFit.fill})
+      this.boxFit = BoxFit.cover})
       : super(key: key);
 
   @override
