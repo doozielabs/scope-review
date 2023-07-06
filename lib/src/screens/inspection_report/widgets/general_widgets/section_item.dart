@@ -9,8 +9,6 @@ import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/image.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/template_sections.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 // List<ImageShape> _getMedias(List<String> images, List<ImageShape> media) {
@@ -47,17 +45,17 @@ class SectionItem extends StatelessWidget {
           style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
         );
       }
-      var _value = item.value;
+      var value = item.value;
       switch (item.type) {
         case TemplateItemType.timestamp:
           return Text(
-            GeneralHelper.getInspectionDateTimeFormat(_value),
+            GeneralHelper.getInspectionDateTimeFormat(value),
             style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
           );
         case TemplateItemType.photo:
           // return Text("TemplateItemType --- $_value");
           return GeneralHelper.displayMediaList(
-              _value, media!, 2, ImageType.itemImage);
+              value, media!, 2, ImageType.itemImage);
         // List<ImageShape> photos =
         //     media.where((img) => (_value as List).contains(img.id)).toList();
         // return Container(
@@ -77,8 +75,8 @@ class SectionItem extends StatelessWidget {
         //               ))),
         // );
         case TemplateItemType.choice:
-          _value ??= [];
-          _value as List;
+          value ??= [];
+          value as List;
           return thisOrThat(
             weather: item.defaultOption == null,
             secondary: Text(
@@ -89,7 +87,7 @@ class SectionItem extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  _value.isEmpty ? "".unspecified : _value.join(", "),
+                  value.isEmpty ? "".unspecified : value.join(", "),
                   style:
                       b3Regular.copyWith(color: ProjectColors.pickledBluewood),
                 ),
@@ -114,18 +112,18 @@ class SectionItem extends StatelessWidget {
           );
         case TemplateItemType.text:
           return Text(
-            _value,
+            value,
             style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
           );
         case TemplateItemType.signature:
           return image(
-            Uint8List.fromList(_value.cast<int>()),
+            Uint8List.fromList(value.cast<int>()),
             width: 187,
             height: 98,
           );
         default:
           return Text(
-              (_value is DateTime ? _value.fulldate : _value.toString())
+              (value is DateTime ? value.fulldate : value.toString())
                   .unspecified,
               style: b3Regular.copyWith(color: ProjectColors.pickledBluewood));
       }

@@ -71,7 +71,7 @@ class _PDFReportState extends State<PDFReport> {
       return Sizer(
           builder: ((context, orientation, deviceType) => MaterialApp(
                 debugShowCheckedModeBanner: false,
-                title: 'Inspektify Report',
+                title: 'Scope-Report',
                 initialRoute: "/$concatenate",
                 routes: <String, WidgetBuilder>{
                   "/$concatenate": (context) => isLoading
@@ -95,7 +95,7 @@ class _PDFReportState extends State<PDFReport> {
       return Sizer(
           builder: ((context, orientation, deviceType) => MaterialApp(
                 debugShowCheckedModeBanner: false,
-                title: 'Inspektify Report',
+                title: 'Scope-Report',
                 home: isLoading
                     ? const CupertinoActivityIndicator(
                         color: ProjectColors.firefly)
