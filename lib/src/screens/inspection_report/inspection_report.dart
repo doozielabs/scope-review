@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
@@ -7,6 +8,7 @@ import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/inspection_description.dart';
@@ -17,14 +19,17 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
 
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 
 class InspectionReportScreen extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
+  final List<Template> templates;
   final bool showDialogue;
   final Function? printCallBack;
+  final Function? mediaCallBack;
   final Function? downloadCallBack;
   final Function? sharePdf;
   final User user;
@@ -32,8 +37,10 @@ class InspectionReportScreen extends StatefulWidget {
     Key? key,
     required this.inspection,
     required this.media,
+    required this.templates,
     required this.showDialogue,
     this.printCallBack,
+    this.mediaCallBack,
     this.downloadCallBack,
     this.sharePdf,
     required this.user,
@@ -46,8 +53,10 @@ class InspectionReportScreen extends StatefulWidget {
 class _InspectionReportScreenState extends State<InspectionReportScreen> {
   bool isLoading = false;
   List<bool> isExpanded = [];
+  List<Template> templates = [];
+  Template selectedTemplate = Template();
 
-  late List<TemplateSection> sections = widget.inspection.template!.sections;
+  late List<TemplateSection> sections = selectedTemplate.sections;
 
   late List<TemplateSection> appendedSections = [];
   Stream stream = constraintStream.stream;
@@ -58,12 +67,16 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     appendedSections = [
       TemplateSection(name: "Information", uid: '00001'),
       TemplateSection(name: "Report Summary", uid: '00002'),
-      ...widget.inspection.template!.sections
+      ...selectedTemplate.sections
     ];
   }
 
   @override
   void initState() {
+    templates = widget.templates;
+    if (templates.isNotEmpty) {
+      selectedTemplate = templates.first;
+    }
     setSectionData();
     isExpandedForAllSections();
     setKeysForFilteredSection(sections);
@@ -131,6 +144,17 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         duration: const Duration(microseconds: 1), curve: Curves.linear);
   }
 
+  Future<void> switchService(index) async {
+    selectedTemplate = templates[index];
+    widget.mediaCallBack?.call(index);
+    setState(() {
+      sections = selectedTemplate.sections;
+      setSectionData();
+      isExpandedForAllSections();
+      setKeysForFilteredSection(sections);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -147,19 +171,24 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                   child: Column(
                     children: [
                       ReportHeader(
-                        key: inspectionInfoKey,
-                        inspection: widget.inspection,
-                        media: widget.media,
-                        user: widget.user,
-                      ),
+                          key: inspectionInfoKey,
+                          inspection: widget.inspection,
+                          media: widget.media,
+                          user: widget.user,
+                          selectedTemplate: selectedTemplate),
                       const Legends(),
-                      InspectionDescription(inspection: widget.inspection),
+                      InspectionDescription(
+                          inspection: widget.inspection,
+                          selectedTemplate: selectedTemplate),
                       ReportSummary(
                           key: inspectionSummaryKey,
                           inspection: widget.inspection,
-                          media: widget.media),
+                          media: widget.media,
+                          selectedTemplate: selectedTemplate),
                       TemplateSections(
-                          inspection: widget.inspection, media: widget.media)
+                          inspection: widget.inspection,
+                          media: widget.media,
+                          selectedTemplate: selectedTemplate)
                     ],
                   ),
                 ),
@@ -175,19 +204,24 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
               child: Column(
                 children: [
                   ReportHeader(
-                    key: inspectionInfoKey,
-                    inspection: widget.inspection,
-                    media: widget.media,
-                    user: widget.user,
-                  ),
+                      key: inspectionInfoKey,
+                      inspection: widget.inspection,
+                      media: widget.media,
+                      user: widget.user,
+                      selectedTemplate: selectedTemplate),
                   const Legends(),
-                  InspectionDescription(inspection: widget.inspection),
+                  InspectionDescription(
+                      inspection: widget.inspection,
+                      selectedTemplate: selectedTemplate),
                   ReportSummary(
                       key: inspectionSummaryKey,
                       inspection: widget.inspection,
-                      media: widget.media),
+                      media: widget.media,
+                      selectedTemplate: selectedTemplate),
                   TemplateSections(
-                      inspection: widget.inspection, media: widget.media)
+                      inspection: widget.inspection,
+                      media: widget.media,
+                      selectedTemplate: selectedTemplate)
                 ],
               ),
             ),
@@ -207,18 +241,18 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 actions: [
                   InkWell(
                     onTap: () async {
-                      // ShowMenuDialogue showMenuDialogue = ShowMenuDialogue(true);
-                      // showMenuDialogue.showMenu(context, jsonData);
                       showDialog(
                           barrierDismissible: false,
                           context: context,
                           builder: (BuildContext context) {
                             return SectionEyeShotForMobileAndTablet(
-                              inspection: widget.inspection,
-                              sharePdf: widget.sharePdf,
-                              printCallBack: widget.printCallBack,
-                              downloadCallBack: widget.downloadCallBack,
-                            );
+                                inspection: widget.inspection,
+                                sharePdf: widget.sharePdf,
+                                printCallBack: widget.printCallBack,
+                                downloadCallBack: widget.downloadCallBack,
+                                selectedTemplate: selectedTemplate,
+                                templates: templates,
+                                switchServiceMethod: switchService);
                           });
                     },
                     child: Padding(
@@ -236,19 +270,24 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 child: Column(
                   children: [
                     ReportHeader(
-                      key: inspectionInfoKey,
-                      inspection: widget.inspection,
-                      media: widget.media,
-                      user: widget.user,
-                    ),
+                        key: inspectionInfoKey,
+                        inspection: widget.inspection,
+                        media: widget.media,
+                        user: widget.user,
+                        selectedTemplate: selectedTemplate),
                     const Legends(),
-                    InspectionDescription(inspection: widget.inspection),
+                    InspectionDescription(
+                        inspection: widget.inspection,
+                        selectedTemplate: selectedTemplate),
                     ReportSummary(
                         key: inspectionSummaryKey,
                         inspection: widget.inspection,
-                        media: widget.media),
+                        media: widget.media,
+                        selectedTemplate: selectedTemplate),
                     TemplateSections(
-                        inspection: widget.inspection, media: widget.media)
+                        inspection: widget.inspection,
+                        media: widget.media,
+                        selectedTemplate: selectedTemplate)
                   ],
                 ),
               ),
@@ -273,11 +312,13 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           context: context,
                           builder: (BuildContext context) {
                             return SectionEyeShotForMobileAndTablet(
-                              inspection: widget.inspection,
-                              sharePdf: widget.sharePdf,
-                              printCallBack: widget.printCallBack,
-                              downloadCallBack: widget.downloadCallBack,
-                            );
+                                inspection: widget.inspection,
+                                sharePdf: widget.sharePdf,
+                                printCallBack: widget.printCallBack,
+                                downloadCallBack: widget.downloadCallBack,
+                                selectedTemplate: selectedTemplate,
+                                templates: templates,
+                                switchServiceMethod: switchService);
                           });
                     },
                     child: Padding(
@@ -295,19 +336,24 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                 child: Column(
                   children: [
                     ReportHeader(
-                      key: inspectionInfoKey,
-                      inspection: widget.inspection,
-                      media: widget.media,
-                      user: widget.user,
-                    ),
+                        key: inspectionInfoKey,
+                        inspection: widget.inspection,
+                        media: widget.media,
+                        user: widget.user,
+                        selectedTemplate: selectedTemplate),
                     const Legends(),
-                    InspectionDescription(inspection: widget.inspection),
+                    InspectionDescription(
+                        inspection: widget.inspection,
+                        selectedTemplate: selectedTemplate),
                     ReportSummary(
                         key: inspectionSummaryKey,
                         inspection: widget.inspection,
-                        media: widget.media),
+                        media: widget.media,
+                        selectedTemplate: selectedTemplate),
                     TemplateSections(
-                        inspection: widget.inspection, media: widget.media)
+                        inspection: widget.inspection,
+                        media: widget.media,
+                        selectedTemplate: selectedTemplate)
                   ],
                 ),
               ),
@@ -342,6 +388,12 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                             padding: const EdgeInsets.all(8.0),
                             child: Column(
                               children: [
+                                (kIsWeb && templates.length > 1)
+                                    ? MultiTemplatesSelection(
+                                        templates: templates,
+                                        selectedTemplate: selectedTemplate,
+                                        switchServiceMethod: switchService)
+                                    : const SizedBox(),
                                 Container(
                                   width: MediaQuery.of(context).size.width,
                                   decoration: BoxDecoration(
@@ -608,6 +660,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                     sectionIndex,
                                                                 inspection: widget
                                                                     .inspection,
+                                                                selectedTemplate:
+                                                                    selectedTemplate,
                                                               ),
                                                             ),
                                                           ),
@@ -671,6 +725,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                                 totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[1],
                                                                                 diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[0],
                                                                                 inspection: widget.inspection,
+                                                                                selectedTemplate: selectedTemplate,
                                                                               ),
                                                                             );
                                                                           } else {
@@ -794,20 +849,23 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                           child: Column(
                             children: [
                               ReportHeader(
-                                key: inspectionInfoKey,
-                                inspection: widget.inspection,
-                                media: widget.media,
-                                user: widget.user,
-                              ),
+                                  key: inspectionInfoKey,
+                                  inspection: widget.inspection,
+                                  media: widget.media,
+                                  user: widget.user,
+                                  selectedTemplate: selectedTemplate),
                               const Legends(),
                               InspectionDescription(
-                                  inspection: widget.inspection),
+                                  inspection: widget.inspection,
+                                  selectedTemplate: selectedTemplate),
                               ReportSummary(
                                   key: inspectionSummaryKey,
                                   inspection: widget.inspection,
-                                  media: widget.media),
+                                  media: widget.media,
+                                  selectedTemplate: selectedTemplate),
                               TemplateSections(
                                   inspection: widget.inspection,
+                                  selectedTemplate: selectedTemplate,
                                   media: widget.media)
                             ],
                           ),

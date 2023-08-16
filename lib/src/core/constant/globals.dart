@@ -8,9 +8,11 @@ import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:sizer/sizer.dart';
 
-const baseUrlLive = 'https://api.scopeinspectapp.com/';
+const baseUrlLive =
+    'http://192.168.88.15:1337/'; //https://api.scopeinspectapp.com/';
 const baseUrlStaging = 'https://staging.scopeinspectapp.com/';
 const baseUrlLocal = 'http://localhost:1337/';
+const baseUrlRafiLocal = 'http://192.168.88.15:1337/';
 const defaultHeaderImage1 = 'images/inspection_placeholder.png';
 const defaultHeaderImage = "images/house.jpeg";
 const defaultInvalidImage = "images/invalid-placholder.png";

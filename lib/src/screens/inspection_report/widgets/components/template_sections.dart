@@ -5,6 +5,7 @@ import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/secondary_heading_text_with_background.dart';
@@ -17,8 +18,12 @@ import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 class TemplateSections extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
+  final Template? selectedTemplate;
   const TemplateSections(
-      {Key? key, required this.inspection, required this.media})
+      {Key? key,
+      required this.inspection,
+      required this.media,
+      this.selectedTemplate})
       : super(key: key);
   @override
   State<TemplateSections> createState() => _TemplateSectionsState();
@@ -28,11 +33,13 @@ class _TemplateSectionsState extends State<TemplateSections> {
   List<bool> isExpanded = [];
   bool expandAllSections = false;
   InspectionModel inspection = InspectionModel();
+  late Template selectedTemplate = widget.selectedTemplate!;
   List<ImageShape>? media;
 
   @override
   void initState() {
     inspection = widget.inspection;
+    selectedTemplate = widget.selectedTemplate!;
     media = widget.media;
     controllerStream.stream.listen((index) {
       isExpanded[index] = true;
@@ -44,7 +51,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
 
   isExpandedForAllSections() {
     isExpanded = List<bool>.generate(
-      inspection.template!.sections.length,
+      selectedTemplate.sections.length,
       (index) => false,
     );
   }
@@ -52,6 +59,14 @@ class _TemplateSectionsState extends State<TemplateSections> {
   void setAll(bool value, int sectionsLength) {
     setState(() {
       isExpanded = List<bool>.filled(sectionsLength, value);
+    });
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    setState(() {
+      selectedTemplate = widget.selectedTemplate!;
     });
   }
 
@@ -70,8 +85,8 @@ class _TemplateSectionsState extends State<TemplateSections> {
           onTap: () {
             //TODO: Expand all sections callback
             expandAllSections
-                ? setAll(false, inspection.template!.sections.length)
-                : setAll(true, inspection.template!.sections.length);
+                ? setAll(false, selectedTemplate.sections.length)
+                : setAll(true, selectedTemplate.sections.length);
             setState(() {
               expandAllSections = !expandAllSections;
             });
@@ -105,29 +120,29 @@ class _TemplateSectionsState extends State<TemplateSections> {
               ),
               child: Column(
                 children: [
-                  ...List.generate(inspection.template!.sections.length,
+                  ...List.generate(selectedTemplate.sections.length,
                       (sectionIndex) {
-                    bool hasSectionItemComments = inspection
-                        .template!.sections[sectionIndex].items
+                    bool hasSectionItemComments = selectedTemplate
+                        .sections[sectionIndex].items
                         .any((item) => item.comments.isNotEmpty);
-                    bool hasSectionItemImages = inspection
-                        .template!.sections[sectionIndex].items
+                    bool hasSectionItemImages = selectedTemplate
+                        .sections[sectionIndex].items
                         .any((item) => item.images.isNotEmpty);
-                    bool hasSectionImages = inspection
-                        .template!.sections[sectionIndex].images.isNotEmpty;
-                    bool hasSectionComments = inspection
-                        .template!.sections[sectionIndex].comments.isNotEmpty;
+                    bool hasSectionImages = selectedTemplate
+                        .sections[sectionIndex].images.isNotEmpty;
+                    bool hasSectionComments = selectedTemplate
+                        .sections[sectionIndex].comments.isNotEmpty;
                     bool hasSectionItems = false;
                     for (var item
-                        in inspection.template!.sections[sectionIndex].items) {
+                        in selectedTemplate.sections[sectionIndex].items) {
                       if (!item.unspecified ||
                           hasSectionItemComments ||
                           hasSectionItemImages) {
                         hasSectionItems = true;
                       }
                     }
-                    bool hasSubSections = inspection
-                        .template!.sections[sectionIndex].subSections
+                    bool hasSubSections = selectedTemplate
+                        .sections[sectionIndex].subSections
                         .any((subsection) => (subsection.items
                                 .any((item) => !item.unspecified) ||
                             subsection.comments.isNotEmpty ||
@@ -163,10 +178,10 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                   children: [
                                     Expanded(
                                       child: Text(
-                                        inspection.template!
+                                        selectedTemplate
                                             .sections[sectionIndex].name!
                                             .toUpperCase(),
-                                        key: itemKeys[inspection.template!
+                                        key: itemKeys[selectedTemplate
                                             .sections[sectionIndex].uid],
                                         style: primaryHeadingTextStyle.copyWith(
                                             letterSpacing: 2,
@@ -209,6 +224,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         inspection: inspection,
                                         media: media!,
                                         sectionIndex: sectionIndex,
+                                        selectedTemplate: selectedTemplate,
                                       ),
                                       //=========================== Section Items End ===========================
                                       //
@@ -230,6 +246,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                       SectionImages(
                                         inspection: inspection,
                                         media: media!,
+                                        selectedTemplate: selectedTemplate,
                                         sectionIndex: sectionIndex,
                                       ),
                                       //=========================== Section Images End ===========================
@@ -265,6 +282,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         inspection: inspection,
                                         media: media!,
                                         sectionIndex: sectionIndex,
+                                        selectedTemplate: selectedTemplate,
                                       ),
                                       //=========================== Section Comments End ===========================
                                       //
@@ -294,6 +312,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         inspection: inspection,
                                         media: media!,
                                         sectionIndex: sectionIndex,
+                                        selectedTemplate: selectedTemplate,
                                       ),
                                       hasSubSections
                                           ? const Padding(
@@ -304,10 +323,10 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                             )
                                           : const SizedBox(),
                                       TemplateSubSection(
-                                        inspection: inspection,
-                                        media: media!,
-                                        sectionIndex: sectionIndex,
-                                      )
+                                          inspection: inspection,
+                                          media: media!,
+                                          sectionIndex: sectionIndex,
+                                          selectedTemplate: selectedTemplate)
                                       //=========================== Section Item Comments End ===========================
                                     ],
                                   )
@@ -332,18 +351,20 @@ class SectionImages extends StatelessWidget {
     Key? key,
     required this.inspection,
     required this.media,
+    required this.selectedTemplate,
     required this.sectionIndex,
   }) : super(key: key);
 
   final InspectionModel inspection;
   final List<ImageShape> media;
+  final Template selectedTemplate;
   final int sectionIndex;
 
   @override
   Widget build(BuildContext context) {
-    return inspection.template!.sections[sectionIndex].images.isNotEmpty
+    return selectedTemplate.sections[sectionIndex].images.isNotEmpty
         ? GeneralHelper.displayMediaList(
-            inspection.template!.sections[sectionIndex].images,
+            selectedTemplate.sections[sectionIndex].images,
             media,
             4,
             ImageType.sectionImage)

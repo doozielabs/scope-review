@@ -15,8 +15,7 @@ class ShowMenuDialogue {
       {Function? sharepdf}) {
     InspectionModel inspectionModel =
         InspectionModel.fromJson(jsonDecode(inspection));
-
-    if (_showDialog && inspectionModel.template!.sections.isNotEmpty) {
+    if (_showDialog) {
       showDialog(
           context: context,
           builder: (BuildContext context) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/primary_heading_text_with_background.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/sub_heading_of_inspection_description.dart';
 
@@ -9,7 +10,8 @@ import '../../../../utils/helpers/general_helper.dart';
 
 class InspectionDescription extends StatelessWidget {
   final InspectionModel inspection;
-  const InspectionDescription({Key? key, required this.inspection})
+  final Template selectedTemplate;
+  const InspectionDescription({Key? key, required this.inspection, required this.selectedTemplate})
       : super(key: key);
 
   @override
@@ -41,18 +43,18 @@ class InspectionDescription extends StatelessWidget {
               // ),
               const SizedBox(height: 10),
               SubHeadingOfInspectionDescritpion(
-                primaryText: "${inspection.template?.preparedForDescription}",
+                primaryText: "${selectedTemplate.preparedForDescription}",
                 secondryText:
-                    "${inspection.client!.firstname} ${inspection.client?.lastname ?? ""}",
+                    "${inspection.client?.firstname ?? ""} ${inspection.client?.lastname ?? ""}",
               ),
               const SizedBox(height: 10),
               SubHeadingOfInspectionDescritpion(
-                primaryText: "${inspection.template?.inspectionDateAppearance}",
+                primaryText: "${selectedTemplate.inspectionDateAppearance}",
                 secondryText: GeneralHelper.getInspectionDateTimeFormat(
                     inspection.startDate),
               ),
               const SizedBox(height: 10),
-              Text("${inspection.template?.reportHeader.replaceAll('	', '\n')}",
+              Text("${selectedTemplate.reportHeader.replaceAll('	', '\n')}",
                   style: secondryHeadingTextStyle.copyWith(
                     color: ProjectColors.pickledBluewood,
                   )),

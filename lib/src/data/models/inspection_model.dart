@@ -22,22 +22,17 @@ class InspectionModel {
   late InspectionType status;
   late Cordinates? coordinates;
   late PaymentInfo? paymentInfo;
-  late Template? template;
   late List<InspectinCleintWithAgreement> preInspectionAgreement;
   late bool trash;
   late String? id;
-  // late InvoiceReceipt? invoice;
   late bool isManual;
   late int? serverTimestamp;
   late int? lastModified;
-  // late User? user;
   late Map<String, String> inspectionHashMap;
   InspectionModel(
       {this.id,
       this.client,
       this.address,
-      // this.invoice,
-      this.template,
       this.coordinates,
       this.buyerAgent,
       this.sellerAgent,
@@ -55,7 +50,6 @@ class InspectionModel {
       this.isManual = false,
       this.serverTimestamp,
       this.lastModified,
-      // this.user,
       this.inspectionHashMap = const {}})
       : photos = [];
 
@@ -71,9 +65,6 @@ class InspectionModel {
       inspectionHashMap = <String, String>{};
     }
     name = json['name'];
-    // invoice = json['invoice'] != null
-    //     ? InvoiceReceipt.fromJson(json['invoice'])
-    //     : null;
 
     description = json['description'];
     address =
@@ -94,14 +85,12 @@ class InspectionModel {
     sellerAgent = Person.fromJson(json['sellerAgent'] ?? {});
     buyerAgent = Person.fromJson(json['buyerAgent'] ?? {});
     client = Person.fromJson(json['client'] ?? {});
-    // user = User.fromJson(json['user']);
 
     status = GeneralHelper.getType(
       InspectionType.values,
       "InspectionType",
       json['status'],
     );
-    template = Template.fromJson(json["template"]);
     trash = json['trash'];
     isManual = json['isManual'] ?? false;
     preInspectionAgreement = [];
@@ -143,12 +132,7 @@ class InspectionModel {
     if (sellerAgent != null) {
       data['sellerAgent'] = sellerAgent!.toJson();
     }
-    // if (user != null) {
-    //   data['user'] = user!.toJson();
-    // }
     data['status'] = GeneralHelper.typeValue(status);
-    // data['invoice'] = this.invoice!.toJson(deep: false);
-    data["template"] = template!.toJson();
     data['trash'] = trash;
     data['isManual'] = isManual;
     return data;
@@ -198,90 +182,13 @@ class InspectionModel {
     //Inspection isManual
     originalInspection.isManual = updatedInspection.isManual;
     //Inspection Template
-    originalInspection.template = updatedInspection.template;
+    // originalInspection.template = updatedInspection.template;
     //Inspection Server Time Stamp
     originalInspection.serverTimestamp = updatedInspection.serverTimestamp;
     //Inspection Last Mofified Time
     originalInspection.lastModified = updatedInspection.lastModified;
     //Inspection Inspection Hash Map
     originalInspection.inspectionHashMap = updatedInspection.inspectionHashMap;
-  }
-
-  // bool get invoiceAssigned => invoice != null ? true : false;
-
-  List<String> get inspectionImages {
-    List<String> images = [];
-    if (photos.isNotEmpty) {
-      images.add(photos.last);
-    }
-    if (template != null) {
-      if (template!.sections.isNotEmpty) {
-        for (var section in template!.sections) {
-          if (section.images.isNotEmpty) images.addAll(section.images);
-          if (section.comments.isNotEmpty) {
-            for (var comment in section.comments) {
-              if (comment.images.isNotEmpty) images.addAll(comment.images);
-            }
-          }
-          if (section.items.isNotEmpty) {
-            for (var item in section.items) {
-              if (TemplateItemType.photo == item.type) {
-                if ((item.value as List).isNotEmpty) images.addAll(item.value);
-              } else {
-                if (item.images.isNotEmpty) {
-                  images.addAll(item.images);
-                }
-              }
-              if (item.comments.isNotEmpty) {
-                for (var itemComment in item.comments) {
-                  if (itemComment.images.isNotEmpty) {
-                    images.addAll(itemComment.images);
-                  }
-                }
-              }
-            }
-          }
-          if (section.subSections.isNotEmpty) {
-            for (var subSection in section.subSections) {
-              if (subSection.images.isNotEmpty) {
-                images.addAll(subSection.images);
-              }
-              if (subSection.comments.isNotEmpty) {
-                for (var subSectionComment in subSection.comments) {
-                  if (subSectionComment.images.isNotEmpty) {
-                    images.addAll(subSectionComment.images);
-                  }
-                }
-              }
-              if (subSection.items.isNotEmpty) {
-                for (var subSectionItem in subSection.items) {
-                  if (TemplateItemType.photo == subSectionItem.type) {
-                    if ((subSectionItem.value as List).isNotEmpty) {
-                      images.addAll(subSectionItem.value);
-                    }
-                  } else {
-                    if (subSectionItem.images.isNotEmpty) {
-                      images.addAll(subSectionItem.images);
-                    }
-                  }
-                  // if (subSectionItem.images.isNotEmpty) {
-                  //   images.addAll(subSectionItem.images);
-                  // }
-                  if (subSectionItem.comments.isNotEmpty) {
-                    for (var subSectionItemComment in subSectionItem.comments) {
-                      if (subSectionItemComment.images.isNotEmpty) {
-                        images.addAll(subSectionItemComment.images);
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-    return images;
   }
 
   static Map<String, String> getMapIdofList(List<dynamic> list) {

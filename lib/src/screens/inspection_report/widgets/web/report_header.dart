@@ -4,6 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/report_header_item.dart';
@@ -15,11 +16,14 @@ class ReportHeaderWeb extends StatelessWidget {
   final InspectionModel inspection;
   final List<ImageShape>? media;
   final User user;
+  final Template selectedTemplate;
   const ReportHeaderWeb(
       {Key? key,
       required this.inspection,
       required this.media,
-      required this.user})
+      required this.user,
+      required this.selectedTemplate,
+      })
       : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -47,7 +51,7 @@ class ReportHeaderWeb extends StatelessWidget {
                         padding: const EdgeInsets.only(
                             left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
                         child: Text(
-                          inspection.template!.name.unspecified.toUpperCase(),
+                          selectedTemplate.name.unspecified.toUpperCase(),
                           style: primaryHeadingTextStyle.copyWith(
                               color: ProjectColors.white),
                         ),

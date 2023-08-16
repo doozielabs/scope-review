@@ -4,6 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
@@ -17,6 +18,7 @@ class SectionTile extends StatefulWidget {
     required this.diffencyCount,
     required this.sectionIndex,
     required this.inspection,
+    required this.selectedTemplate,
   }) : super(key: key);
 
   final InspectionModel inspection;
@@ -26,6 +28,7 @@ class SectionTile extends StatefulWidget {
   final int sectionIndex;
   final int totalComments;
   final int diffencyCount;
+  final Template? selectedTemplate;
 
   @override
   State<SectionTile> createState() => _SectionTileState();
@@ -80,7 +83,7 @@ class _SectionTileState extends State<SectionTile> {
                 });
               });
             } else {
-              currentSectionIndex = widget.inspection.template!.sections
+              currentSectionIndex = widget.selectedTemplate!.sections
                   .indexWhere((currentSection) =>
                       currentSection.uid == widget.section.uid);
               if (currentSectionIndex != -1) {
@@ -88,7 +91,7 @@ class _SectionTileState extends State<SectionTile> {
                   controllerStream.add(currentSectionIndex);
                   Future.delayed(const Duration(microseconds: 1), () {
                     Scrollable.ensureVisible(
-                      itemKeys[widget.inspection.template!
+                      itemKeys[widget.selectedTemplate!
                               .sections[currentSectionIndex].uid!]!
                           .currentContext!,
                       duration: const Duration(milliseconds: 400),
@@ -99,21 +102,21 @@ class _SectionTileState extends State<SectionTile> {
               }
               if (currentSectionIndex == -1) {
                 for (int i = 0;
-                    i < widget.inspection.template!.sections.length;
+                    i < widget.selectedTemplate!.sections.length;
                     i++) {
                   for (int k = 0;
                       k <
-                          widget.inspection.template!.sections[i].subSections
+                          widget.selectedTemplate!.sections[i].subSections
                               .length;
                       k++) {
-                    if (widget.inspection.template!.sections[i].subSections[k]
+                    if (widget.selectedTemplate!.sections[i].subSections[k]
                             .uid ==
                         widget.section.uid) {
                       setState(() {
                         controllerStream.add(i);
                         Future.delayed(const Duration(microseconds: 1), () {
                           Scrollable.ensureVisible(
-                            itemKeys[widget.inspection.template!.sections[i]
+                            itemKeys[widget.selectedTemplate!.sections[i]
                                     .subSections[k].uid!]!
                                 .currentContext!,
                             duration: const Duration(milliseconds: 400),

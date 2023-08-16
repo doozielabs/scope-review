@@ -9,13 +9,11 @@ class Template {
   late String name;
   late int? sortNo;
   late String pageFooter;
-  late bool baseTemplate;
   late String description;
   late String reportHeader;
   late String reportFooter;
   late int? templateStatus;
   late bool adminPublished;
-  late bool defaultTemplate;
   late bool tableOfContents;
   late String printedReportTitle;
   late String preparedForDescription;
@@ -54,10 +52,8 @@ class Template {
     this.preparedForDescription = "",
     this.inspectorAppearanceName = "",
     this.propertyAddressDescription = "",
-    this.baseTemplate = false,
     this.adminPublished = false,
     this.listWithUserTemplates = false,
-    this.defaultTemplate = false,
     this.tableOfContents = false,
     this.scaleThePropertyPhotoLarge = false,
     this.startEachSectionOnNewPageInPdf = false,
@@ -75,11 +71,9 @@ class Template {
     pageFooter = json["pageFooter"];
     reportHeader = json["reportHeader"];
     reportFooter = json["reportFooter"];
-    baseTemplate = json["baseTemplate"];
     templateStatus = json["templateStatus"];
     adminPublished = json["adminPublished"];
     listWithUserTemplates = json["listWithUserTemplates"] ?? false;
-    defaultTemplate = json["defaultTemplate"];
     description = json["templateDescription"];
     tableOfContents = json["showTableOfContents"];
     printedReportTitle = json["printedReportTitle"];
@@ -114,11 +108,9 @@ class Template {
     data["pageFooter"] = pageFooter;
     data["reportHeader"] = reportHeader;
     data["reportFooter"] = reportFooter;
-    data["baseTemplate"] = baseTemplate;
     data["templateStatus"] = templateStatus;
     data["adminPublished"] = adminPublished;
     data["listWithUserTemplates"] = listWithUserTemplates;
-    data["defaultTemplate"] = defaultTemplate;
     data["templateDescription"] = description;
     data["showTableOfContents"] = tableOfContents;
     data["printedReportTitle"] = printedReportTitle;

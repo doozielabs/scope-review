@@ -7,22 +7,30 @@ import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_tile_for_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final InspectionModel inspection;
   final Function? sharePdf;
   final Function? printCallBack;
   final Function? downloadCallBack;
+  final Template? selectedTemplate;
+  final List<Template>? templates;
+  final Function(int val)? switchServiceMethod;
   const SectionEyeShotForMobileAndTablet(
       {Key? key,
       required this.inspection,
+      this.templates,
       this.sharePdf,
+      this.switchServiceMethod,
       this.printCallBack,
-      this.downloadCallBack})
+      this.downloadCallBack,
+      this.selectedTemplate})
       : super(key: key);
 
   @override
@@ -32,14 +40,16 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
-  late List<TemplateSection> sections = widget.inspection.template!.sections;
+  Template? selectedTemplate = Template();
+  late List<TemplateSection> sections = selectedTemplate!.sections;
   late List<TemplateSection> appendedSections = [];
+  List<Template> templates = [];
 
   void setSectionData() {
     appendedSections = [
       TemplateSection(name: "Information", uid: '00001'),
       TemplateSection(name: "Report Summary", uid: '00002'),
-      ...widget.inspection.template!.sections
+      ...selectedTemplate!.sections
     ];
   }
 
@@ -81,10 +91,23 @@ class _SectionEyeShotForMobileState
 
   @override
   void initState() {
+    templates = widget.templates!;
+    selectedTemplate = widget.selectedTemplate;
     setSectionData();
     setKeysForFilteredSection(sections);
     isExpandedForAllSections();
     super.initState();
+  }
+
+  Future<void> switchService(index) async {
+    selectedTemplate = templates[index];
+    widget.switchServiceMethod?.call(index);
+    setState(() {
+      sections = selectedTemplate!.sections;
+      setSectionData();
+      setKeysForFilteredSection(sections);
+      isExpandedForAllSections();
+    });
   }
 
   @override
@@ -92,8 +115,12 @@ class _SectionEyeShotForMobileState
     return Scaffold(
         backgroundColor: ProjectColors.white.withOpacity(0.9),
         appBar: AppBar(
-          title: Text("Jump to Section",
-              style: h2.copyWith(color: ProjectColors.firefly)),
+          title: (kIsWeb && templates.length > 1)
+              ? Text("Services and Sections",
+                  style: h2.copyWith(color: ProjectColors.firefly))
+              : Text("Jump to Section",
+                  style: h2.copyWith(color: ProjectColors.firefly)),
+          // ),
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: [
@@ -115,6 +142,12 @@ class _SectionEyeShotForMobileState
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
+                    (kIsWeb && templates.length > 1)
+                        ? MultiTemplatesSelection(
+                            templates: templates,
+                            selectedTemplate: selectedTemplate,
+                            switchServiceMethod: switchService)
+                        : const SizedBox(),
                     TextField(
                       onChanged: _search,
                       decoration: InputDecoration(
@@ -250,7 +283,7 @@ class _SectionEyeShotForMobileState
                                   onTap: () {
                                     if (isSearchValueChanged) {
                                       int currentSectionIndex = widget
-                                          .inspection.template!.sections
+                                          .selectedTemplate!.sections
                                           .indexWhere((currentSection) =>
                                               currentSection.uid ==
                                               section.uid);
@@ -281,6 +314,7 @@ class _SectionEyeShotForMobileState
                                     section: section,
                                     sectionIndex: sectionIndex,
                                     inspection: widget.inspection,
+                                    selectedTemplate: widget.selectedTemplate,
                                   ),
                                 ),
                                 isExpanded[sectionIndex]
@@ -355,6 +389,8 @@ class _SectionEyeShotForMobileState
                                                               subSection)[0],
                                                       inspection:
                                                           widget.inspection,
+                                                      selectedTemplate: widget
+                                                          .selectedTemplate,
                                                     ),
                                                   );
                                                 } else {
