@@ -9,10 +9,10 @@ import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_tile_for_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
 
 class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final InspectionModel inspection;
@@ -22,6 +22,7 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final Template? selectedTemplate;
   final List<Template>? templates;
   final Function(int val)? switchServiceMethod;
+  final Function? needUpgrade;
   const SectionEyeShotForMobileAndTablet(
       {Key? key,
       required this.inspection,
@@ -30,7 +31,8 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
       this.switchServiceMethod,
       this.printCallBack,
       this.downloadCallBack,
-      this.selectedTemplate})
+      this.selectedTemplate,
+      this.needUpgrade})
       : super(key: key);
 
   @override
@@ -91,7 +93,7 @@ class _SectionEyeShotForMobileState
 
   @override
   void initState() {
-    templates = widget.templates!;
+    templates = widget.templates ?? [];
     selectedTemplate = widget.selectedTemplate;
     setSectionData();
     setKeysForFilteredSection(sections);
@@ -420,15 +422,21 @@ class _SectionEyeShotForMobileState
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
                           // add your onPressed function here
-                          if (widget.sharePdf != null) widget.sharePdf!();
+                          if (widget.needUpgrade != null) {
+                            await widget.needUpgrade!();
+                          } else {
+                            if (widget.sharePdf != null) {
+                              widget.sharePdf!();
+                            }
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),
                             ),
-                            primary: ProjectColors.primary),
+                            backgroundColor: ProjectColors.primary),
                         child: Padding(
                           padding: const EdgeInsets.all(12.0),
                           child: Row(
@@ -456,12 +464,12 @@ class _SectionEyeShotForMobileState
                       child: Container(
                         padding: const EdgeInsets.only(
                             top: 10, bottom: 0, left: 10, right: 10),
-                        color: Color.fromARGB(158, 233, 234, 231),
+                        color: const Color.fromARGB(158, 233, 234, 231),
                         width: MediaQuery.of(context).size.width,
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Container(
+                            SizedBox(
                               width: (MediaQuery.of(context).size.width / 2 -
                                   10.w),
                               child: ElevatedButton(
@@ -480,17 +488,17 @@ class _SectionEyeShotForMobileState
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.print),
+                                      const Icon(Icons.print),
                                       SizedBox(
                                         width: 5.w,
                                       ),
-                                      Text('Print', style: b2Medium),
+                                      const Text('Print', style: b2Medium),
                                     ],
                                   ),
                                 ),
                               ),
                             ),
-                            Container(
+                            SizedBox(
                               width: (MediaQuery.of(context).size.width / 2 -
                                   10.w),
                               child: ElevatedButton(
@@ -512,11 +520,11 @@ class _SectionEyeShotForMobileState
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.cloud_download),
+                                      const Icon(Icons.cloud_download),
                                       SizedBox(
                                         width: 5.w,
                                       ),
-                                      Text('PDF', style: b2Medium),
+                                      const Text('PDF', style: b2Medium),
                                     ],
                                   ),
                                 ),

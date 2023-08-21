@@ -8,10 +8,10 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report.dart';
 import 'package:sizer/sizer.dart';
-import 'package:pdf_report_scope/src/data/models/template.dart';
 
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
@@ -46,26 +46,48 @@ class _PDFReportState extends State<PDFReport> {
   bool isLoading = false;
   List<ImageShape> media = [];
   List<Template> templates = [];
+  Key widgetKey = Key("${DateTime.now().microsecondsSinceEpoch}");
   @override
   void initState() {
     print("Review package init");
-    Future.delayed(const Duration(), () async {
-      setState(() => isLoading = true);
-      inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
-      user = User.fromJson(jsonDecode(widget.user));
-      for (var template in widget.templates) {
-        templates.add(Template.fromJson(jsonDecode(template)));
-      }
-
-      for (var image in widget.media) {
-        media.add(ImageShape.fromJson(image));
-      }
-      if (!kIsWeb) {
-        documentDirectory = (await getApplicationDocumentsDirectory()).path;
-      }
-      setState(() => isLoading = false);
-    });
+    // Future.delayed(Duration.zero, () async {
+    setState(() => isLoading = true);
+    inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
+    user = User.fromJson(jsonDecode(widget.user));
+    initiateData();
+    // if (!kIsWeb) {
+    //   documentDirectory = (await getApplicationDocumentsDirectory()).path;
+    // }
+    getDocumentDirectory();
+    setState(() => isLoading = false);
+    // });
     super.initState();
+  }
+
+  getDocumentDirectory() async {
+    if (!kIsWeb) {
+      documentDirectory = (await getApplicationDocumentsDirectory()).path;
+    }
+  }
+
+  initiateData() {
+    templates.clear();
+    media.clear();
+    for (var template in widget.templates) {
+      templates.add(Template.fromJson(jsonDecode(template)));
+    }
+    for (var image in widget.media) {
+      media.add(ImageShape.fromJson(image));
+    }
+  }
+
+  @override
+  void didUpdateWidget(oldWidget) {
+    if (!kIsWeb) {
+      initiateData();
+      widgetKey = Key("${DateTime.now().microsecondsSinceEpoch}");
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -115,6 +137,7 @@ class _PDFReportState extends State<PDFReport> {
                         ? const CupertinoActivityIndicator(
                             color: ProjectColors.firefly)
                         : InspectionReportScreen(
+                            key: widgetKey,
                             inspection: inspection,
                             media: media,
                             templates: templates,
