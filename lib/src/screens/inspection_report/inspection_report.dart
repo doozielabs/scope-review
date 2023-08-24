@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -28,6 +29,7 @@ class InspectionReportScreen extends StatefulWidget {
   final List<ImageShape> media;
   final List<Template> templates;
   final bool showDialogue;
+  final bool? isdownloading;
   final Function? printCallBack;
   final Function? mediaCallBack;
   final Function? downloadCallBack;
@@ -40,6 +42,7 @@ class InspectionReportScreen extends StatefulWidget {
     required this.templates,
     required this.showDialogue,
     this.printCallBack,
+    this.isdownloading,
     this.mediaCallBack,
     this.downloadCallBack,
     this.sharePdf,
@@ -55,7 +58,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   List<bool> isExpanded = [];
   List<Template> templates = [];
   Template selectedTemplate = Template();
-
+  bool isdownloading = false;
   late List<TemplateSection> sections = selectedTemplate.sections;
 
   late List<TemplateSection> appendedSections = [];
@@ -157,6 +160,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    bool isdownloading = widget.isdownloading!;
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       constraintStream.add(constraints.maxWidth);
@@ -250,6 +254,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                 sharePdf: widget.sharePdf,
                                 printCallBack: widget.printCallBack,
                                 downloadCallBack: widget.downloadCallBack,
+                                isdownloading: isdownloading,
                                 selectedTemplate: selectedTemplate,
                                 templates: templates,
                                 switchServiceMethod: switchService);
@@ -316,6 +321,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                 sharePdf: widget.sharePdf,
                                 printCallBack: widget.printCallBack,
                                 downloadCallBack: widget.downloadCallBack,
+                                isdownloading: isdownloading,
                                 selectedTemplate: selectedTemplate,
                                 templates: templates,
                                 switchServiceMethod: switchService);
@@ -788,12 +794,12 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                     ),
                                                   ),
                                                   ElevatedButton(
-                                                    onPressed: () {
+                                                    onPressed: () async {
                                                       print("I am called");
                                                       if (widget
                                                               .downloadCallBack !=
                                                           null) {
-                                                        widget
+                                                        await widget
                                                             .downloadCallBack!();
                                                       }
                                                       // downloadFile(
@@ -819,9 +825,13 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .center,
-                                                        children: const [
-                                                          Icon(Icons
-                                                              .cloud_download),
+                                                        children: [
+                                                          isdownloading
+                                                              ? const CupertinoActivityIndicator(
+                                                                  color: ProjectColors
+                                                                      .firefly)
+                                                              : Icon(Icons
+                                                                  .cloud_download),
                                                           SizedBox(
                                                             width: 10,
                                                           ),

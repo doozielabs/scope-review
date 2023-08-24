@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -19,6 +20,7 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final Function? sharePdf;
   final Function? printCallBack;
   final Function? downloadCallBack;
+  final bool? isdownloading;
   final Template? selectedTemplate;
   final List<Template>? templates;
   final Function(int val)? switchServiceMethod;
@@ -31,6 +33,7 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
       this.switchServiceMethod,
       this.printCallBack,
       this.downloadCallBack,
+      this.isdownloading,
       this.selectedTemplate,
       this.needUpgrade})
       : super(key: key);
@@ -46,6 +49,7 @@ class _SectionEyeShotForMobileState
   late List<TemplateSection> sections = selectedTemplate!.sections;
   late List<TemplateSection> appendedSections = [];
   List<Template> templates = [];
+  bool isdownloading = false;
 
   void setSectionData() {
     appendedSections = [
@@ -114,6 +118,7 @@ class _SectionEyeShotForMobileState
 
   @override
   Widget build(BuildContext context) {
+    isdownloading = widget.isdownloading!;
     return Scaffold(
         backgroundColor: ProjectColors.white.withOpacity(0.9),
         appBar: AppBar(
@@ -520,7 +525,10 @@ class _SectionEyeShotForMobileState
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      const Icon(Icons.cloud_download),
+                                      isdownloading
+                                          ? const CupertinoActivityIndicator(
+                                              color: ProjectColors.firefly)
+                                          : const Icon(Icons.cloud_download),
                                       SizedBox(
                                         width: 5.w,
                                       ),

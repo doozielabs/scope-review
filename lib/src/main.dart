@@ -15,6 +15,7 @@ import 'package:sizer/sizer.dart';
 
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
+  final bool? isdownloading;
   final dynamic inspection;
   final dynamic user;
   final dynamic templates;
@@ -27,6 +28,7 @@ class PDFReport extends StatefulWidget {
       {Key? key,
       required this.showDialogue,
       this.inspection,
+      this.isdownloading,
       required this.media,
       this.templates,
       this.printCallBack,
@@ -44,6 +46,7 @@ class _PDFReportState extends State<PDFReport> {
   InspectionModel inspection = InspectionModel();
   User user = User();
   bool isLoading = false;
+  bool isdownloading = false;
   List<ImageShape> media = [];
   List<Template> templates = [];
   Key widgetKey = Key("${DateTime.now().microsecondsSinceEpoch}");
@@ -98,6 +101,7 @@ class _PDFReportState extends State<PDFReport> {
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
+      isdownloading = widget.isdownloading!;
       var inspectionID = Uri.base.pathSegments;
       var concatenate = inspectionID.join("");
       return Sizer(
@@ -115,6 +119,7 @@ class _PDFReportState extends State<PDFReport> {
                           : InspectionReportScreen(
                               inspection: inspection,
                               media: media,
+                              isdownloading:isdownloading,
                               templates: templates,
                               mediaCallBack: widget.mediaCallBack,
                               showDialogue: widget.showDialogue,
