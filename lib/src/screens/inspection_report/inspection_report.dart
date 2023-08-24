@@ -17,6 +17,7 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_summary.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/template_sections.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
@@ -80,6 +81,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     setSectionData();
     isExpandedForAllSections();
     setKeysForFilteredSection(sections);
+    setTrailItem();
     _scrollController = ScrollController()
       ..addListener(() {
         if (_scrollController.offset >= 400) {
@@ -101,6 +103,11 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     setSectionData();
     isSearchValueChanged = true;
     appendedSections = await appendedSections.filter(text);
+    setState(() {});
+  }
+
+  setTrailItem() async {
+    selectedTemplate = GeneralHelper.setTrailItem(templates, selectedTemplate);
     setState(() {});
   }
 
@@ -148,6 +155,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     selectedTemplate = templates[index];
     widget.mediaCallBack?.call(index);
     setState(() {
+      setTrailItem();
       sections = selectedTemplate.sections;
       setSectionData();
       isExpandedForAllSections();

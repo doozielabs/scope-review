@@ -31,11 +31,13 @@ class Template {
   late int? serverTimestamp;
   late int? lastModified;
   late String? uid;
+  late String? template;
 
   Template({
     this.boxKey,
     this.id = "",
     this.uid,
+    this.template,
     this.serverTimestamp,
     this.lastModified,
     this.sortNo = 0,
@@ -63,6 +65,7 @@ class Template {
   Template.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     uid = json["uid"];
+    template = json["template"];
     serverTimestamp = json['serverTimestamp'] ?? 0;
     lastModified = json['lastModified'] ?? 0;
     boxKey = json["boxKey"];
@@ -100,6 +103,7 @@ class Template {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["id"] = id;
     data["uid"] = uid;
+    data["template"] = template;
     data['serverTimestamp'] = serverTimestamp;
     data['lastModified'] = lastModified;
     data["boxKey"] = boxKey;

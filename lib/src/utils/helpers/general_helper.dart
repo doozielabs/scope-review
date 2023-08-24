@@ -13,6 +13,7 @@ import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/item_trail.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
@@ -644,6 +645,102 @@ class GeneralHelper {
       }
     }
     return deficiencyCommets;
+  }
+
+  static getItemValueFrom(templates, templateTrailId, itemTrailId) {
+    for (var template in templates) {
+      if (template.template != null) {
+        if (template.template == templateTrailId) {
+          if (template.sections.isNotEmpty) {
+            for (var section in template.sections) {
+              if (section.items.isNotEmpty) {
+                for (var item in section.items) {
+                  if (item.uid == itemTrailId) {
+                    // if (item.value != null) {
+                    return item;
+                    // }
+                  }
+                }
+              }
+              if (section.subSections.isNotEmpty) {
+                for (var subSection in section.subSections) {
+                  if (subSection.items.isNotEmpty) {
+                    for (var subSectionItem in subSection.items) {
+                      if (subSectionItem.uid == itemTrailId) {
+                        // if (subSectionItem.value != null) {
+                        return subSectionItem;
+                        // }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  static setTrailItem(templates, selectedTemplate) {
+    if (selectedTemplate.sections.isNotEmpty) {
+      for (var section in selectedTemplate.sections) {
+        if (section.items.isNotEmpty) {
+          for (var item in section.items) {
+            if (item.value == null) {
+              if (item.itemTrail != null) {
+                Map<String, ItemTrail> myMap = item.itemTrail;
+                for (var entry in myMap.entries) {
+                  if (entry.key.isNotEmpty && entry.value.uid.isNotEmpty) {
+                    var tmpitem =
+                        getItemValueFrom(templates, entry.key, entry.value.uid);
+                    item.value = tmpitem.value;
+                    if (tmpitem.images.isNotEmpty) {
+                      item.images = tmpitem.images;
+                    }
+                    if (tmpitem.comments.isNotEmpty) {
+                      item.comments = tmpitem.comments;
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        if (section.subSections.isNotEmpty) {
+          for (var subSection in section.subSections) {
+            if (subSection.items.isNotEmpty) {
+              for (var subSectionItem in subSection.items) {
+                if (subSectionItem.value == null) {
+                  if (subSectionItem.itemTrail != null) {
+                    Map<String, ItemTrail> myMap = subSectionItem.itemTrail;
+                    for (var entry in myMap.entries) {
+                      // print("entry - key ${entry.key} -- ${entry.value.uid}");
+
+                      if (entry.key.isNotEmpty && entry.value.uid.isNotEmpty) {
+                        var tmpitem = getItemValueFrom(
+                            templates, entry.key, entry.value.uid);
+                        // print("tmpitem - key ${tmpitem}");
+
+                        subSectionItem.value = tmpitem.value;
+                        // print("subSectionItem - value ${subSectionItem.value}");
+                        if (tmpitem.images.isNotEmpty) {
+                          subSectionItem.images = tmpitem.images;
+                        }
+                        if (tmpitem.comments.isNotEmpty) {
+                          subSectionItem.comments = tmpitem.comments;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return selectedTemplate;
   }
 }
 
