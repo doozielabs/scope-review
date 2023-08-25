@@ -9,8 +9,8 @@ import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:sizer/sizer.dart';
 
 const baseUrlLive =
-    'http://192.168.88.15:1337/'; //https://api.scopeinspectapp.com/';
-const baseUrlStaging = 'https://staging.scopeinspectapp.com/';
+    'https://staging-api.scopeinspectapp.com/'; //https://api.scopeinspectapp.com/';
+const baseUrlStaging = 'https://staging-api.scopeinspectapp.com/';
 const baseUrlLocal = 'http://localhost:1337/';
 const baseUrlRafiLocal = 'http://192.168.88.15:1337/';
 const defaultHeaderImage1 = 'images/inspection_placeholder.png';

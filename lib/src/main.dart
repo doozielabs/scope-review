@@ -53,7 +53,7 @@ class _PDFReportState extends State<PDFReport> {
   @override
   void initState() {
     print("Review package init");
-    // Future.delayed(Duration.zero, () async {
+    Future.delayed(Duration.zero, () async {
     setState(() => isLoading = true);
     inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
     user = User.fromJson(jsonDecode(widget.user));
@@ -63,7 +63,7 @@ class _PDFReportState extends State<PDFReport> {
     // }
     getDocumentDirectory();
     setState(() => isLoading = false);
-    // });
+    });
     super.initState();
   }
 
