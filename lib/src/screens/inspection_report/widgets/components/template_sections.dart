@@ -33,7 +33,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
   List<bool> isExpanded = [];
   bool expandAllSections = false;
   InspectionModel inspection = InspectionModel();
-  late Template selectedTemplate = widget.selectedTemplate!;
+  late Template selectedTemplate = Template(); //widget.selectedTemplate!;
   List<ImageShape>? media;
 
   @override
@@ -63,11 +63,14 @@ class _TemplateSectionsState extends State<TemplateSections> {
   }
 
   @override
-  void didUpdateWidget(oldWidget) {
+  void didUpdateWidget(TemplateSections oldWidget) {
+    inspection = widget.inspection;
+    selectedTemplate = widget.selectedTemplate!;
+    media = widget.media;
+    if (selectedTemplate.sections.length != oldWidget.selectedTemplate!.sections.length) {
+      isExpandedForAllSections();
+    }
     super.didUpdateWidget(oldWidget);
-    setState(() {
-      selectedTemplate = widget.selectedTemplate!;
-    });
   }
 
   @override

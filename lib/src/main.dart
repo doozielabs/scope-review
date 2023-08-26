@@ -54,15 +54,15 @@ class _PDFReportState extends State<PDFReport> {
   void initState() {
     print("Review package init");
     Future.delayed(Duration.zero, () async {
-    setState(() => isLoading = true);
-    inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
-    user = User.fromJson(jsonDecode(widget.user));
-    initiateData();
-    // if (!kIsWeb) {
-    //   documentDirectory = (await getApplicationDocumentsDirectory()).path;
-    // }
-    getDocumentDirectory();
-    setState(() => isLoading = false);
+      setState(() => isLoading = true);
+      inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
+      user = User.fromJson(jsonDecode(widget.user));
+      updateListOfTemplates();
+      // if (!kIsWeb) {
+      //   documentDirectory = (await getApplicationDocumentsDirectory()).path;
+      // }
+      getDocumentDirectory();
+      setState(() => isLoading = false);
     });
     super.initState();
   }
@@ -73,9 +73,9 @@ class _PDFReportState extends State<PDFReport> {
     }
   }
 
-  initiateData() {
-    templates.clear();
+  updateListOfTemplates() {
     media.clear();
+    templates.clear();
     for (var template in widget.templates) {
       templates.add(Template.fromJson(jsonDecode(template)));
     }
@@ -86,8 +86,9 @@ class _PDFReportState extends State<PDFReport> {
 
   @override
   void didUpdateWidget(oldWidget) {
+    print("Package update");
+    updateListOfTemplates();
     if (!kIsWeb) {
-      initiateData();
       widgetKey = Key("${DateTime.now().microsecondsSinceEpoch}");
     }
     super.didUpdateWidget(oldWidget);
@@ -119,7 +120,7 @@ class _PDFReportState extends State<PDFReport> {
                           : InspectionReportScreen(
                               inspection: inspection,
                               media: media,
-                              isdownloading:isdownloading,
+                              isdownloading: isdownloading,
                               templates: templates,
                               mediaCallBack: widget.mediaCallBack,
                               showDialogue: widget.showDialogue,
