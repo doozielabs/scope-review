@@ -6,7 +6,7 @@ class Comment {
   late String comment;
   late CommentType? type;
   late List<String> images;
-  late CommentLevel level;
+  late String level;
   late String location;
   late int? serverTimestamp;
   late int? lastModified;
@@ -20,7 +20,7 @@ class Comment {
     this.type,
     this.comment = "",
     this.location = "",
-    this.level = CommentLevel.homeBuyer,
+    this.level = "home buyer",
   }) : images = [];
 
   Comment.fromJson(Map<String, dynamic> json) {
@@ -33,11 +33,7 @@ class Comment {
       "CommentType",
       json["status"] ?? "",
     );
-    level = GeneralHelper.getType(
-      CommentLevel.values,
-      "CommentLevel",
-      json["level"] ?? "",
-    );
+    level = json["level"] ?? "home buyer";
     location = json["location"] ?? "";
     comment = json["description"] ?? "";
     images = List<String>.from(json["commentPhotos"] ?? []);
@@ -51,7 +47,7 @@ class Comment {
     data['lastModified'] = lastModified;
     data["location"] = location;
     data["description"] = comment;
-    data["level"] = GeneralHelper.typeValue(level);
+    data["level"] = level;
     data["status"] = GeneralHelper.typeValue(type);
     data["commentPhotos"] = images;
     return data;

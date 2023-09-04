@@ -24,11 +24,7 @@ class SectionCommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String getCommentLevelValue() {
-      if (comment.level.name == "homeBuyer") {
-        return "Home Buyer";
-      } else {
-        return "Contractor";
-      }
+      return comment.level;
     }
 
     var thisCommentKey =
@@ -107,8 +103,8 @@ class SectionCommentCard extends StatelessWidget {
                     primaryText: "Location",
                     secondaryText: comment.location,
                   ),
-            SizedBox(height: comment.level.name == "" ? 0 : 14),
-            comment.level.name == ""
+            SizedBox(height: comment.level == "" ? 0 : 14),
+            comment.level == ""
                 ? const SizedBox()
                 : CommentInfoCard(
                     primaryText: "Remediation Level",
