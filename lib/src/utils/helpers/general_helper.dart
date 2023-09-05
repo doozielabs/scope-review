@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
+import 'package:pdf_report_scope/src/data/models/address_model.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
@@ -41,22 +42,24 @@ class GeneralHelper {
     }
   }
 
-  static getInspectionAddress(address) {
+  static getInspectionAddress(Address? address) {
     var addressString = "";
-    if (address.street.isNotEmpty) {
-      addressString = (addressString + address.street);
-    }
-    if (address.zipcode.isNotEmpty) {
-      if (address != "") ("$addressString, ");
-      addressString = ('$addressString ' + address.zipcode);
-    }
-    if (address.state.isNotEmpty) {
-      if (address != "") ("$addressString, ");
-      addressString = ('$addressString ' + address.state);
-    }
-    if (address.city.isNotEmpty) {
-      if (address != "") ("$addressString, ");
-      addressString = ('$addressString ' + address.city);
+    if (address != null) {
+      if (address.street.isNotEmpty) {
+        addressString = (addressString + address.street);
+      }
+      if (address.zipcode.isNotEmpty) {
+        // if (address != "") ("$addressString, ");
+        addressString = ('$addressString ${address.zipcode}');
+      }
+      if (address.state.isNotEmpty) {
+        // if (address != "") ("$addressString, ");
+        addressString = ('$addressString ${address.state}');
+      }
+      if (address.city.isNotEmpty) {
+        // if (address != "") ("$addressString, ");
+        addressString = ('$addressString ${address.city}');
+      }
     }
     return addressString;
   }

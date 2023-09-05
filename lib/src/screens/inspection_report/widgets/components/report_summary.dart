@@ -5,8 +5,8 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
-import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
+import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comment_card.dart';
@@ -16,7 +16,11 @@ class ReportSummary extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape>? media;
   final Template selectedTemplate;
-  const ReportSummary({Key? key, required this.inspection, required this.media, required this.selectedTemplate})
+  const ReportSummary(
+      {Key? key,
+      required this.inspection,
+      required this.media,
+      required this.selectedTemplate})
       : super(key: key);
 
   @override
@@ -98,12 +102,14 @@ class _ReportSummaryState extends State<ReportSummary> {
                     ? Column(
                         children: [
                           const SizedBox(height: 14),
-                          Text(
-                            widget.selectedTemplate.reportSummaryOptions!
-                                .summaryHeader, // reportSummaryText,
-                            style: secondryHeadingTextStyle.copyWith(
-                                color: ProjectColors.pickledBluewood),
-                          ),
+                          widget.selectedTemplate.reportSummaryOptions == null
+                              ? const SizedBox()
+                              : Text(
+                                  widget.selectedTemplate.reportSummaryOptions!
+                                      .summaryHeader, // reportSummaryText,
+                                  style: secondryHeadingTextStyle.copyWith(
+                                      color: ProjectColors.pickledBluewood),
+                                ),
                           const HorizontalDividerWidget(
                             color: ProjectColors.pickledBluewood,
                           ),
