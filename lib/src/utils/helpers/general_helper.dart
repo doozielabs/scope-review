@@ -650,100 +650,99 @@ class GeneralHelper {
     return deficiencyCommets;
   }
 
-  static getItemValueFrom(templates, templateTrailId, itemTrailId) {
-    for (var template in templates) {
-      if (template.template != null) {
-        if (template.template == templateTrailId) {
-          if (template.sections.isNotEmpty) {
-            for (var section in template.sections) {
-              if (section.items.isNotEmpty) {
-                for (var item in section.items) {
-                  if (item.uid == itemTrailId) {
-                    // if (item.value != null) {
-                    return item;
-                    // }
-                  }
-                }
-              }
-              if (section.subSections.isNotEmpty) {
-                for (var subSection in section.subSections) {
-                  if (subSection.items.isNotEmpty) {
-                    for (var subSectionItem in subSection.items) {
-                      if (subSectionItem.uid == itemTrailId) {
-                        // if (subSectionItem.value != null) {
-                        return subSectionItem;
-                        // }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-
   static setTrailItem(templates, selectedTemplate) {
     if (selectedTemplate.sections.isNotEmpty) {
       for (var section in selectedTemplate.sections) {
         if (section.items.isNotEmpty) {
-          for (var item in section.items) {
-            if (item.value == null) {
-              if (item.itemTrail != null) {
-                Map<String, ItemTrail> myMap = item.itemTrail;
-                for (var entry in myMap.entries) {
-                  if (entry.key.isNotEmpty && entry.value.uid.isNotEmpty) {
-                    var tmpitem =
-                        getItemValueFrom(templates, entry.key, entry.value.uid);
-                    item.value = tmpitem.value;
-                    if (tmpitem.images.isNotEmpty) {
-                      item.images = tmpitem.images;
-                    }
-                    if (tmpitem.comments.isNotEmpty) {
-                      item.comments = tmpitem.comments;
-                    }
-                  }
-                }
-              }
-            }
-          }
+          setSectionItemsMapping(templates, section.items);
         }
         if (section.subSections.isNotEmpty) {
           for (var subSection in section.subSections) {
             if (subSection.items.isNotEmpty) {
-              for (var subSectionItem in subSection.items) {
-                if (subSectionItem.value == null) {
-                  if (subSectionItem.itemTrail != null) {
-                    Map<String, ItemTrail> myMap = subSectionItem.itemTrail;
-                    for (var entry in myMap.entries) {
-                      // print("entry - key ${entry.key} -- ${entry.value.uid}");
-
-                      if (entry.key.isNotEmpty && entry.value.uid.isNotEmpty) {
-                        var tmpitem = getItemValueFrom(
-                            templates, entry.key, entry.value.uid);
-                        // print("tmpitem - key ${tmpitem}");
-
-                        subSectionItem.value = tmpitem.value;
-                        // print("subSectionItem - value ${subSectionItem.value}");
-                        if (tmpitem.images.isNotEmpty) {
-                          subSectionItem.images = tmpitem.images;
-                        }
-                        if (tmpitem.comments.isNotEmpty) {
-                          subSectionItem.comments = tmpitem.comments;
-                        }
-                      }
-                    }
-                  }
-                }
-              }
+              setSectionItemsMapping(templates, subSection.items);
             }
           }
         }
       }
     }
     return selectedTemplate;
+  }
+
+  static setSectionItemsMapping(
+      List<Template> templates, List<TemplateItem> templateItems) {
+    for (var item in templateItems) {
+      bool hasValue = hasItemValue(item);
+      if (hasValue) {
+        item.itemTrail?.forEach(
+          (key, value) {
+            if (templates.isNotEmpty) {
+              for (var insTemplate in templates) {
+                if (insTemplate.template == key &&
+                    insTemplate.isBaseTemplate == true) {
+                  String itemTrail =
+                      insTemplate.templateHashMap?["${value.uid}"];
+                  Id id = Id.decode(itemTrail);
+                  if (id.subSection > 0) {
+                    TemplateItem itemToUse = insTemplate
+                        .sections[id.section - 1]
+                        .subSections[id.subSection - 1]
+                        .items[id.item - 1];
+                    swapItemValues(item, itemToUse);
+                    break;
+                  } else {
+                    TemplateItem itemToUse =
+                        insTemplate.sections[id.section - 1].items[id.item - 1];
+                    swapItemValues(item, itemToUse);
+                    break;
+                  }
+                }
+              }
+            }
+          },
+        );
+      }
+    }
+  }
+
+  static swapItemValues(TemplateItem item, TemplateItem itemToUse) {
+    item.value = itemToUse.value;
+    item.options = itemToUse.options;
+    item.completed = itemToUse.completed;
+    item.condition = itemToUse.condition;
+    item.visibility = itemToUse.visibility;
+    item.defaultOptions = itemToUse.defaultOptions;
+    item.defaultOption = itemToUse.defaultOption;
+    item.conditionOptions = itemToUse.conditionOptions;
+    item.prohibitConditionRating = itemToUse.prohibitConditionRating;
+    item.allowMultipleSelection = itemToUse.allowMultipleSelection;
+    item.images = itemToUse.images;
+  }
+
+  static bool hasItemValue(TemplateItem item) {
+    switch (item.type) {
+      case TemplateItemType.photo:
+        var images = List<String>.from(item.value ?? []);
+        if (images.isEmpty) return true;
+        break;
+      case TemplateItemType.choice:
+        if (item.value == null || (item.value as List).isEmpty) return true;
+        break;
+      case TemplateItemType.signature:
+        if (item.value == "" || item.value == null) return true;
+        break;
+      case TemplateItemType.text:
+      case TemplateItemType.email:
+      case TemplateItemType.phone:
+      case TemplateItemType.website:
+      case TemplateItemType.currency:
+      case TemplateItemType.timestamp:
+      case TemplateItemType.organization:
+        if (item.value == null || item.value == "") return true;
+        break;
+      default:
+        return false;
+    }
+    return false;
   }
 }
 

@@ -74,7 +74,6 @@ class _PDFReportState extends State<PDFReport> {
   }
 
   updateListOfTemplates() {
-    media.clear();
     templates.clear();
     for (var template in widget.templates) {
       templates.add(Template.fromJson(jsonDecode(template)));
@@ -87,10 +86,11 @@ class _PDFReportState extends State<PDFReport> {
   @override
   void didUpdateWidget(oldWidget) {
     print("Package update");
-    updateListOfTemplates();
     if (!kIsWeb) {
+      media.clear();
       widgetKey = Key("${DateTime.now().microsecondsSinceEpoch}");
     }
+    updateListOfTemplates();
     super.didUpdateWidget(oldWidget);
   }
 
