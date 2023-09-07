@@ -784,7 +784,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                             backgroundColor:
                                                                 ProjectColors
                                                                     .firefly),
-                                                    child: const Padding(
+                                                    child: Padding(
                                                       padding:
                                                           EdgeInsets.all(12.0),
                                                       child: Row(
