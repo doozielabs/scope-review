@@ -21,8 +21,7 @@ class ReportHeaderMobile extends StatelessWidget {
       required this.inspection,
       required this.media,
       required this.user,
-      required this.selectedTemplate
-      })
+      required this.selectedTemplate})
       : super(key: key);
 
   @override
@@ -167,7 +166,7 @@ class ReportHeaderMobile extends StatelessWidget {
                   HeaderInfoItem(
                       iconName: "icon-user",
                       text:
-                          "${inspection.client!.firstname.unspecified}${inspection.client!.lastname}"),
+                          "${inspection.client?.firstname.unspecified} ${inspection.client!.lastname}"),
                   const SizedBox(height: 10),
                   HeaderInfoItem(
                       iconName: "icon-mail",
