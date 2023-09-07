@@ -19,6 +19,7 @@ class PDFReport extends StatefulWidget {
   final dynamic inspection;
   final dynamic user;
   final dynamic templates;
+  final dynamic selectedTemplate;
   final List media;
   final Function? mediaCallBack;
   final Function? printCallBack;
@@ -35,7 +36,8 @@ class PDFReport extends StatefulWidget {
       this.mediaCallBack,
       this.downloadCallBack,
       this.sharePdf,
-      this.user})
+      this.user,
+      this.selectedTemplate})
       : super(key: key);
 
   @override
@@ -49,6 +51,7 @@ class _PDFReportState extends State<PDFReport> {
   bool isdownloading = false;
   List<ImageShape> media = [];
   List<Template> templates = [];
+  Template? selectedTemplate;
   Key widgetKey = Key("${DateTime.now().microsecondsSinceEpoch}");
   @override
   void initState() {
@@ -58,9 +61,6 @@ class _PDFReportState extends State<PDFReport> {
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
       user = User.fromJson(jsonDecode(widget.user));
       updateListOfTemplates();
-      // if (!kIsWeb) {
-      //   documentDirectory = (await getApplicationDocumentsDirectory()).path;
-      // }
       getDocumentDirectory();
       setState(() => isLoading = false);
     });
@@ -75,6 +75,9 @@ class _PDFReportState extends State<PDFReport> {
 
   updateListOfTemplates() {
     templates.clear();
+    if (widget.selectedTemplate != null) {
+      selectedTemplate = Template.fromJson(jsonDecode(widget.selectedTemplate));
+    }
     for (var template in widget.templates) {
       templates.add(Template.fromJson(jsonDecode(template)));
     }
@@ -139,7 +142,7 @@ class _PDFReportState extends State<PDFReport> {
                 home: isLoading
                     ? const CupertinoActivityIndicator(
                         color: ProjectColors.firefly)
-                    : widget.templates == null
+                    : (templates.isEmpty && selectedTemplate == null)
                         ? const CupertinoActivityIndicator(
                             color: ProjectColors.firefly)
                         : InspectionReportScreen(
@@ -147,6 +150,7 @@ class _PDFReportState extends State<PDFReport> {
                             inspection: inspection,
                             media: media,
                             templates: templates,
+                            selectedTemplate: selectedTemplate,
                             showDialogue: widget.showDialogue,
                             sharePdf: widget.sharePdf,
                             user: user,

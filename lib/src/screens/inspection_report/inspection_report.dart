@@ -17,11 +17,11 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/component
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_header.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/report_summary.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/components/template_sections.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
 
 import 'widgets/general_widgets/section_tile_for_eyeshot.dart';
 
@@ -29,6 +29,7 @@ class InspectionReportScreen extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape> media;
   final List<Template> templates;
+  final Template? selectedTemplate;
   final bool showDialogue;
   final bool? isdownloading;
   final Function? printCallBack;
@@ -48,6 +49,7 @@ class InspectionReportScreen extends StatefulWidget {
     this.downloadCallBack,
     this.sharePdf,
     required this.user,
+    this.selectedTemplate,
   }) : super(key: key);
 
   @override
@@ -79,7 +81,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   void initState() {
     templates = widget.templates;
     if (templates.isNotEmpty) {
-      selectedTemplate = templates.first;
+      selectedTemplate = widget.selectedTemplate ?? templates.first;
     }
     setSectionData();
     isExpandedForAllSections();
@@ -168,7 +170,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool isdownloading = widget.isdownloading!;
+    bool isdownloading = widget.isdownloading ?? false;
     return LayoutBuilder(
         builder: (BuildContext context, BoxConstraints constraints) {
       constraintStream.add(constraints.maxWidth);
@@ -782,15 +784,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                             backgroundColor:
                                                                 ProjectColors
                                                                     .firefly),
-                                                    child: Padding(
+                                                    child: const Padding(
                                                       padding:
-                                                          const EdgeInsets.all(
-                                                              12.0),
+                                                          EdgeInsets.all(12.0),
                                                       child: Row(
                                                         mainAxisAlignment:
                                                             MainAxisAlignment
                                                                 .center,
-                                                        children: const [
+                                                        children: [
                                                           Icon(Icons.print),
                                                           SizedBox(
                                                             width: 10,
@@ -838,12 +839,12 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                               ? const CupertinoActivityIndicator(
                                                                   color: ProjectColors
                                                                       .firefly)
-                                                              : Icon(Icons
+                                                              : const Icon(Icons
                                                                   .cloud_download),
-                                                          SizedBox(
+                                                          const SizedBox(
                                                             width: 10,
                                                           ),
-                                                          Text('PDF',
+                                                          const Text('PDF',
                                                               style: b2Medium),
                                                         ],
                                                       ),
