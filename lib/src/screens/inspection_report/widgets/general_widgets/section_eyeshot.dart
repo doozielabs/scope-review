@@ -21,6 +21,7 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final Function? printCallBack;
   final Function? downloadCallBack;
   final bool? isdownloading;
+  final String? pdfStatus;
   final Template? selectedTemplate;
   final List<Template>? templates;
   final Function(int val)? switchServiceMethod;
@@ -34,6 +35,7 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
       this.printCallBack,
       this.downloadCallBack,
       this.isdownloading,
+      this.pdfStatus,
       this.selectedTemplate,
       this.needUpgrade})
       : super(key: key);
@@ -50,6 +52,7 @@ class _SectionEyeShotForMobileState
   late List<TemplateSection> appendedSections = [];
   List<Template> templates = [];
   bool isdownloading = false;
+  String pdfStatus = 'wait';
 
   void setSectionData() {
     appendedSections = [
@@ -119,6 +122,7 @@ class _SectionEyeShotForMobileState
   @override
   Widget build(BuildContext context) {
     isdownloading = widget.isdownloading!;
+    pdfStatus = widget.pdfStatus!;
     return Scaffold(
         backgroundColor: ProjectColors.white.withOpacity(0.9),
         appBar: AppBar(
@@ -507,8 +511,7 @@ class _SectionEyeShotForMobileState
                               width: (MediaQuery.of(context).size.width / 2 -
                                   10.w),
                               child: ElevatedButton(
-                                onPressed: () {
-                                  print("I am called");
+                                onPressed: () async {
                                   if (widget.downloadCallBack != null) {
                                     widget.downloadCallBack!();
                                   }

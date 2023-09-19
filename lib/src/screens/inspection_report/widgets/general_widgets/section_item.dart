@@ -8,8 +8,10 @@ import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/image.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
+import 'package:sizer/sizer.dart';
 
 // List<ImageShape> _getMedias(List<String> images, List<ImageShape> media) {
 //   return media.where((_) => images.contains(_.id)).toList();
@@ -116,11 +118,29 @@ class SectionItem extends StatelessWidget {
             style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
           );
         case TemplateItemType.signature:
-          return image(
-            Uint8List.fromList(value.cast<int>()),
-            width: 187,
-            height: 98,
-          );
+          if (value is String) {
+            ImageShape image = GeneralHelper.getMediaById(value, media!);
+            return Container(
+              width: 320,
+              height: 95,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: GeneralHelper.imageHandlerForGallery(image),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          } else {
+            value = Uint8List.fromList(List<int>.from(value));
+            return Padding(
+              padding: const EdgeInsets.only(top: 14),
+              child: Image.memory(
+                value,
+                width: isTablet ? 219 : null,
+                height: (isTablet ? 144 : 110),
+              ),
+            );
+          }
         default:
           return Text(
               (value is DateTime ? value.fulldate : value.toString())

@@ -16,6 +16,7 @@ import 'package:sizer/sizer.dart';
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final bool? isdownloading;
+  final String? pdfStatus;
   final dynamic inspection;
   final dynamic user;
   final dynamic templates;
@@ -30,6 +31,7 @@ class PDFReport extends StatefulWidget {
       required this.showDialogue,
       this.inspection,
       this.isdownloading,
+      this.pdfStatus,
       required this.media,
       this.templates,
       this.printCallBack,
@@ -48,7 +50,10 @@ class _PDFReportState extends State<PDFReport> {
   InspectionModel inspection = InspectionModel();
   User user = User();
   bool isLoading = false;
+  bool isok = false;
   bool isdownloading = false;
+  String pdfStatus = 'wait';
+  String message = "PDF generation in progress... Please be patient.";
   List<ImageShape> media = [];
   List<Template> templates = [];
   Template? selectedTemplate;
@@ -73,6 +78,54 @@ class _PDFReportState extends State<PDFReport> {
     }
   }
 
+  showPleaseWaitModal() {
+    return showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return StatefulBuilder(
+            builder: (context, setState) {
+              Widget okButton = TextButton(
+                child: Text("OK"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              );
+              if (widget.pdfStatus == 'true' || widget.pdfStatus == 'false') {
+                isok = true;
+              }
+              if (widget.pdfStatus == 'wait') {
+                message = "PDF in Progress... Please be patient.";
+              } else if (widget.pdfStatus == 'false') {
+                message = "Something Went Wrong. Please try again later.";
+              } else if (widget.pdfStatus == 'true') {
+                message =
+                    "PDF Generated. Download will start in a few seconds....";
+              }
+              return AlertDialog(
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    isok
+                        ? Image.network(
+                            baseUrlLive + pdfGenerated,
+                            fit: BoxFit.cover,
+                          )
+                        : Image.network(
+                            baseUrlLive + pdfGeneration,
+                            fit: BoxFit.cover,
+                          ),
+                    SizedBox(height: 16.0), // Add some spacing
+                    Text(message),
+                    isok ? okButton : SizedBox(),
+                  ],
+                ),
+              );
+            },
+          );
+        });
+  }
+
   updateListOfTemplates() {
     templates.clear();
     if (widget.selectedTemplate != null) {
@@ -88,6 +141,7 @@ class _PDFReportState extends State<PDFReport> {
 
   @override
   void didUpdateWidget(oldWidget) {
+    pdfStatus = widget.pdfStatus!;
     print("Package update");
     if (!kIsWeb) {
       media.clear();
@@ -106,6 +160,7 @@ class _PDFReportState extends State<PDFReport> {
   Widget build(BuildContext context) {
     if (kIsWeb) {
       isdownloading = widget.isdownloading!;
+      pdfStatus = widget.pdfStatus!;
       var inspectionID = Uri.base.pathSegments;
       var concatenate = inspectionID.join("");
       return Sizer(
@@ -124,11 +179,15 @@ class _PDFReportState extends State<PDFReport> {
                               inspection: inspection,
                               media: media,
                               isdownloading: isdownloading,
+                              pdfStatus: pdfStatus,
                               templates: templates,
                               mediaCallBack: widget.mediaCallBack,
                               showDialogue: widget.showDialogue,
                               printCallBack: widget.printCallBack,
-                              downloadCallBack: widget.downloadCallBack,
+                              downloadCallBack: () {
+                                widget.downloadCallBack!.call();
+                                showPleaseWaitModal();
+                              },
                               sharePdf: widget.sharePdf,
                               user: user,
                             ),

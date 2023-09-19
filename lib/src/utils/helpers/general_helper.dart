@@ -19,6 +19,7 @@ import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
+import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
 
@@ -650,17 +651,18 @@ class GeneralHelper {
     return deficiencyCommets;
   }
 
-  static setTrailItem(templates, selectedTemplate) {
+  static setTrailItem(templates, selectedTemplate, inspection, user) {
     if (selectedTemplate.sections.isNotEmpty) {
       for (var section in selectedTemplate.sections) {
-        if (section.items.isNotEmpty) {
-          setSectionItemsMapping(templates, section.items);
-        }
+        // if (section.items.isNotEmpty) {
+          setSectionItemsMapping(templates, section.items, inspection, user);
+        // }
         if (section.subSections.isNotEmpty) {
           for (var subSection in section.subSections) {
-            if (subSection.items.isNotEmpty) {
-              setSectionItemsMapping(templates, subSection.items);
-            }
+            // if (subSection.items.isNotEmpty) {
+              setSectionItemsMapping(
+                  templates, subSection.items, inspection, user);
+            // }
           }
         }
       }
@@ -668,39 +670,99 @@ class GeneralHelper {
     return selectedTemplate;
   }
 
-  static setSectionItemsMapping(
-      List<Template> templates, List<TemplateItem> templateItems) {
+  static setSectionItemsMapping(List<Template> templates,
+      List<TemplateItem> templateItems, InspectionModel inspection, User user) {
     for (var item in templateItems) {
       bool hasValue = hasItemValue(item);
-      if (hasValue) {
+      if (!hasValue) {
         item.itemTrail?.forEach(
           (key, value) {
-            if (templates.isNotEmpty) {
-              for (var insTemplate in templates) {
-                if (insTemplate.template == key &&
-                    insTemplate.isBaseTemplate == true) {
-                  String itemTrail =
-                      insTemplate.templateHashMap?["${value.uid}"];
-                  Id id = Id.decode(itemTrail);
-                  if (id.subSection > 0) {
-                    TemplateItem itemToUse = insTemplate
-                        .sections[id.section - 1]
-                        .subSections[id.subSection - 1]
-                        .items[id.item - 1];
-                    swapItemValues(item, itemToUse);
-                    break;
-                  } else {
-                    TemplateItem itemToUse =
-                        insTemplate.sections[id.section - 1].items[id.item - 1];
-                    swapItemValues(item, itemToUse);
-                    break;
+            switch (key) {
+              case "Inspector":
+              case "Inspection":
+                if (value.ref != null)
+                  autoFillDetails(
+                      item: item,
+                      ref: value.ref!,
+                      inspection: inspection,
+                      user: user);
+                break;
+              default:
+                if (templates.isNotEmpty) {
+                  for (var insTemplate in templates) {
+                    if (insTemplate.template == key &&
+                        insTemplate.isBaseTemplate == true) {
+                      String itemTrail =
+                          insTemplate.templateHashMap?["${value.uid}"];
+                      Id id = Id.decode(itemTrail);
+                      if (id.subSection > 0) {
+                        TemplateItem itemToUse = insTemplate
+                            .sections[id.section - 1]
+                            .subSections[id.subSection - 1]
+                            .items[id.item - 1];
+                        swapItemValues(item, itemToUse);
+                        break;
+                      } else {
+                        TemplateItem itemToUse = insTemplate
+                            .sections[id.section - 1].items[id.item - 1];
+                        swapItemValues(item, itemToUse);
+                        break;
+                      }
+                    }
                   }
                 }
-              }
             }
           },
         );
       }
+    }
+  }
+
+  static autoFillDetails(
+      {required TemplateItem item,
+      required String ref,
+      required InspectionModel inspection,
+      required User user}) {
+    switch (ref) {
+      case "InspectionAddress":
+        item.value = inspection.address?.fullAdress;
+        break;
+      case "InspectionDate":
+        item.value = inspection?.startDate;
+        break;
+      case "ClientName":
+        item.value = inspection?.client.fullName;
+        break;
+      case "BuyerName":
+        item.value = inspection?.buyerAgent.fullName;
+        break;
+      case "InspectorName":
+        item.value = user?.fullName;
+        break;
+      case "InspectorPhone":
+        item.value = user?.phone;
+        break;
+      case "InspectorAddress":
+        item.value = user?.address != null
+            ? user?.address
+            : user?.companyAddress.fullAdress;
+        break;
+      case "InspectorLicense":
+        item.value = user?.licenseNumber;
+        break;
+      case "InspectorWebsite":
+        item.value = user?.website;
+        break;
+      case "InspectorOrganization":
+        item.value = user?.organization;
+        break;
+      case "InspectorEmail":
+        item.value = user?.email;
+        break;
+      case "InspectorSignature":
+        item.value = user?.signature;
+        break;
+      default:
     }
   }
 
@@ -722,13 +784,13 @@ class GeneralHelper {
     switch (item.type) {
       case TemplateItemType.photo:
         var images = List<String>.from(item.value ?? []);
-        if (images.isEmpty) return true;
+        if (images.isEmpty) return false;
         break;
       case TemplateItemType.choice:
-        if (item.value == null || (item.value as List).isEmpty) return true;
+        if (item.value == null || (item.value as List).isEmpty) return false;
         break;
       case TemplateItemType.signature:
-        if (item.value == "" || item.value == null) return true;
+        if (item.value == "" || item.value == null) return false;
         break;
       case TemplateItemType.text:
       case TemplateItemType.email:
@@ -737,12 +799,12 @@ class GeneralHelper {
       case TemplateItemType.currency:
       case TemplateItemType.timestamp:
       case TemplateItemType.organization:
-        if (item.value == null || item.value == "") return true;
+        if (item.value == null || item.value == "") return false;
         break;
       default:
-        return false;
+        return true;
     }
-    return false;
+    return true;
   }
 }
 

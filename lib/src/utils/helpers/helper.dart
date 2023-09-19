@@ -16,6 +16,10 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
+import '../../data/models/address_model.dart';
+import '../../data/models/person_model.dart';
+import '../../data/models/user_model.dart';
+
 extension BoolExtension on bool? {
   bool get force => this ?? false;
 }
@@ -23,6 +27,29 @@ extension BoolExtension on bool? {
 extension NullableListExtension on List? {
   List levant(List value) => (this ?? []).isEmpty ? value : this!;
 }
+
+extension UserExtension on User {
+  User get copy => User.fromJson(this.toJson());
+  String get fullName =>
+      "$firstname${(lastname ?? "").isNotEmpty ? " $lastname" : ""}";
+}
+
+extension AdressExtension on Address? {
+  String get fullAdress => this.isNull
+      ? ""
+      : [
+          this?.street ?? "",
+          this?.city ?? "",
+          this?.state ?? "",
+          this?.zipcode ?? "",
+        ].where((_) => _.isNotEmpty).join(", ");
+}
+
+extension PersonExtension on Person? {
+  String get fullName =>
+      "${this?.firstname ?? ""} ${this?.lastname ?? ""}".trim();
+}
+
 
 extension ListOfNumExtension on List<num> {
   num get top => isEmpty ? 0 : reduce(max);

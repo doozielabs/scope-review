@@ -32,6 +32,7 @@ class InspectionReportScreen extends StatefulWidget {
   final Template? selectedTemplate;
   final bool showDialogue;
   final bool? isdownloading;
+  final String? pdfStatus;
   final Function? printCallBack;
   final Function? mediaCallBack;
   final Function? downloadCallBack;
@@ -45,6 +46,7 @@ class InspectionReportScreen extends StatefulWidget {
     required this.showDialogue,
     this.printCallBack,
     this.isdownloading,
+    this.pdfStatus,
     this.mediaCallBack,
     this.downloadCallBack,
     this.sharePdf,
@@ -62,6 +64,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   List<Template> templates = [];
   Template selectedTemplate = Template();
   bool isdownloading = false;
+  String pdfStatus = 'wait';
   late List<TemplateSection> sections = selectedTemplate.sections;
 
   late List<TemplateSection> appendedSections = [];
@@ -112,7 +115,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
   }
 
   setTrailItem() async {
-    selectedTemplate = GeneralHelper.setTrailItem(templates, selectedTemplate);
+    selectedTemplate = GeneralHelper.setTrailItem(
+        templates, selectedTemplate, widget.inspection, widget.user);
     setState(() {});
   }
 
@@ -265,6 +269,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                 printCallBack: widget.printCallBack,
                                 downloadCallBack: widget.downloadCallBack,
                                 isdownloading: isdownloading,
+                                pdfStatus: pdfStatus,
                                 selectedTemplate: selectedTemplate,
                                 templates: templates,
                                 switchServiceMethod: switchService);
@@ -332,6 +337,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                 printCallBack: widget.printCallBack,
                                 downloadCallBack: widget.downloadCallBack,
                                 isdownloading: isdownloading,
+                                pdfStatus: pdfStatus,
                                 selectedTemplate: selectedTemplate,
                                 templates: templates,
                                 switchServiceMethod: switchService);
@@ -804,15 +810,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                   ),
                                                   ElevatedButton(
                                                     onPressed: () async {
-                                                      print("I am called");
-                                                      if (widget
-                                                              .downloadCallBack !=
-                                                          null) {
-                                                        await widget
-                                                            .downloadCallBack!();
-                                                      }
-                                                      // downloadFile(
-                                                      //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
+                                                      widget.downloadCallBack
+                                                          ?.call();
                                                     },
                                                     style: ElevatedButton
                                                         .styleFrom(
