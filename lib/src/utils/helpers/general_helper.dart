@@ -655,13 +655,13 @@ class GeneralHelper {
     if (selectedTemplate.sections.isNotEmpty) {
       for (var section in selectedTemplate.sections) {
         // if (section.items.isNotEmpty) {
-          setSectionItemsMapping(templates, section.items, inspection, user);
+        setSectionItemsMapping(templates, section.items, inspection, user);
         // }
         if (section.subSections.isNotEmpty) {
           for (var subSection in section.subSections) {
             // if (subSection.items.isNotEmpty) {
-              setSectionItemsMapping(
-                  templates, subSection.items, inspection, user);
+            setSectionItemsMapping(
+                templates, subSection.items, inspection, user);
             // }
           }
         }
@@ -727,17 +727,56 @@ class GeneralHelper {
       case "InspectionAddress":
         item.value = inspection.address?.fullAdress;
         break;
+      case "InspectionAddressStreet":
+        item.value = inspection?.address?.street;
+        break;
+      case "InspectionAddressCity":
+        item.value = inspection?.address?.city;
+        break;
+      case "InspectionAddressZipcode":
+        item.value = inspection?.address?.zipcode;
+        break;
+      case "InspectorAddressState":
+        item.value = inspection?.address?.state;
+        break;
+      case "InspectionAddressCountry":
+        item.value = "United State";
+        break;
       case "InspectionDate":
         item.value = inspection?.startDate;
         break;
       case "ClientName":
         item.value = inspection?.client.fullName;
         break;
+      case "ClientPhone":
+        item.value = inspection?.client?.phone;
+        break;
+      case "ClientEmail":
+        item.value = inspection?.client?.email;
+        break;
       case "BuyerName":
         item.value = inspection?.buyerAgent.fullName;
         break;
+      case "BuyerPhone":
+        item.value = inspection?.buyerAgent?.phone;
+        break;
+      case "BuyerEmail":
+        item.value = inspection?.buyerAgent?.email;
+        break;
+      case "SellerName":
+        item.value = inspection?.sellerAgent.fullName;
+        break;
+      case "SellerPhone":
+        item.value = inspection?.sellerAgent?.phone;
+        break;
+      case "SellerEmail":
+        item.value = inspection?.sellerAgent?.email;
+        break;
       case "InspectorName":
         item.value = user?.fullName;
+        break;
+      case "InspectorEmail":
+        item.value = user?.email;
         break;
       case "InspectorPhone":
         item.value = user?.phone;
@@ -747,6 +786,27 @@ class GeneralHelper {
             ? user?.address
             : user?.companyAddress.fullAdress;
         break;
+      case "InspectorAddressStreet":
+        item.value = user?.address != null
+            ? user?.address
+            : user?.companyAddress?.street;
+        break;
+      case "InspectorAddressCity":
+        item.value =
+            user?.address != null ? user?.address : user?.companyAddress?.city;
+        break;
+      case "InspectorAddressZipcode":
+        item.value = user?.address != null
+            ? user?.address
+            : user?.companyAddress?.zipcode;
+        break;
+      case "InspectionAddressState":
+        item.value =
+            user?.address != null ? user?.address : user?.companyAddress?.state;
+        break;
+      case "InspectorAddressCountry":
+        item.value = "United State";
+        break;
       case "InspectorLicense":
         item.value = user?.licenseNumber;
         break;
@@ -755,9 +815,6 @@ class GeneralHelper {
         break;
       case "InspectorOrganization":
         item.value = user?.organization;
-        break;
-      case "InspectorEmail":
-        item.value = user?.email;
         break;
       case "InspectorSignature":
         item.value = user?.signature;
