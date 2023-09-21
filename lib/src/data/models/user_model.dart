@@ -38,8 +38,8 @@ class User {
 
   late Cordinates? location;
 
-  // late ImageShape? signature;
-  late String signature;
+  late ImageShape? signature;
+  // late String signature;
 
   late String licenseNumber;
 
@@ -69,7 +69,7 @@ class User {
       this.website,
       this.organization,
       this.location,
-      this.signature = "",
+      this.signature,
       this.licenseNumber = "",
       this.licenseIssueDate = 0,
       this.licenseExpirationDate = 0,
@@ -103,11 +103,11 @@ class User {
     // photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
     website = json["website"];
     organization = json["organization"];
-    signature = json['signature'];
+    // signature = json['signature'];
     // location = json["location"];
-    // signature = json["signature"] == null
-    //     ? null
-    //     : ImageShape.fromJson(json["signature"]);
+    signature = json["signature"] == null
+        ? null
+        : ImageShape.fromJson(json["signature"]);
     licenseNumber = json["licenseNumber"] ?? "";
     // licenseIssueDate = json["licenseIssueDate"] ?? 0;
     // licenseExpirationDate = json["licenseExpirationDate"] ?? 0;
@@ -132,7 +132,8 @@ class User {
     data["website"] = website;
     // data["photo"] = photo?.toJson();
     data["organization"] = organization;
-    data["signature"] = signature;
+    // data["signature"] = signature;
+    data["signature"] = signature?.toJson();
     // data["location"] = location;
     // data["logo"] = !deep ? logo?.id : logo?.toJson();
     // data["signature"] = !deep ? signature?.id : signature?.toJson();

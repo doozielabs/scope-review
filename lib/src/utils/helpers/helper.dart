@@ -50,7 +50,6 @@ extension PersonExtension on Person? {
       "${this?.firstname ?? ""} ${this?.lastname ?? ""}".trim();
 }
 
-
 extension ListOfNumExtension on List<num> {
   num get top => isEmpty ? 0 : reduce(max);
   num get bottom => isEmpty ? 0 : reduce(min);
@@ -296,7 +295,7 @@ extension TemplateItemExtension on TemplateItem {
         return (value == null || value.isEmpty) && defaultOption == null;
 
       default:
-        return value == null || value.isEmpty;
+        return value == null;
     }
   }
 

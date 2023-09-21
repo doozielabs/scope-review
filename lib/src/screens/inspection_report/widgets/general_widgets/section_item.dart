@@ -118,14 +118,13 @@ class SectionItem extends StatelessWidget {
             style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
           );
         case TemplateItemType.signature:
-          if (value is String) {
-            ImageShape image = GeneralHelper.getMediaById(value, media!);
+          if (value is ImageShape) {
             return Container(
               width: 320,
               height: 95,
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: GeneralHelper.imageHandlerForGallery(image),
+                  image: GeneralHelper.imageHandlerForGallery(value),
                   fit: BoxFit.cover,
                 ),
               ),
