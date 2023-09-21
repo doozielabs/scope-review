@@ -17,6 +17,7 @@ import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
 import '../../data/models/address_model.dart';
+import '../../data/models/image_shape_model.dart';
 import '../../data/models/person_model.dart';
 import '../../data/models/user_model.dart';
 
@@ -293,7 +294,9 @@ extension TemplateItemExtension on TemplateItem {
         return value == null;
       case TemplateItemType.choice:
         return (value == null || value.isEmpty) && defaultOption == null;
-
+      case TemplateItemType.signature:
+        if (value is ImageShape) return value == null;
+        return (value == null || value.isEmpty);
       default:
         return value == null || value.isEmpty;
     }
