@@ -121,7 +121,7 @@ class _SectionEyeShotForMobileState
 
   @override
   Widget build(BuildContext context) {
-    pdfStatus = widget.pdfStatus!;
+    pdfStatus = widget.pdfStatus ?? "wait";
     isdownloading = widget.isdownloading ?? false;
     return Scaffold(
         backgroundColor: ProjectColors.white.withOpacity(0.9),
