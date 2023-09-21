@@ -295,7 +295,7 @@ extension TemplateItemExtension on TemplateItem {
         return (value == null || value.isEmpty) && defaultOption == null;
 
       default:
-        return value == null;
+        return value == null || value.isEmpty;
     }
   }
 
