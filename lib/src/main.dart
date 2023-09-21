@@ -13,6 +13,8 @@ import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report.dart';
 import 'package:sizer/sizer.dart';
 
+import 'core/constant/typography.dart';
+
 class PDFReport extends StatefulWidget {
   final bool showDialogue;
   final bool? isdownloading;
@@ -108,15 +110,18 @@ class _PDFReportState extends State<PDFReport> {
                   children: [
                     isok
                         ? Image.network(
-                            baseUrlLive + pdfGenerated,
+                            baseUrlLive + generatedPdf,
                             fit: BoxFit.cover,
                           )
                         : Image.network(
-                            baseUrlLive + pdfGeneration,
+                            baseUrlLive + generationPdf,
                             fit: BoxFit.cover,
                           ),
                     SizedBox(height: 16.0), // Add some spacing
-                    Text(message),
+                    Text(
+                      message,
+                      style: primaryHeadingTextStyle.copyWith(),
+                    ),
                     isok ? okButton : SizedBox(),
                   ],
                 ),

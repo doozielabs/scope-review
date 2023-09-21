@@ -16,6 +16,8 @@ const defaultHeaderImage1 = 'images/inspection_placeholder.png';
 const defaultHeaderImage = "images/house.jpeg";
 const pdfGeneration = "images/pdf-generation.gif";
 const pdfGenerated = "images/pdf-generated.png";
+const generationPdf = "images/generation-pdf.gif";
+const generatedPdf = "images/generated-pdf.gif";
 const defaultInvalidImage = "images/invalid-placholder.png";
 String documentDirectory = "";
 
