@@ -146,7 +146,7 @@ class _PDFReportState extends State<PDFReport> {
 
   @override
   void didUpdateWidget(oldWidget) {
-    pdfStatus = widget.pdfStatus!;
+    pdfStatus = widget.pdfStatus ?? "wait";
     print("Package update");
     if (!kIsWeb) {
       media.clear();
@@ -164,8 +164,8 @@ class _PDFReportState extends State<PDFReport> {
   @override
   Widget build(BuildContext context) {
     if (kIsWeb) {
-      isdownloading = widget.isdownloading!;
-      pdfStatus = widget.pdfStatus!;
+      isdownloading = widget.isdownloading ?? false;
+      pdfStatus = widget.pdfStatus ?? "wait";
       var inspectionID = Uri.base.pathSegments;
       var concatenate = inspectionID.join("");
       return Sizer(
