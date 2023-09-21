@@ -16,12 +16,17 @@ class ShowMenuDialogue {
   void showMenu(BuildContext context, dynamic inspection,
       dynamic selectedTemplate, dynamic templates, dynamic user,
       {Function? sharepdf, Function? needUpgrade}) {
+    List<Template> templatesData = [];
     InspectionModel inspectionModel =
         InspectionModel.fromJson(jsonDecode(inspection));
     Template selectedTemplateModel =
         Template.fromJson(jsonDecode(selectedTemplate));
+    User userData = User.fromJson(jsonDecode(user));
+    for (var template in templates) {
+      templatesData.add(Template.fromJson(jsonDecode(template)));
+    }
     selectedTemplate = GeneralHelper.setTrailItem(
-        templates, selectedTemplateModel, inspectionModel, user);
+        templatesData, selectedTemplateModel, inspectionModel, userData);
 
     if (_showDialog) {
       showDialog(
