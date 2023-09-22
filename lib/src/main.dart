@@ -91,16 +91,19 @@ class _PDFReportState extends State<PDFReport> {
                 child: Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop();
+                  pdfStatus = 'wait';
                 },
               );
-              if (widget.pdfStatus == 'true' || widget.pdfStatus == 'false') {
+              if (pdfStatus == 'true' || pdfStatus == 'false') {
                 isok = true;
+              } else {
+                isok = false;
               }
-              if (widget.pdfStatus == 'wait') {
+              if (pdfStatus == 'wait') {
                 message = "PDF in Progress... Please be patient.";
-              } else if (widget.pdfStatus == 'false') {
+              } else if (pdfStatus == 'false') {
                 message = "Something Went Wrong. Please try again later.";
-              } else if (widget.pdfStatus == 'true') {
+              } else if (pdfStatus == 'true') {
                 message =
                     "PDF Generated. Download will start in a few seconds....";
               }
