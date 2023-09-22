@@ -14,7 +14,6 @@ import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
-import 'package:pdf_report_scope/src/data/models/item_trail.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
@@ -262,7 +261,11 @@ class GeneralHelper {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url.envRelativePath()), scale: scale);
       } else {
-        return AssetImage(image.url);
+        if (image.url.contains("https")) {
+          return NetworkImage(image.url, scale: 1.0);
+        } else {
+          return AssetImage(image.url);
+        }
       }
     }
   }
@@ -680,12 +683,13 @@ class GeneralHelper {
             switch (key) {
               case "Inspector":
               case "Inspection":
-                if (value.ref != null)
+                if (value.ref != null) {
                   autoFillDetails(
                       item: item,
                       ref: value.ref!,
                       inspection: inspection,
                       user: user);
+                }
                 break;
               default:
                 if (templates.isNotEmpty) {
@@ -693,7 +697,7 @@ class GeneralHelper {
                     if (insTemplate.template == key &&
                         insTemplate.isBaseTemplate == true) {
                       String itemTrail =
-                          insTemplate.templateHashMap?["${value.uid}"];
+                          insTemplate.templateHashMap?[value.uid];
                       Id id = Id.decode(itemTrail);
                       if (id.subSection > 0) {
                         TemplateItem itemToUse = insTemplate
@@ -728,96 +732,88 @@ class GeneralHelper {
         item.value = inspection.address?.fullAdress;
         break;
       case "InspectionAddressStreet":
-        item.value = inspection?.address?.street;
+        item.value = inspection.address?.street;
         break;
       case "InspectionAddressCity":
-        item.value = inspection?.address?.city;
+        item.value = inspection.address?.city;
         break;
       case "InspectionAddressZipcode":
-        item.value = inspection?.address?.zipcode;
+        item.value = inspection.address?.zipcode;
         break;
       case "InspectorAddressState":
-        item.value = inspection?.address?.state;
+        item.value = inspection.address?.state;
         break;
       case "InspectionAddressCountry":
         item.value = "United State";
         break;
       case "InspectionDate":
-        item.value = inspection?.startDate;
+        item.value = inspection.startDate;
         break;
       case "ClientName":
-        item.value = inspection?.client.fullName;
+        item.value = inspection.client.fullName;
         break;
       case "ClientPhone":
-        item.value = inspection?.client?.phone;
+        item.value = inspection.client?.phone;
         break;
       case "ClientEmail":
-        item.value = inspection?.client?.email;
+        item.value = inspection.client?.email;
         break;
       case "BuyerName":
-        item.value = inspection?.buyerAgent.fullName;
+        item.value = inspection.buyerAgent.fullName;
         break;
       case "BuyerPhone":
-        item.value = inspection?.buyerAgent?.phone;
+        item.value = inspection.buyerAgent?.phone;
         break;
       case "BuyerEmail":
-        item.value = inspection?.buyerAgent?.email;
+        item.value = inspection.buyerAgent?.email;
         break;
       case "SellerName":
-        item.value = inspection?.sellerAgent.fullName;
+        item.value = inspection.sellerAgent.fullName;
         break;
       case "SellerPhone":
-        item.value = inspection?.sellerAgent?.phone;
+        item.value = inspection.sellerAgent?.phone;
         break;
       case "SellerEmail":
-        item.value = inspection?.sellerAgent?.email;
+        item.value = inspection.sellerAgent?.email;
         break;
       case "InspectorName":
-        item.value = user?.fullName;
+        item.value = user.fullName;
         break;
       case "InspectorEmail":
-        item.value = user?.email;
+        item.value = user.email;
         break;
       case "InspectorPhone":
-        item.value = user?.phone;
+        item.value = user.phone;
         break;
       case "InspectorAddress":
-        item.value = user?.address != null
-            ? user?.address
-            : user?.companyAddress.fullAdress;
+        item.value = user.address ?? user.companyAddress.fullAdress;
         break;
       case "InspectorAddressStreet":
-        item.value = user?.address != null
-            ? user?.address
-            : user?.companyAddress?.street;
+        item.value = user.address ?? user.companyAddress?.street;
         break;
       case "InspectorAddressCity":
-        item.value =
-            user?.address != null ? user?.address : user?.companyAddress?.city;
+        item.value = user.address ?? user.companyAddress?.city;
         break;
       case "InspectorAddressZipcode":
-        item.value = user?.address != null
-            ? user?.address
-            : user?.companyAddress?.zipcode;
+        item.value = user.address ?? user.companyAddress?.zipcode;
         break;
       case "InspectionAddressState":
-        item.value =
-            user?.address != null ? user?.address : user?.companyAddress?.state;
+        item.value = user.address ?? user.companyAddress?.state;
         break;
       case "InspectorAddressCountry":
         item.value = "United State";
         break;
       case "InspectorLicense":
-        item.value = user?.licenseNumber;
+        item.value = user.licenseNumber;
         break;
       case "InspectorWebsite":
-        item.value = user?.website;
+        item.value = user.website;
         break;
       case "InspectorOrganization":
-        item.value = user?.organization;
+        item.value = user.organization;
         break;
       case "InspectorSignature":
-        item.value = user?.signature;
+        item.value = user.signature;
         break;
       default:
     }
