@@ -150,9 +150,9 @@ class _PDFReportState extends State<PDFReport> {
   @override
   void didUpdateWidget(oldWidget) {
     pdfStatus = widget.pdfStatus ?? "wait";
+    media.clear();
     print("Package update");
     if (!kIsWeb) {
-      media.clear();
       widgetKey = Key("${DateTime.now().microsecondsSinceEpoch}");
     }
     updateListOfTemplates();
