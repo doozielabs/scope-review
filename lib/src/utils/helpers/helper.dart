@@ -544,7 +544,7 @@ extension DateTimeExtension on DateTime {
   DateTime addMonth(int amount) => DateTime(year, month + amount, day);
   DateTime subtractMonth(int amount) => DateTime(year, month - amount, day);
   String get time => DateFormat('h:mm a').format(this);
-  String get fulldate => DateFormat('EEE, LLL d, yyyy  -  h:mm a').format(this);
+  String get fulldate => DateFormat('EEE, LLL d, yyyy   h:mma').format(this);
   String get regularDate => DateFormat('d MMM, yyyy').format(this);
   String get smallDate => DateFormat('MMM, yyyy').format(this);
   String get fullISODate => DateFormat('EEE, d/M/yyyy  -  h:mm a').format(this);
