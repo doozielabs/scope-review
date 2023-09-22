@@ -17,14 +17,13 @@ class ReportHeaderWeb extends StatelessWidget {
   final List<ImageShape>? media;
   final User user;
   final Template selectedTemplate;
-  const ReportHeaderWeb(
-      {Key? key,
-      required this.inspection,
-      required this.media,
-      required this.user,
-      required this.selectedTemplate,
-      })
-      : super(key: key);
+  const ReportHeaderWeb({
+    Key? key,
+    required this.inspection,
+    required this.media,
+    required this.user,
+    required this.selectedTemplate,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -112,33 +111,15 @@ class ReportHeaderWeb extends StatelessWidget {
                               style: secondryHeadingTextStyle,
                             ),
                             const SizedBox(height: 10),
-                            Wrap(
-                              direction: Axis.horizontal,
-                              children: [
-                                HeaderInfoItem(
-                                  iconName: "clock_icon",
-                                  text:
-                                      GeneralHelper.getInspectionDateTimeFormat(
-                                          inspection.startDate),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            const Text(
-                              "End Inspection Date",
-                              style: secondryHeadingTextStyle,
-                            ),
-                            const SizedBox(height: 10),
                             Row(
                               children: [
                                 HeaderInfoItem(
                                   iconName: "clock_icon",
                                   text:
-                                      GeneralHelper.getInspectionDateTimeFormat(
-                                          inspection.endDate),
+                                      "${inspection.startDate.fulldate} - ${inspection.endDate.time}",
                                 ),
                               ],
-                            )
+                            ),
                           ],
                         ),
                       ),

@@ -95,7 +95,7 @@ class ReportHeaderMobile extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Start Inspection Date",
+                    "Inspection Date",
                     style: secondryHeadingTextStyle,
                   ),
                   const SizedBox(height: 10),
@@ -103,26 +103,11 @@ class ReportHeaderMobile extends StatelessWidget {
                     children: [
                       HeaderInfoItem(
                         iconName: "clock_icon",
-                        text: GeneralHelper.getInspectionDateTimeFormat(
-                            inspection.startDate),
+                        text:
+                            "${inspection.startDate.fulldate} - ${inspection.endDate.time}",
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "End Inspection Date",
-                    style: secondryHeadingTextStyle,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    children: [
-                      HeaderInfoItem(
-                        iconName: "clock_icon",
-                        text: GeneralHelper.getInspectionDateTimeFormat(
-                            inspection.endDate),
-                      ),
-                    ],
-                  )
                 ],
               ),
             ),

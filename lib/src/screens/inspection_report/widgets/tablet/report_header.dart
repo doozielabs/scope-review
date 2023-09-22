@@ -16,14 +16,13 @@ class ReportHeaderTablet extends StatelessWidget {
   final List<ImageShape>? media;
   final User user;
   final Template selectedTemplate;
-  const ReportHeaderTablet(
-      {Key? key,
-      required this.inspection,
-      required this.media,
-      required this.user,
-      required this.selectedTemplate,
-      })
-      : super(key: key);
+  const ReportHeaderTablet({
+    Key? key,
+    required this.inspection,
+    required this.media,
+    required this.user,
+    required this.selectedTemplate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -112,26 +111,35 @@ class ReportHeaderTablet extends StatelessWidget {
                             children: [
                               HeaderInfoItem(
                                 iconName: "clock_icon",
-                                text: GeneralHelper.getInspectionDateTimeFormat(
-                                    inspection.startDate),
+                                text:
+                                    "${inspection.startDate.fulldate} - ${inspection.endDate.time}",
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            "End Inspection Date",
-                            style: secondryHeadingTextStyle,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              HeaderInfoItem(
-                                iconName: "clock_icon",
-                                text: GeneralHelper.getInspectionDateTimeFormat(
-                                    inspection.endDate),
-                              ),
-                            ],
-                          )
+                          // Row(
+                          //   children: [
+                          //     HeaderInfoItem(
+                          //       iconName: "clock_icon",
+                          //       text: GeneralHelper.getInspectionDateTimeFormat(
+                          //           inspection.startDate),
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(height: 20),
+                          // const Text(
+                          //   "End Inspection Date",
+                          //   style: secondryHeadingTextStyle,
+                          // ),
+                          // const SizedBox(height: 10),
+                          // Row(
+                          //   children: [
+                          //     HeaderInfoItem(
+                          //       iconName: "clock_icon",
+                          //       text: GeneralHelper.getInspectionDateTimeFormat(
+                          //           inspection.endDate),
+                          //     ),
+                          //   ],
+                          // )
                         ],
                       ),
                     ),
