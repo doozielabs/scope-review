@@ -49,10 +49,10 @@ class _SectionTileState extends State<SectionTile> {
         InkWell(
           child: Text(
             GeneralHelper.getNameWithDots(widget.section.name!, 15),
-            style: primaryHeadingTextStyle.copyWith(
-              letterSpacing: 2,
+            style: b2Regular.copyWith(
               color: ProjectColors.primary,
-              fontFamily: fontFamilyJostMedium,
+              // letterSpacing: 2,
+              // fontFamily: fontFamilyJostMedium,
             ),
           ),
           onTap: () {
@@ -106,11 +106,11 @@ class _SectionTileState extends State<SectionTile> {
                     i++) {
                   for (int k = 0;
                       k <
-                          widget.selectedTemplate!.sections[i].subSections
-                              .length;
+                          widget
+                              .selectedTemplate!.sections[i].subSections.length;
                       k++) {
-                    if (widget.selectedTemplate!.sections[i].subSections[k]
-                            .uid ==
+                    if (widget
+                            .selectedTemplate!.sections[i].subSections[k].uid ==
                         widget.section.uid) {
                       setState(() {
                         controllerStream.add(i);
@@ -142,30 +142,30 @@ class _SectionTileState extends State<SectionTile> {
                     width: 12,
                     height: 12,
                   ),
-                  const SizedBox(width: 7.17),
+                  const SizedBox(width: 2.17),
                   Text(
                     widget.totalComments.toString(),
                     style: b4Medium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  const SizedBox(width: 7.17),
+                  const SizedBox(width: 2.17),
                   SvgPicture.asset(
                     "assets/svg/deficiency.svg",
                     package: "pdf_report_scope",
                     width: 12,
                     height: 12,
                   ),
-                  const SizedBox(width: 7.17),
+                  const SizedBox(width: 2.17),
                   Text(
                     widget.diffencyCount.toString(),
                     style: b4Medium.copyWith(
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  widget.hasSubsections
-                      ? const SizedBox(width: 12)
-                      : const SizedBox(),
+                  // widget.hasSubsections
+                  //     ? const SizedBox(width: 12)
+                  //     : const SizedBox(),
                   widget.hasSubsections
                       ? SizedBox(
                           height: 23,
@@ -174,12 +174,12 @@ class _SectionTileState extends State<SectionTile> {
                           ),
                         )
                       : const SizedBox(),
-                  widget.hasSubsections
-                      ? const SizedBox(width: 12)
-                      : const SizedBox(),
+                  // widget.hasSubsections
+                  //     ? const SizedBox(width: 12)
+                  //     : const SizedBox(),
                   widget.hasSubsections
                       ? Container(
-                          width: 50.0,
+                          width: 10.0,
                           height: 30.0,
                           color: Colors.transparent,
                           child: Center(

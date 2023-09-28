@@ -20,6 +20,8 @@ import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/constant/globals.dart';
@@ -305,6 +307,28 @@ class GeneralHelper {
       //   height: height,
       //   fit: BoxFit.contain,
       // );
+    } else {
+      if ((image.url).isDeviceUrl || (image.url).isAsset) {
+        return Image.file(
+          File(image.url.envRelativePath()),
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+        );
+      } else {
+        return Image.asset(
+          image.url,
+          width: width,
+          height: height,
+          fit: BoxFit.cover,
+        );
+      }
+    }
+  }
+
+  static imageHandlerForPhotoView(ImageShape image, width, height) {
+    if (kIsWeb) {
+      return NetworkImage(baseUrlLive + image.url);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return Image.file(
@@ -815,10 +839,21 @@ class GeneralHelper {
       case "InspectorSignature":
         item.value = user.signature;
         break;
+      case "InspectorInitials":
+        if (user != null) {
+          item.value = getInitials(
+              user.firstname ?? "", user.lastname ?? "");
+        }
+        break;  
       default:
     }
   }
-
+  static String getInitials(String firstName, String lastName) {
+    if (firstName.isEmpty || lastName.isEmpty) {
+      return '';
+    }
+    return '${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}';
+  }
   static swapItemValues(TemplateItem item, TemplateItem itemToUse) {
     item.value = itemToUse.value;
     item.options = itemToUse.options;
@@ -995,7 +1030,9 @@ class CustomDialog extends StatefulWidget {
 
 class _CustomDialogState extends State<CustomDialog> {
   final CarouselController _controller = CarouselController();
+  final PageController _pageController = PageController();
   int _current = 0;
+
   @override
   Widget build(BuildContext context) {
     final List<ImageShape> imageUrl =
@@ -1022,62 +1059,97 @@ class _CustomDialogState extends State<CustomDialog> {
           backgroundColor: Colors.transparent,
           content: SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CarouselSlider(
-                      carouselController: _controller,
-                      options: CarouselOptions(
-                        aspectRatio: 1,
-                        enlargeCenterPage: true,
-                        clipBehavior: Clip.none,
-                        enableInfiniteScroll: false,
-                        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                        onPageChanged: (indexed, r) =>
-                            setState(() => _current = indexed),
-                      ),
-                      items: imageUrl
-                          .map((item) => ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child:
-                                    GeneralHelper.imageHandlerForRoundedConner(
-                                  item,
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[0],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[1],
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 24.0),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      children: List.generate(
-                        imageUrl.length,
-                        (index) => GestureDetector(
-                          onTap: () => _controller.animateToPage(
-                            index,
-                            curve: Curves.fastOutSlowIn,
-                            duration: const Duration(milliseconds: 800),
-                          ),
+              child: Column(
+                children: [
+                  Container(
+                      width: 100.w,
+                      height: 100.h,
+                      child: PhotoViewGallery.builder(
+                        pageController: _pageController,
+                        scrollPhysics: const BouncingScrollPhysics(),
+                        builder: (BuildContext context, int _current) {
+                          return PhotoViewGalleryPageOptions(
+                            imageProvider:
+                                GeneralHelper.imageHandlerForPhotoView(
+                              imageUrl[_current],
+                              getImageWidthHeight(
+                                  ImageType.sectionImage, imageUrl)[0],
+                              getImageWidthHeight(
+                                  ImageType.sectionImage, imageUrl)[1],
+                            ),
+                            initialScale:
+                                PhotoViewComputedScale.contained * 1.0,
+                            heroAttributes: PhotoViewHeroAttributes(
+                                tag: imageUrl[_current].id),
+                            minScale: PhotoViewComputedScale.contained * 0.8,
+                            maxScale: PhotoViewComputedScale.covered * 1.8,
+                          );
+                        },
+                        itemCount: imageUrl.length,
+                        loadingBuilder: (context, event) => Center(
                           child: Container(
-                            width: 10,
-                            height: 10,
-                            margin:
-                                EdgeInsets.only(left: index.isZero ? 0 : 10),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context)
-                                  .scaffoldBackgroundColor
-                                  .withOpacity(_current == index ? 1.0 : 0.4),
+                            width: 100.sp,
+                            height: 100.sp,
+                            child: CircularProgressIndicator(
+                              value: event == null
+                                  ? 0
+                                  : event.cumulativeBytesLoaded / 1.8,
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
+                        backgroundDecoration: BoxDecoration(
+                            color: Color.fromARGB(255, 40, 40, 40)
+                                .withOpacity(0.5)),
+                      )),
+                  (imageUrl.length > 2)
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                  onTap: () {
+                                    if (_current != 0) {
+                                      _current--;
+                                      setState(() {});
+                                    }
+                                    _pageController.animateToPage(
+                                      _current,
+                                      curve: Curves.fastOutSlowIn,
+                                      duration:
+                                          const Duration(milliseconds: 800),
+                                    );
+                                  },
+                                  child: SvgPicture.asset(
+                                    "assets/svg/left_chevron.svg",
+                                    package: "pdf_report_scope",
+                                    width: 10.sp,
+                                    height: 10.sp,
+                                  )),
+                              InkWell(
+                                  onTap: () {
+                                    if (_current != imageUrl.lastIndex) {
+                                      _current++;
+                                      setState(() {});
+                                    }
+                                    _pageController.animateToPage(
+                                      _current,
+                                      curve: Curves.fastOutSlowIn,
+                                      duration:
+                                          const Duration(milliseconds: 800),
+                                    );
+                                  },
+                                  child: SvgPicture.asset(
+                                    "assets/svg/right_chevron.svg",
+                                    package: "pdf_report_scope",
+                                    width: 10.sp,
+                                    height: 10.sp,
+                                  )),
+                            ],
+                          ),
+                        )
+                      : const SizedBox()
+                ],
               )));
     } else if (SizerUtil.deviceType == DeviceType.tablet) {
       return AlertDialog(
@@ -1101,62 +1173,97 @@ class _CustomDialogState extends State<CustomDialog> {
           backgroundColor: Colors.transparent,
           content: SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CarouselSlider(
-                      carouselController: _controller,
-                      options: CarouselOptions(
-                        aspectRatio: 1,
-                        enlargeCenterPage: true,
-                        clipBehavior: Clip.none,
-                        enableInfiniteScroll: false,
-                        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                        onPageChanged: (indexed, r) =>
-                            setState(() => _current = indexed),
-                      ),
-                      items: imageUrl
-                          .map((item) => ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child:
-                                    GeneralHelper.imageHandlerForRoundedConner(
-                                  item,
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[0],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[1],
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 24.0),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      children: List.generate(
-                        imageUrl.length,
-                        (index) => GestureDetector(
-                          onTap: () => _controller.animateToPage(
-                            index,
-                            curve: Curves.fastOutSlowIn,
-                            duration: const Duration(milliseconds: 800),
-                          ),
+              child: Column(
+                children: [
+                  Container(
+                      width: 100.w,
+                      height: 100.h,
+                      child: PhotoViewGallery.builder(
+                        pageController: _pageController,
+                        scrollPhysics: const BouncingScrollPhysics(),
+                        builder: (BuildContext context, int _current) {
+                          return PhotoViewGalleryPageOptions(
+                            imageProvider:
+                                GeneralHelper.imageHandlerForPhotoView(
+                              imageUrl[_current],
+                              getImageWidthHeight(
+                                  ImageType.sectionImage, imageUrl)[0],
+                              getImageWidthHeight(
+                                  ImageType.sectionImage, imageUrl)[1],
+                            ),
+                            initialScale:
+                                PhotoViewComputedScale.contained * 1.0,
+                            heroAttributes: PhotoViewHeroAttributes(
+                                tag: imageUrl[_current].id),
+                            minScale: PhotoViewComputedScale.contained * 0.8,
+                            maxScale: PhotoViewComputedScale.covered * 1.8,
+                          );
+                        },
+                        itemCount: imageUrl.length,
+                        loadingBuilder: (context, event) => Center(
                           child: Container(
-                            width: 10,
-                            height: 10,
-                            margin:
-                                EdgeInsets.only(left: index.isZero ? 0 : 10),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context)
-                                  .scaffoldBackgroundColor
-                                  .withOpacity(_current == index ? 1.0 : 0.4),
+                            width: 100.sp,
+                            height: 100.sp,
+                            child: CircularProgressIndicator(
+                              value: event == null
+                                  ? 0
+                                  : event.cumulativeBytesLoaded / 1.8,
                             ),
                           ),
                         ),
-                      ),
-                    )
-                  ],
-                ),
+                        backgroundDecoration: BoxDecoration(
+                            color: Color.fromARGB(255, 40, 40, 40)
+                                .withOpacity(0.5)),
+                      )),
+                  (imageUrl.length > 2)
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                  onTap: () {
+                                    if (_current != 0) {
+                                      _current--;
+                                      setState(() {});
+                                    }
+                                    _pageController.animateToPage(
+                                      _current,
+                                      curve: Curves.fastOutSlowIn,
+                                      duration:
+                                          const Duration(milliseconds: 800),
+                                    );
+                                  },
+                                  child: SvgPicture.asset(
+                                    "assets/svg/left_chevron.svg",
+                                    package: "pdf_report_scope",
+                                    width: 10.sp,
+                                    height: 10.sp,
+                                  )),
+                              InkWell(
+                                  onTap: () {
+                                    if (_current != imageUrl.lastIndex) {
+                                      _current++;
+                                      setState(() {});
+                                    }
+                                    _pageController.animateToPage(
+                                      _current,
+                                      curve: Curves.fastOutSlowIn,
+                                      duration:
+                                          const Duration(milliseconds: 800),
+                                    );
+                                  },
+                                  child: SvgPicture.asset(
+                                    "assets/svg/right_chevron.svg",
+                                    package: "pdf_report_scope",
+                                    width: 10.sp,
+                                    height: 10.sp,
+                                  )),
+                            ],
+                          ),
+                        )
+                      : const SizedBox()
+                ],
               )));
     } else {
       if (globalConstraints.maxWidth < 600) {
@@ -1185,65 +1292,48 @@ class _CustomDialogState extends State<CustomDialog> {
             backgroundColor: Colors.transparent,
             content: SizedBox(
                 width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 150.sp,
-                        child: CarouselSlider(
-                          carouselController: _controller,
-                          options: CarouselOptions(
-                            aspectRatio: 1,
-                            enlargeCenterPage: true,
-                            clipBehavior: Clip.none,
-                            enableInfiniteScroll: false,
-                            enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                            onPageChanged: (indexed, r) =>
-                                setState(() => _current = indexed),
-                          ),
-                          items: imageUrl
-                              .map((item) => ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: GeneralHelper
-                                        .imageHandlerForRoundedConner(
-                                      item,
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[0],
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[1],
+                child: Column(
+                  children: [
+                    Container(
+                        width: 100.w,
+                        height: 80.h,
+                        child: PhotoViewGallery.builder(
+                            pageController: _pageController,
+                            scrollPhysics: const BouncingScrollPhysics(),
+                            builder: (BuildContext context, int _current) {
+                              return PhotoViewGalleryPageOptions(
+                                imageProvider:
+                                    GeneralHelper.imageHandlerForPhotoView(
+                                  imageUrl[_current],
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, imageUrl)[0],
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, imageUrl)[1],
+                                ),
+                                initialScale:
+                                    PhotoViewComputedScale.contained * 1.0,
+                                heroAttributes: PhotoViewHeroAttributes(
+                                    tag: imageUrl[_current].id),
+                                minScale:
+                                    PhotoViewComputedScale.contained * 0.8,
+                                maxScale: PhotoViewComputedScale.covered * 1.8,
+                              );
+                            },
+                            itemCount: imageUrl.length,
+                            loadingBuilder: (context, event) => Center(
+                                  child: Container(
+                                    width: 100.sp,
+                                    height: 100.sp,
+                                    child: CircularProgressIndicator(
+                                      value: event == null
+                                          ? 0
+                                          : event.cumulativeBytesLoaded / 1.8,
                                     ),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                      const SizedBox(height: 24.0),
-                      Wrap(
-                        direction: Axis.horizontal,
-                        children: List.generate(
-                          imageUrl.length,
-                          (index) => GestureDetector(
-                            onTap: () => _controller.animateToPage(
-                              index,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            ),
-                            child: Container(
-                              width: 10,
-                              height: 10,
-                              margin:
-                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .scaffoldBackgroundColor
-                                    .withOpacity(_current == index ? 1.0 : 0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
+                                  ),
+                                ),
+                            backgroundDecoration: BoxDecoration(
+                                color: Colors.transparent.withOpacity(0)))),
+                  ],
                 )));
       } else if (globalConstraints.maxWidth < 1260) {
         //Tablet
@@ -1271,60 +1361,96 @@ class _CustomDialogState extends State<CustomDialog> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      SizedBox(
-                        height: 150.sp,
-                        child: CarouselSlider(
-                          carouselController: _controller,
-                          options: CarouselOptions(
-                            aspectRatio: 1,
-                            enlargeCenterPage: true,
-                            clipBehavior: Clip.none,
-                            enableInfiniteScroll: false,
-                            enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                            onPageChanged: (indexed, r) =>
-                                setState(() => _current = indexed),
-                          ),
-                          items: imageUrl
-                              .map((item) => ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: GeneralHelper
-                                        .imageHandlerForRoundedConner(
-                                      item,
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[0],
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[1],
+                      Container(
+                          width: 100.w,
+                          height: 80.h,
+                          child: PhotoViewGallery.builder(
+                              pageController: _pageController,
+                              scrollPhysics: const BouncingScrollPhysics(),
+                              builder: (BuildContext context, int _current) {
+                                return PhotoViewGalleryPageOptions(
+                                  imageProvider:
+                                      GeneralHelper.imageHandlerForPhotoView(
+                                    imageUrl[_current],
+                                    getImageWidthHeight(
+                                        ImageType.sectionImage, imageUrl)[0],
+                                    getImageWidthHeight(
+                                        ImageType.sectionImage, imageUrl)[1],
+                                  ),
+                                  initialScale:
+                                      PhotoViewComputedScale.contained * 1.0,
+                                  heroAttributes: PhotoViewHeroAttributes(
+                                      tag: imageUrl[_current].id),
+                                  minScale:
+                                      PhotoViewComputedScale.contained * 0.8,
+                                  maxScale:
+                                      PhotoViewComputedScale.covered * 1.8,
+                                );
+                              },
+                              itemCount: imageUrl.length,
+                              loadingBuilder: (context, event) => Center(
+                                    child: Container(
+                                      width: 100.sp,
+                                      height: 100.sp,
+                                      child: CircularProgressIndicator(
+                                        value: event == null
+                                            ? 0
+                                            : event.cumulativeBytesLoaded / 1.8,
+                                      ),
                                     ),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                      const SizedBox(height: 24.0),
-                      Wrap(
-                        direction: Axis.horizontal,
-                        children: List.generate(
-                          imageUrl.length,
-                          (index) => GestureDetector(
-                            onTap: () => _controller.animateToPage(
-                              index,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            ),
-                            child: Container(
-                              width: 10,
-                              height: 10,
-                              margin:
-                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .scaffoldBackgroundColor
-                                    .withOpacity(_current == index ? 1.0 : 0.4),
+                                  ),
+                              backgroundDecoration: BoxDecoration(
+                                color: Colors.transparent.withOpacity(0),
+                              ))),
+                      (imageUrl.length > 2)
+                          ? Align(
+                              alignment: Alignment.center,
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  InkWell(
+                                      onTap: () {
+                                        if (_current != 0) {
+                                          _current--;
+                                          setState(() {});
+                                        }
+                                        _pageController.animateToPage(
+                                          _current,
+                                          curve: Curves.fastOutSlowIn,
+                                          duration:
+                                              const Duration(milliseconds: 800),
+                                        );
+                                      },
+                                      child: SvgPicture.asset(
+                                        "assets/svg/left_chevron.svg",
+                                        package: "pdf_report_scope",
+                                        width: 10.sp,
+                                        height: 10.sp,
+                                      )),
+                                  InkWell(
+                                      onTap: () {
+                                        if (_current != imageUrl.lastIndex) {
+                                          _current++;
+                                          setState(() {});
+                                        }
+                                        _pageController.animateToPage(
+                                          _current,
+                                          curve: Curves.fastOutSlowIn,
+                                          duration:
+                                              const Duration(milliseconds: 800),
+                                        );
+                                      },
+                                      child: SvgPicture.asset(
+                                        "assets/svg/right_chevron.svg",
+                                        package: "pdf_report_scope",
+                                        width: 10.sp,
+                                        height: 10.sp,
+                                      )),
+                                ],
                               ),
-                            ),
-                          ),
-                        ),
-                      )
+                            )
+                          : const SizedBox()
                     ],
                   ),
                 )));
@@ -1351,122 +1477,90 @@ class _CustomDialogState extends State<CustomDialog> {
             backgroundColor: Colors.transparent,
             content: Stack(
               children: [
-                SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 50.0, bottom: 50),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 100.sp,
-                              width: 100.sp,
-                              child: CarouselSlider(
-                                carouselController: _controller,
-                                options: CarouselOptions(
-                                  aspectRatio: 1,
-                                  enlargeCenterPage: true,
-                                  clipBehavior: Clip.none,
-                                  enableInfiniteScroll: false,
-                                  enlargeStrategy:
-                                      CenterPageEnlargeStrategy.scale,
-                                  onPageChanged: (indexed, r) =>
-                                      setState(() => _current = indexed),
-                                ),
-                                items: imageUrl
-                                    .map((item) => ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: GeneralHelper
-                                              .imageHandlerForRoundedConner(
-                                            item,
-                                            getImageWidthHeight(
-                                                ImageType.sectionImage,
-                                                imageUrl)[0],
-                                            getImageWidthHeight(
-                                                ImageType.sectionImage,
-                                                imageUrl)[1],
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            const SizedBox(height: 24.0),
-                            Wrap(
-                              direction: Axis.horizontal,
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                imageUrl.length,
-                                (index) => GestureDetector(
-                                  onTap: () => _controller.animateToPage(
-                                    index,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: const Duration(milliseconds: 800),
-                                  ),
-                                  child: Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.only(
-                                        left: index.isZero ? 0 : 10),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor
-                                          .withOpacity(
-                                              _current == index ? 1.0 : 0.4),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
+                Container(
+                    width: 100.w,
+                    height: 80.h,
+                    child: PhotoViewGallery.builder(
+                      pageController: _pageController,
+                      scrollPhysics: const BouncingScrollPhysics(),
+                      builder: (BuildContext context, int _current) {
+                        return PhotoViewGalleryPageOptions(
+                          imageProvider: GeneralHelper.imageHandlerForPhotoView(
+                            imageUrl[_current],
+                            getImageWidthHeight(
+                                ImageType.sectionImage, imageUrl)[0],
+                            getImageWidthHeight(
+                                ImageType.sectionImage, imageUrl)[1],
+                          ),
+                          initialScale: PhotoViewComputedScale.contained * 1.0,
+                          heroAttributes: PhotoViewHeroAttributes(
+                              tag: imageUrl[_current].id),
+                          minScale: PhotoViewComputedScale.contained * 0.8,
+                          maxScale: PhotoViewComputedScale.covered * 1.8,
+                        );
+                      },
+                      itemCount: imageUrl.length,
+                      loadingBuilder: (context, event) => Center(
+                        child: Container(
+                          width: 100.sp,
+                          height: 100.sp,
+                          child: CircularProgressIndicator(
+                            value: event == null
+                                ? 0
+                                : event.cumulativeBytesLoaded / 1.8,
+                          ),
                         ),
                       ),
+                      backgroundDecoration: BoxDecoration(
+                        color: Colors.transparent.withOpacity(0),
+                      ),
                     )),
-                Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            if (_current != 0) {
-                              _current--;
-                              setState(() {});
-                            }
-                            _controller.animateToPage(
-                              _current,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            );
-                          },
-                          child: SvgPicture.asset(
-                            "assets/svg/left_chevron.svg",
-                            package: "pdf_report_scope",
-                            width: 10.sp,
-                            height: 10.sp,
-                          )),
-                      InkWell(
-                          onTap: () {
-                            if (_current != imageUrl.lastIndex) {
-                              _current++;
-                              setState(() {});
-                            }
-                            _controller.animateToPage(
-                              _current,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            );
-                          },
-                          child: SvgPicture.asset(
-                            "assets/svg/right_chevron.svg",
-                            package: "pdf_report_scope",
-                            width: 10.sp,
-                            height: 10.sp,
-                          )),
-                    ],
-                  ),
-                )
+                (imageUrl.length > 2)
+                    ? Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            InkWell(
+                                onTap: () {
+                                  if (_current != 0) {
+                                    _current--;
+                                    setState(() {});
+                                  }
+                                  _pageController.animateToPage(
+                                    _current,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: const Duration(milliseconds: 800),
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/svg/left_chevron.svg",
+                                  package: "pdf_report_scope",
+                                  width: 10.sp,
+                                  height: 10.sp,
+                                )),
+                            InkWell(
+                                onTap: () {
+                                  if (_current != imageUrl.lastIndex) {
+                                    _current++;
+                                    setState(() {});
+                                  }
+                                  _pageController.animateToPage(
+                                    _current,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: const Duration(milliseconds: 800),
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/svg/right_chevron.svg",
+                                  package: "pdf_report_scope",
+                                  width: 10.sp,
+                                  height: 10.sp,
+                                )),
+                          ],
+                        ),
+                      )
+                    : const SizedBox()
               ],
             ));
       }
@@ -1486,6 +1580,7 @@ class MyDialogue extends StatefulWidget {
 class _MyDialogueState extends State<MyDialogue> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
+  final PageController _pageController = PageController();
   @override
   void initState() {
     super.initState();
@@ -1502,87 +1597,72 @@ class _MyDialogueState extends State<MyDialogue> {
               Expanded(
                 child: SizedBox(
                   // color: Colors.red,
-                  width: 100.w,
+                  // width: 100.w,
                   // height: 60.h,
                   child: SizedBox(
-                      width: 100.w,
-                      child: SingleChildScrollView(
-                        child: Column(
+                      // width: 100.w,
+                      child: Column(
+                    children: [
+                      Padding(
+                        padding:
+                            EdgeInsets.only(top: 5.h, bottom: 5.h, right: 10.w),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: 20.h, bottom: 5.h, right: 10.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  InkWell(
-                                    onTap: () => Navigator.pop(context),
-                                    child: SvgPicture.asset(
-                                      "assets/svg/close.svg",
-                                      package: "pdf_report_scope",
-                                      color: ProjectColors.white,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            CarouselSlider(
-                              carouselController: _controller,
-                              options: CarouselOptions(
-                                aspectRatio: 1,
-                                enlargeCenterPage: true,
-                                clipBehavior: Clip.none,
-                                enableInfiniteScroll: false,
-                                enlargeStrategy:
-                                    CenterPageEnlargeStrategy.scale,
-                                onPageChanged: (indexed, r) =>
-                                    setState(() => _current = indexed),
-                              ),
-                              items: widget.media
-                                  .map((item) => ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: GeneralHelper
-                                            .imageHandlerForRoundedConner(
-                                                item,
-                                                getImageWidthHeight(
-                                                    ImageType.sectionImage,
-                                                    widget.media)[0],
-                                                getImageWidthHeight(
-                                                    ImageType.sectionImage,
-                                                    widget.media)[1]),
-                                      ))
-                                  .toList(),
-                            ),
-                            const SizedBox(height: 24.0),
-                            Wrap(
-                              direction: Axis.horizontal,
-                              children: List.generate(
-                                widget.media.length,
-                                (index) => GestureDetector(
-                                  onTap: () => _controller.animateToPage(
-                                    index,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: const Duration(milliseconds: 800),
-                                  ),
-                                  child: Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.only(
-                                        left: index.isZero ? 0 : 10),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor
-                                          .withOpacity(
-                                              _current == index ? 1.0 : 0.4),
-                                    ),
-                                  ),
-                                ),
+                            InkWell(
+                              onTap: () => Navigator.pop(context),
+                              child: SvgPicture.asset(
+                                "assets/svg/close.svg",
+                                package: "pdf_report_scope",
+                                color: ProjectColors.white,
                               ),
                             )
                           ],
                         ),
-                      )),
+                      ),
+                      Container(
+                          width: 100.w,
+                          height: 80.h,
+                          child: PhotoViewGallery.builder(
+                            pageController: _pageController,
+                            scrollPhysics: const BouncingScrollPhysics(),
+                            builder: (BuildContext context, int _current) {
+                              return PhotoViewGalleryPageOptions(
+                                imageProvider:
+                                    GeneralHelper.imageHandlerForPhotoView(
+                                  widget.media[_current],
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, widget.media)[0],
+                                  getImageWidthHeight(
+                                      ImageType.sectionImage, widget.media)[1],
+                                ),
+                                initialScale:
+                                    PhotoViewComputedScale.contained * 1.0,
+                                heroAttributes: PhotoViewHeroAttributes(
+                                    tag: widget.media[_current].id),
+                                minScale:
+                                    PhotoViewComputedScale.contained * 0.8,
+                                maxScale: PhotoViewComputedScale.covered * 1.8,
+                              );
+                            },
+                            itemCount: widget.media.length,
+                            loadingBuilder: (context, event) => Center(
+                              child: Container(
+                                width: 100.sp,
+                                height: 100.sp,
+                                child: CircularProgressIndicator(
+                                  value: event == null
+                                      ? 0
+                                      : event.cumulativeBytesLoaded / 1.8,
+                                ),
+                              ),
+                            ),
+                            backgroundDecoration: BoxDecoration(
+                              color: Colors.transparent.withOpacity(0),
+                            ),
+                          )),
+                    ],
+                  )),
                 ),
               ),
             ],

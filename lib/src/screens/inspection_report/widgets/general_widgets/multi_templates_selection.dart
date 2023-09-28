@@ -62,7 +62,7 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
         //     flex: 1,
         //     child:
         Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(0),
             child: Column(children: [
               Container(
                   width: MediaQuery.of(context).size.width,
@@ -79,15 +79,15 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.only(
+                          top: 16.0, bottom: 16.0, left: 3, right: 3),
                       child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Text(
-                              "Switch Services",
-                              style: h1,
-                            ),
+                            Text("Switch Services",
+                                style: h1.copyWith(
+                                    color: ProjectColors.black, fontSize: 18)),
                             const SizedBox(height: 18),
 
                             // RadioListTile(
@@ -105,13 +105,21 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                             // for (var t in templates)
                             for (var i = 0; i < templates.length; i++)
                               RadioListTile(
-                                title: Text(templates[i].name),
+                                dense: true,
+                                activeColor: ProjectColors.firefly,
+                                title: Transform.translate(
+                                    offset: const Offset(-20, 0),
+                                    child: Text(
+                                      templates[i].name,
+                                      style: b2Regular.copyWith(
+                                        color: ProjectColors.primary,
+                                      ),
+                                    )),
                                 groupValue: _currVal,
                                 value: i,
                                 onChanged: (val) {
                                   setState(() {
                                     _currVal = i;
-                                    // _currText = templates[i].name;
                                     setSelectedRadioTile(i);
                                     widget.switchServiceMethod?.call(i);
                                   });
@@ -160,33 +168,5 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                             // ),
                           ])))
             ]));
-    // );
-    // return Column(
-    //   mainAxisAlignment: MainAxisAlignment.center,
-    //   children: [
-    //     DropdownButton(
-    //       // Initial Value
-    //       value: dropdownvalue,
-
-    //       // Down Arrow Icon
-    //       icon: const Icon(Icons.keyboard_arrow_down),
-
-    //       // Array list of items
-    //       items: items.map((String items) {
-    //         return DropdownMenuItem(
-    //           value: items,
-    //           child: Text(items),
-    //         );
-    //       }).toList(),
-    //       // After selecting the desired option,it will
-    //       // change button value to selected value
-    //       onChanged: (String? newValue) {
-    //         setState(() {
-    //           dropdownvalue = newValue!;
-    //         });
-    //       },
-    //     ),
-    //   ],
-    // );
   }
 }

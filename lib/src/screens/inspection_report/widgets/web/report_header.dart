@@ -102,7 +102,7 @@ class ReportHeaderWeb extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                            left: 20.0, right: 0.0, top: 10.0, bottom: 10.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
