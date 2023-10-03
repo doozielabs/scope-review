@@ -331,19 +331,9 @@ class GeneralHelper {
       return NetworkImage(baseUrlLive + image.url);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-        return Image.file(
-          File(image.url.envRelativePath()),
-          width: width,
-          height: height,
-          fit: BoxFit.cover,
-        );
+        return FileImage(File(image.url.envRelativePath()));
       } else {
-        return Image.asset(
-          image.url,
-          width: width,
-          height: height,
-          fit: BoxFit.cover,
-        );
+        return AssetImage(image.url);
       }
     }
   }
@@ -841,19 +831,20 @@ class GeneralHelper {
         break;
       case "InspectorInitials":
         if (user != null) {
-          item.value = getInitials(
-              user.firstname ?? "", user.lastname ?? "");
+          item.value = getInitials(user.firstname ?? "", user.lastname ?? "");
         }
-        break;  
+        break;
       default:
     }
   }
+
   static String getInitials(String firstName, String lastName) {
     if (firstName.isEmpty || lastName.isEmpty) {
       return '';
     }
     return '${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}';
   }
+
   static swapItemValues(TemplateItem item, TemplateItem itemToUse) {
     item.value = itemToUse.value;
     item.options = itemToUse.options;
@@ -1039,6 +1030,7 @@ class _CustomDialogState extends State<CustomDialog> {
         GeneralHelper.getMediaList(widget.ids, widget.media);
     if (SizerUtil.deviceType == DeviceType.mobile) {
       return AlertDialog(
+          insetPadding: EdgeInsets.all(5),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -1056,14 +1048,14 @@ class _CustomDialogState extends State<CustomDialog> {
             borderRadius: BorderRadius.circular(20),
           ),
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent.withOpacity(0),
           content: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
                   Container(
-                      width: 100.w,
-                      height: 100.h,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 1.3,
                       child: PhotoViewGallery.builder(
                         pageController: _pageController,
                         scrollPhysics: const BouncingScrollPhysics(),
@@ -1088,8 +1080,8 @@ class _CustomDialogState extends State<CustomDialog> {
                         itemCount: imageUrl.length,
                         loadingBuilder: (context, event) => Center(
                           child: Container(
-                            width: 100.sp,
-                            height: 100.sp,
+                            width: 30.sp,
+                            height: 30.sp,
                             child: CircularProgressIndicator(
                               value: event == null
                                   ? 0
@@ -1098,61 +1090,14 @@ class _CustomDialogState extends State<CustomDialog> {
                           ),
                         ),
                         backgroundDecoration: BoxDecoration(
-                            color: Color.fromARGB(255, 40, 40, 40)
-                                .withOpacity(0.5)),
+                            color:
+                                Color.fromARGB(255, 40, 40, 40).withOpacity(0)),
                       )),
-                  (imageUrl.length > 2)
-                      ? Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                  onTap: () {
-                                    if (_current != 0) {
-                                      _current--;
-                                      setState(() {});
-                                    }
-                                    _pageController.animateToPage(
-                                      _current,
-                                      curve: Curves.fastOutSlowIn,
-                                      duration:
-                                          const Duration(milliseconds: 800),
-                                    );
-                                  },
-                                  child: SvgPicture.asset(
-                                    "assets/svg/left_chevron.svg",
-                                    package: "pdf_report_scope",
-                                    width: 10.sp,
-                                    height: 10.sp,
-                                  )),
-                              InkWell(
-                                  onTap: () {
-                                    if (_current != imageUrl.lastIndex) {
-                                      _current++;
-                                      setState(() {});
-                                    }
-                                    _pageController.animateToPage(
-                                      _current,
-                                      curve: Curves.fastOutSlowIn,
-                                      duration:
-                                          const Duration(milliseconds: 800),
-                                    );
-                                  },
-                                  child: SvgPicture.asset(
-                                    "assets/svg/right_chevron.svg",
-                                    package: "pdf_report_scope",
-                                    width: 10.sp,
-                                    height: 10.sp,
-                                  )),
-                            ],
-                          ),
-                        )
-                      : const SizedBox()
                 ],
               )));
     } else if (SizerUtil.deviceType == DeviceType.tablet) {
       return AlertDialog(
+          insetPadding: EdgeInsets.all(5),
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -1170,14 +1115,14 @@ class _CustomDialogState extends State<CustomDialog> {
             borderRadius: BorderRadius.circular(20),
           ),
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
+          backgroundColor: Colors.transparent.withOpacity(0),
           content: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Column(
                 children: [
                   Container(
-                      width: 100.w,
-                      height: 100.h,
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 1.3,
                       child: PhotoViewGallery.builder(
                         pageController: _pageController,
                         scrollPhysics: const BouncingScrollPhysics(),
@@ -1202,8 +1147,8 @@ class _CustomDialogState extends State<CustomDialog> {
                         itemCount: imageUrl.length,
                         loadingBuilder: (context, event) => Center(
                           child: Container(
-                            width: 100.sp,
-                            height: 100.sp,
+                            width: 30.sp,
+                            height: 30.sp,
                             child: CircularProgressIndicator(
                               value: event == null
                                   ? 0
@@ -1212,57 +1157,9 @@ class _CustomDialogState extends State<CustomDialog> {
                           ),
                         ),
                         backgroundDecoration: BoxDecoration(
-                            color: Color.fromARGB(255, 40, 40, 40)
-                                .withOpacity(0.5)),
+                            color:
+                                Color.fromARGB(255, 40, 40, 40).withOpacity(0)),
                       )),
-                  (imageUrl.length > 2)
-                      ? Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              InkWell(
-                                  onTap: () {
-                                    if (_current != 0) {
-                                      _current--;
-                                      setState(() {});
-                                    }
-                                    _pageController.animateToPage(
-                                      _current,
-                                      curve: Curves.fastOutSlowIn,
-                                      duration:
-                                          const Duration(milliseconds: 800),
-                                    );
-                                  },
-                                  child: SvgPicture.asset(
-                                    "assets/svg/left_chevron.svg",
-                                    package: "pdf_report_scope",
-                                    width: 10.sp,
-                                    height: 10.sp,
-                                  )),
-                              InkWell(
-                                  onTap: () {
-                                    if (_current != imageUrl.lastIndex) {
-                                      _current++;
-                                      setState(() {});
-                                    }
-                                    _pageController.animateToPage(
-                                      _current,
-                                      curve: Curves.fastOutSlowIn,
-                                      duration:
-                                          const Duration(milliseconds: 800),
-                                    );
-                                  },
-                                  child: SvgPicture.asset(
-                                    "assets/svg/right_chevron.svg",
-                                    package: "pdf_report_scope",
-                                    width: 10.sp,
-                                    height: 10.sp,
-                                  )),
-                            ],
-                          ),
-                        )
-                      : const SizedBox()
                 ],
               )));
     } else {
