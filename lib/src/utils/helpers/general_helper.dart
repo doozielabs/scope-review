@@ -1299,7 +1299,7 @@ class _CustomDialogState extends State<CustomDialog> {
                               backgroundDecoration: BoxDecoration(
                                 color: Colors.transparent.withOpacity(0),
                               ))),
-                      (imageUrl.length > 2)
+                      (imageUrl.length > 1)
                           ? Align(
                               alignment: Alignment.center,
                               child: Row(
@@ -1412,7 +1412,7 @@ class _CustomDialogState extends State<CustomDialog> {
                         color: Colors.transparent.withOpacity(0),
                       ),
                     )),
-                (imageUrl.length > 2)
+                (imageUrl.length > 1)
                     ? Align(
                         alignment: Alignment.center,
                         child: Row(
