@@ -24,6 +24,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:sizer/sizer.dart';
 
+import '../../core/constant/colors.dart';
 import '../../core/constant/globals.dart';
 import '../../screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 
@@ -1020,550 +1021,223 @@ class CustomDialog extends StatefulWidget {
 }
 
 class _CustomDialogState extends State<CustomDialog> {
-  final CarouselController _controller = CarouselController();
-  final PageController _pageController = PageController();
-  int _current = 0;
-
   @override
   Widget build(BuildContext context) {
     final List<ImageShape> imageUrl =
         GeneralHelper.getMediaList(widget.ids, widget.media);
-    if (SizerUtil.deviceType == DeviceType.mobile) {
-      return AlertDialog(
-          insetPadding: EdgeInsets.all(5),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: SvgPicture.asset(
-                  "assets/svg/close.svg",
-                  package: "pdf_report_scope",
-                  color: ProjectColors.white,
-                ),
-              )
-            ],
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent.withOpacity(0),
-          content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 1.3,
-                      child: PhotoViewGallery.builder(
-                        pageController: _pageController,
-                        scrollPhysics: const BouncingScrollPhysics(),
-                        builder: (BuildContext context, int _current) {
-                          return PhotoViewGalleryPageOptions(
-                            imageProvider:
-                                GeneralHelper.imageHandlerForPhotoView(
-                              imageUrl[_current],
-                              getImageWidthHeight(
-                                  ImageType.sectionImage, imageUrl)[0],
-                              getImageWidthHeight(
-                                  ImageType.sectionImage, imageUrl)[1],
-                            ),
-                            initialScale:
-                                PhotoViewComputedScale.contained * 1.0,
-                            heroAttributes: PhotoViewHeroAttributes(
-                                tag: imageUrl[_current].id),
-                            minScale: PhotoViewComputedScale.contained * 0.8,
-                            maxScale: PhotoViewComputedScale.covered * 1.8,
-                          );
-                        },
-                        itemCount: imageUrl.length,
-                        loadingBuilder: (context, event) => Center(
-                          child: Container(
-                            width: 30.sp,
-                            height: 30.sp,
-                            child: CircularProgressIndicator(
-                              value: event == null
-                                  ? 0
-                                  : event.cumulativeBytesLoaded / 1.8,
-                            ),
-                          ),
-                        ),
-                        backgroundDecoration: BoxDecoration(
-                            color:
-                                Color.fromARGB(255, 40, 40, 40).withOpacity(0)),
-                      )),
-                ],
-              )));
-    } else if (SizerUtil.deviceType == DeviceType.tablet) {
-      return AlertDialog(
-          insetPadding: EdgeInsets.all(5),
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: SvgPicture.asset(
-                  "assets/svg/close.svg",
-                  package: "pdf_report_scope",
-                  color: ProjectColors.white,
-                ),
-              )
-            ],
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent.withOpacity(0),
-          content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: Column(
-                children: [
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height / 1.3,
-                      child: PhotoViewGallery.builder(
-                        pageController: _pageController,
-                        scrollPhysics: const BouncingScrollPhysics(),
-                        builder: (BuildContext context, int _current) {
-                          return PhotoViewGalleryPageOptions(
-                            imageProvider:
-                                GeneralHelper.imageHandlerForPhotoView(
-                              imageUrl[_current],
-                              getImageWidthHeight(
-                                  ImageType.sectionImage, imageUrl)[0],
-                              getImageWidthHeight(
-                                  ImageType.sectionImage, imageUrl)[1],
-                            ),
-                            initialScale:
-                                PhotoViewComputedScale.contained * 1.0,
-                            heroAttributes: PhotoViewHeroAttributes(
-                                tag: imageUrl[_current].id),
-                            minScale: PhotoViewComputedScale.contained * 0.8,
-                            maxScale: PhotoViewComputedScale.covered * 1.8,
-                          );
-                        },
-                        itemCount: imageUrl.length,
-                        loadingBuilder: (context, event) => Center(
-                          child: Container(
-                            width: 30.sp,
-                            height: 30.sp,
-                            child: CircularProgressIndicator(
-                              value: event == null
-                                  ? 0
-                                  : event.cumulativeBytesLoaded / 1.8,
-                            ),
-                          ),
-                        ),
-                        backgroundDecoration: BoxDecoration(
-                            color:
-                                Color.fromARGB(255, 40, 40, 40).withOpacity(0)),
-                      )),
-                ],
-              )));
-    } else {
-      if (globalConstraints.maxWidth < 600) {
-        //Mobile (Done)
-        return MyDialogue(media: imageUrl);
-      } else if (globalConstraints.maxWidth < 900) {
-        //Tablet
-        return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgPicture.asset(
-                    "assets/svg/close.svg",
-                    package: "pdf_report_scope",
-                    color: ProjectColors.white,
-                  ),
-                )
-              ],
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            content: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  children: [
-                    Container(
-                        width: 100.w,
-                        height: 80.h,
-                        child: PhotoViewGallery.builder(
-                            pageController: _pageController,
-                            scrollPhysics: const BouncingScrollPhysics(),
-                            builder: (BuildContext context, int _current) {
-                              return PhotoViewGalleryPageOptions(
-                                imageProvider:
-                                    GeneralHelper.imageHandlerForPhotoView(
-                                  imageUrl[_current],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[0],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[1],
-                                ),
-                                initialScale:
-                                    PhotoViewComputedScale.contained * 1.0,
-                                heroAttributes: PhotoViewHeroAttributes(
-                                    tag: imageUrl[_current].id),
-                                minScale:
-                                    PhotoViewComputedScale.contained * 0.8,
-                                maxScale: PhotoViewComputedScale.covered * 1.8,
-                              );
-                            },
-                            itemCount: imageUrl.length,
-                            loadingBuilder: (context, event) => Center(
-                                  child: Container(
-                                    width: 100.sp,
-                                    height: 100.sp,
-                                    child: CircularProgressIndicator(
-                                      value: event == null
-                                          ? 0
-                                          : event.cumulativeBytesLoaded / 1.8,
-                                    ),
-                                  ),
-                                ),
-                            backgroundDecoration: BoxDecoration(
-                                color: Colors.transparent.withOpacity(0)))),
-                  ],
-                )));
-      } else if (globalConstraints.maxWidth < 1260) {
-        //Tablet
-        return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgPicture.asset(
-                    "assets/svg/close.svg",
-                    package: "pdf_report_scope",
-                    color: ProjectColors.white,
-                  ),
-                )
-              ],
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            content: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      Container(
-                          width: 100.w,
-                          height: 80.h,
-                          child: PhotoViewGallery.builder(
-                              pageController: _pageController,
-                              scrollPhysics: const BouncingScrollPhysics(),
-                              builder: (BuildContext context, int _current) {
-                                return PhotoViewGalleryPageOptions(
-                                  imageProvider:
-                                      GeneralHelper.imageHandlerForPhotoView(
-                                    imageUrl[_current],
-                                    getImageWidthHeight(
-                                        ImageType.sectionImage, imageUrl)[0],
-                                    getImageWidthHeight(
-                                        ImageType.sectionImage, imageUrl)[1],
-                                  ),
-                                  initialScale:
-                                      PhotoViewComputedScale.contained * 1.0,
-                                  heroAttributes: PhotoViewHeroAttributes(
-                                      tag: imageUrl[_current].id),
-                                  minScale:
-                                      PhotoViewComputedScale.contained * 0.8,
-                                  maxScale:
-                                      PhotoViewComputedScale.covered * 1.8,
-                                );
-                              },
-                              itemCount: imageUrl.length,
-                              loadingBuilder: (context, event) => Center(
-                                    child: Container(
-                                      width: 100.sp,
-                                      height: 100.sp,
-                                      child: CircularProgressIndicator(
-                                        value: event == null
-                                            ? 0
-                                            : event.cumulativeBytesLoaded / 1.8,
-                                      ),
-                                    ),
-                                  ),
-                              backgroundDecoration: BoxDecoration(
-                                color: Colors.transparent.withOpacity(0),
-                              ))),
-                      (imageUrl.length > 1)
-                          ? Align(
-                              alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  InkWell(
-                                      onTap: () {
-                                        if (_current != 0) {
-                                          _current--;
-                                          setState(() {});
-                                        }
-                                        _pageController.animateToPage(
-                                          _current,
-                                          curve: Curves.fastOutSlowIn,
-                                          duration:
-                                              const Duration(milliseconds: 800),
-                                        );
-                                      },
-                                      child: SvgPicture.asset(
-                                        "assets/svg/left_chevron.svg",
-                                        package: "pdf_report_scope",
-                                        width: 10.sp,
-                                        height: 10.sp,
-                                      )),
-                                  InkWell(
-                                      onTap: () {
-                                        if (_current != imageUrl.lastIndex) {
-                                          _current++;
-                                          setState(() {});
-                                        }
-                                        _pageController.animateToPage(
-                                          _current,
-                                          curve: Curves.fastOutSlowIn,
-                                          duration:
-                                              const Duration(milliseconds: 800),
-                                        );
-                                      },
-                                      child: SvgPicture.asset(
-                                        "assets/svg/right_chevron.svg",
-                                        package: "pdf_report_scope",
-                                        width: 10.sp,
-                                        height: 10.sp,
-                                      )),
-                                ],
-                              ),
-                            )
-                          : const SizedBox()
-                    ],
-                  ),
-                )));
-      } else {
-        //Web
-        return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgPicture.asset(
-                    "assets/svg/close.svg",
-                    package: "pdf_report_scope",
-                    color: ProjectColors.white,
-                  ),
-                )
-              ],
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            content: Stack(
-              children: [
-                Container(
-                    width: 100.w,
-                    height: 80.h,
-                    child: PhotoViewGallery.builder(
-                      pageController: _pageController,
-                      scrollPhysics: const BouncingScrollPhysics(),
-                      builder: (BuildContext context, int _current) {
-                        return PhotoViewGalleryPageOptions(
-                          imageProvider: GeneralHelper.imageHandlerForPhotoView(
-                            imageUrl[_current],
-                            getImageWidthHeight(
-                                ImageType.sectionImage, imageUrl)[0],
-                            getImageWidthHeight(
-                                ImageType.sectionImage, imageUrl)[1],
-                          ),
-                          initialScale: PhotoViewComputedScale.contained * 1.0,
-                          heroAttributes: PhotoViewHeroAttributes(
-                              tag: imageUrl[_current].id),
-                          minScale: PhotoViewComputedScale.contained * 0.8,
-                          maxScale: PhotoViewComputedScale.covered * 1.8,
-                        );
-                      },
-                      itemCount: imageUrl.length,
-                      loadingBuilder: (context, event) => Center(
-                        child: Container(
-                          width: 100.sp,
-                          height: 100.sp,
-                          child: CircularProgressIndicator(
-                            value: event == null
-                                ? 0
-                                : event.cumulativeBytesLoaded / 1.8,
-                          ),
-                        ),
-                      ),
-                      backgroundDecoration: BoxDecoration(
-                        color: Colors.transparent.withOpacity(0),
-                      ),
-                    )),
-                (imageUrl.length > 1)
-                    ? Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            InkWell(
-                                onTap: () {
-                                  if (_current != 0) {
-                                    _current--;
-                                    setState(() {});
-                                  }
-                                  _pageController.animateToPage(
-                                    _current,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: const Duration(milliseconds: 800),
-                                  );
-                                },
-                                child: SvgPicture.asset(
-                                  "assets/svg/left_chevron.svg",
-                                  package: "pdf_report_scope",
-                                  width: 10.sp,
-                                  height: 10.sp,
-                                )),
-                            InkWell(
-                                onTap: () {
-                                  if (_current != imageUrl.lastIndex) {
-                                    _current++;
-                                    setState(() {});
-                                  }
-                                  _pageController.animateToPage(
-                                    _current,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: const Duration(milliseconds: 800),
-                                  );
-                                },
-                                child: SvgPicture.asset(
-                                  "assets/svg/right_chevron.svg",
-                                  package: "pdf_report_scope",
-                                  width: 10.sp,
-                                  height: 10.sp,
-                                )),
-                          ],
-                        ),
-                      )
-                    : const SizedBox()
-              ],
-            ));
-      }
-    }
+    return LightBoxPhotoView(media: imageUrl);
   }
 }
 
-class MyDialogue extends StatefulWidget {
+class LightBoxPhotoView extends StatefulWidget {
   final List<ImageShape> media;
-
-  const MyDialogue({Key? key, required this.media}) : super(key: key);
+  const LightBoxPhotoView({Key? key, required this.media}) : super(key: key);
 
   @override
-  State<MyDialogue> createState() => _MyDialogueState();
+  State<LightBoxPhotoView> createState() => _LightBoxPhotoViewState();
 }
 
-class _MyDialogueState extends State<MyDialogue> {
+class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
   final PageController _pageController = PageController();
+
   @override
   void initState() {
     super.initState();
   }
 
+  Future<void> selectedImage(index) async {
+    setState(() {
+      _current = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.grey.withOpacity(0.3),
-        body: Padding(
-          padding: EdgeInsets.all(3.sp),
-          child: Column(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  // color: Colors.red,
-                  // width: 100.w,
-                  // height: 60.h,
-                  child: SizedBox(
-                      // width: 100.w,
-                      child: Column(
-                    children: [
-                      Padding(
-                        padding:
-                            EdgeInsets.only(top: 5.h, bottom: 5.h, right: 10.w),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            InkWell(
-                              onTap: () => Navigator.pop(context),
-                              child: SvgPicture.asset(
-                                "assets/svg/close.svg",
-                                package: "pdf_report_scope",
-                                color: ProjectColors.white,
-                              ),
-                            )
-                          ],
-                        ),
+    return AlertDialog(
+        contentPadding: EdgeInsets.all(5),
+        insetPadding: EdgeInsets.all(0),
+        title: null,
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        content: Stack(
+          children: [
+            Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: PhotoViewGallery.builder(
+                  pageController: _pageController,
+                  onPageChanged: (_) {
+                    selectedImage(_);
+                  },
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  builder: (BuildContext context, int _current) {
+                    return PhotoViewGalleryPageOptions(
+                      imageProvider: GeneralHelper.imageHandlerForPhotoView(
+                        widget.media[_current],
+                        getImageWidthHeight(
+                            ImageType.sectionImage, widget.media)[0],
+                        getImageWidthHeight(
+                            ImageType.sectionImage, widget.media)[1],
                       ),
-                      Container(
-                          width: 100.w,
-                          height: 80.h,
-                          child: PhotoViewGallery.builder(
-                            pageController: _pageController,
-                            scrollPhysics: const BouncingScrollPhysics(),
-                            builder: (BuildContext context, int _current) {
-                              return PhotoViewGalleryPageOptions(
-                                imageProvider:
-                                    GeneralHelper.imageHandlerForPhotoView(
-                                  widget.media[_current],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, widget.media)[0],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, widget.media)[1],
-                                ),
-                                initialScale:
-                                    PhotoViewComputedScale.contained * 1.0,
-                                heroAttributes: PhotoViewHeroAttributes(
-                                    tag: widget.media[_current].id),
-                                minScale:
-                                    PhotoViewComputedScale.contained * 0.8,
-                                maxScale: PhotoViewComputedScale.covered * 1.8,
-                              );
-                            },
-                            itemCount: widget.media.length,
-                            loadingBuilder: (context, event) => Center(
-                              child: Container(
-                                width: 100.sp,
-                                height: 100.sp,
-                                child: CircularProgressIndicator(
-                                  value: event == null
-                                      ? 0
-                                      : event.cumulativeBytesLoaded / 1.8,
-                                ),
-                              ),
-                            ),
-                            backgroundDecoration: BoxDecoration(
-                              color: Colors.transparent.withOpacity(0),
-                            ),
-                          )),
-                    ],
-                  )),
+                      tightMode: true,
+                      basePosition: Alignment.center,
+                      initialScale: PhotoViewComputedScale.contained,
+                      heroAttributes: PhotoViewHeroAttributes(
+                          tag: widget.media[_current].id),
+                      minScale: PhotoViewComputedScale.contained * 0.8,
+                      maxScale: PhotoViewComputedScale.covered * 1.8,
+                    );
+                  },
+                  itemCount: widget.media.length,
+                  loadingBuilder: (context, event) => Center(
+                    child: Container(
+                      width: 100.sp,
+                      height: 100.sp,
+                      child: CircularProgressIndicator(
+                        value: event == null
+                            ? 0
+                            : event.cumulativeBytesLoaded / 1.8,
+                      ),
+                    ),
+                  ),
+                  backgroundDecoration: BoxDecoration(
+                    color: Colors.transparent.withOpacity(0),
+                  ),
+                )),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                InkWell(
+                  onTap: () => {Navigator.pop(context)},
+                  child: SvgPicture.asset(
+                    "assets/svg/close.svg",
+                    package: "pdf_report_scope",
+                    color: ProjectColors.white,
+                  ),
+                )
+              ],
+            ),
+            (widget.media.length > 1)
+                ? ThumbPhotoNavigation(
+                    media: widget.media,
+                    current: _current,
+                    selectedImage: selectedImage,
+                    pageController: _pageController,
+                    navController: _controller,
+                  )
+                : const SizedBox()
+          ],
+        ));
+  }
+}
+
+class ThumbPhotoNavigation extends StatefulWidget {
+  final List<ImageShape>? media;
+  final int current;
+  final PageController? pageController;
+  final CarouselController? navController;
+  final Function? selectedImage;
+
+  const ThumbPhotoNavigation({
+    Key? key,
+    required this.media,
+    this.pageController,
+    this.navController,
+    this.selectedImage,
+    required this.current,
+  }) : super(key: key);
+  @override
+  State<ThumbPhotoNavigation> createState() => _ThumbPhotoNavigationState();
+}
+
+class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
+  var ar = 16 / 1;
+  var vf = 0.1;
+  var tmpIndex = 0;
+
+  @override
+  void initState() {
+    tmpIndex = widget.current;
+    super.initState();
+  }
+
+  void _animateToIndex(int index) {
+    widget.navController!.animateToPage(
+      index,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.fastOutSlowIn,
+    );
+  }
+
+  @override
+  void didUpdateWidget(covariant ThumbPhotoNavigation oldWidget) {
+    if (oldWidget.current != widget.current) {
+      _animateToIndex(widget.current);
+      tmpIndex = widget.current;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      print(" mobile : De");
+      ar = 16 / 3;
+      vf = 0.2;
+    }
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Row(
+          children: [
+            Expanded(
+              child: CarouselSlider(
+                carouselController: widget.navController,
+                options: CarouselOptions(
+                  aspectRatio: ar,
+                  viewportFraction: vf,
+                  reverse: false,
+                  padEnds: false,
+                  enableInfiniteScroll: false,
+                  initialPage: widget.current,
+                  scrollDirection: Axis.horizontal,
                 ),
+                items: widget.media!
+                    .asMap()
+                    .entries
+                    .map((e) => Container(
+                        child: Card(
+                            shape: (e.key == tmpIndex)
+                                ? RoundedRectangleBorder(
+                                    side: BorderSide(
+                                        color: ProjectColors.primary, width: 2),
+                                    borderRadius: BorderRadius.circular(0),
+                                  )
+                                : null,
+                            color: Colors.transparent.withOpacity(0),
+                            child: Container(
+                              padding: EdgeInsets.all(2),
+                              color: Colors.transparent.withOpacity(0),
+                              child: InkWell(
+                                  onTap: () {
+                                    _animateToIndex(e.key);
+                                    widget.pageController!.animateToPage(
+                                      e.key,
+                                      curve: Curves.fastOutSlowIn,
+                                      duration:
+                                          const Duration(milliseconds: 800),
+                                    );
+                                    setState(() {});
+                                  },
+                                  child: GeneralHelper
+                                      .imageHandlerForRoundedConner(
+                                          e.value, 90.w, 10.h)),
+                            ))))
+                    .toList(),
               ),
-            ],
-          ),
+            ),
+          ],
         ));
   }
 }

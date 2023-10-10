@@ -7,6 +7,7 @@ import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
+import 'package:sizer/sizer.dart';
 
 class SectionTile extends StatefulWidget {
   const SectionTile({
@@ -40,15 +41,31 @@ class _SectionTileState extends State<SectionTile> {
     super.initState();
   }
 
+  int nameWithDotsValue = 15;
+  double hasSubsectionDropArrow = 10.0;
   @override
   Widget build(BuildContext context) {
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      nameWithDotsValue = 28;
+      hasSubsectionDropArrow = 20.0;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      nameWithDotsValue = 85;
+      hasSubsectionDropArrow = 30.0;
+    } else if (globalConstraints.maxWidth < 600) {
+      nameWithDotsValue = 28;
+      hasSubsectionDropArrow = 20.0;
+    } else if (globalConstraints.maxWidth < 1230) {
+      nameWithDotsValue = 85;
+      hasSubsectionDropArrow = 50.0;
+    }
     return Row(
       // crossAxisAlignment: WrapCrossAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
           child: Text(
-            GeneralHelper.getNameWithDots(widget.section.name!, 15),
+            GeneralHelper.getNameWithDots(
+                widget.section.name!, nameWithDotsValue),
             style: b2Regular.copyWith(
               color: ProjectColors.primary,
               // letterSpacing: 2,
@@ -179,11 +196,13 @@ class _SectionTileState extends State<SectionTile> {
                   //     : const SizedBox(),
                   widget.hasSubsections
                       ? Container(
-                          width: 10.0,
+                          width: hasSubsectionDropArrow,
                           height: 30.0,
                           color: Colors.transparent,
                           child: Center(
                             child: SvgPicture.asset(
+                              width: 9.0,
+                              height: 6.0,
                               "${widget.isExpanded[widget.sectionIndex] ? "assets/svg/expand_withoutbackground" : "assets/svg/unexpand_withoutbackground"}.svg",
                               package: "pdf_report_scope",
                             ),
