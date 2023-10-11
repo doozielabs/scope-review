@@ -7,11 +7,8 @@ import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/image.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
-import 'package:sizer/sizer.dart';
 
 // List<ImageShape> _getMedias(List<String> images, List<ImageShape> media) {
 //   return media.where((_) => images.contains(_.id)).toList();
@@ -125,6 +122,18 @@ class SectionItem extends StatelessWidget {
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: GeneralHelper.imageHandlerForGallery(value),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            );
+          } else if (value is Map) {
+            return Container(
+              width: 320,
+              height: 95,
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: GeneralHelper.imageHandlerForGallery(
+                      ImageShape.fromJson(value)),
                   fit: BoxFit.cover,
                 ),
               ),
