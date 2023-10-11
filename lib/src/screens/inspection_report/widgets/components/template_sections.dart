@@ -67,7 +67,8 @@ class _TemplateSectionsState extends State<TemplateSections> {
     inspection = widget.inspection;
     selectedTemplate = widget.selectedTemplate!;
     media = widget.media;
-    if (selectedTemplate.sections.length != oldWidget.selectedTemplate!.sections.length) {
+    if (selectedTemplate.sections.length !=
+        oldWidget.selectedTemplate!.sections.length) {
       isExpandedForAllSections();
     }
     super.didUpdateWidget(oldWidget);
@@ -168,7 +169,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                 });
                               },
                               child: Container(
-                                height: 37.0,
+                                // height: 37.0,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
                                   color: ProjectColors.primary,
@@ -191,6 +192,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                             color: ProjectColors.white,
                                             fontFamily: fontFamilyJostMedium),
                                         textAlign: TextAlign.center,
+                                        overflow: TextOverflow.visible,
                                       ),
                                     ),
                                     Padding(
