@@ -291,7 +291,7 @@ class GeneralHelper {
                         top: 40.0, bottom: 30.0, right: 30.0, left: 30.0),
                     child: CupertinoActivityIndicator(
                       radius: 15,
-                      color: ProjectColors.firefly,
+                      color: Color.fromARGB(255, 234, 234, 234),
                     ))),
           );
 // const Align(
@@ -1048,9 +1048,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   }
 
   Future<void> selectedImage(index) async {
-    setState(() {
-      _current = index;
-    });
+    _current = index;
+    setState(() {});
   }
 
   @override
@@ -1093,8 +1092,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                   itemCount: widget.media.length,
                   loadingBuilder: (context, event) => Center(
                     child: Container(
-                      width: 100.sp,
-                      height: 100.sp,
+                      width: 50.sp,
+                      height: 50.sp,
                       child: CircularProgressIndicator(
                         value: event == null
                             ? 0
@@ -1123,7 +1122,7 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                 ? ThumbPhotoNavigation(
                     media: widget.media,
                     current: _current,
-                    selectedImage: selectedImage,
+                    // selectedImage: selectedImage,
                     pageController: _pageController,
                     navController: _controller,
                   )
@@ -1138,14 +1137,14 @@ class ThumbPhotoNavigation extends StatefulWidget {
   final int current;
   final PageController? pageController;
   final CarouselController? navController;
-  final Function? selectedImage;
+  // final Function? selectedImage;
 
   const ThumbPhotoNavigation({
     Key? key,
     required this.media,
     this.pageController,
     this.navController,
-    this.selectedImage,
+    // this.selectedImage,
     required this.current,
   }) : super(key: key);
   @override
@@ -1164,11 +1163,20 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
   }
 
   void _animateToIndex(int index) {
-    widget.navController!.animateToPage(
-      index,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.fastOutSlowIn,
-    );
+    double width = MediaQuery.of(context).size.width;
+    double numBox = 10.0;
+    if (SizerUtil.deviceType == DeviceType.mobile || width < 600) {
+      numBox = 5.0;
+    } else if (SizerUtil.deviceType == DeviceType.tablet || width < 1230) {
+      numBox = 5.0;
+    }
+    if (widget.media!.length - index > (numBox - 1)) {
+      widget.navController!.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
   }
 
   @override
@@ -1183,10 +1191,21 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
   @override
   Widget build(BuildContext context) {
     if (SizerUtil.deviceType == DeviceType.mobile) {
-      print(" mobile : De");
       ar = 16 / 3;
       vf = 0.2;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      ar = 16 / 2;
+      vf = 0.2;
+    } else if (SizerUtil.deviceType == DeviceType.web) {
+      if (globalConstraints.maxWidth < 600) {
+        ar = 16 / 3;
+        vf = 0.2;
+      } else if (globalConstraints.maxWidth < 1230) {
+        ar = 16 / 2;
+        vf = 0.2;
+      }
     }
+
     return Align(
         alignment: Alignment.bottomCenter,
         child: Row(
@@ -1200,7 +1219,7 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                   reverse: false,
                   padEnds: false,
                   enableInfiniteScroll: false,
-                  initialPage: widget.current,
+                  // initialPage: widget.current,
                   scrollDirection: Axis.horizontal,
                 ),
                 items: widget.media!
@@ -1221,7 +1240,7 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                               color: Colors.transparent.withOpacity(0),
                               child: InkWell(
                                   onTap: () {
-                                    _animateToIndex(e.key);
+                                    // _animateToIndex(e.key);
                                     widget.pageController!.animateToPage(
                                       e.key,
                                       curve: Curves.fastOutSlowIn,
