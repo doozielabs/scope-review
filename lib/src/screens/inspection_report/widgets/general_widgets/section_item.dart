@@ -126,19 +126,21 @@ class SectionItem extends StatelessWidget {
                 ),
               ),
             );
-          } else if (value is Map) {
-            return Container(
-              width: 320,
-              height: 95,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: GeneralHelper.imageHandlerForGallery(
-                      ImageShape.fromJson(value)),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            );
-          } else {
+          }
+          // else if (value is Map) {
+          //   return Container(
+          //     width: 320,
+          //     height: 95,
+          //     decoration: BoxDecoration(
+          //       image: DecorationImage(
+          //         image: GeneralHelper.imageHandlerForGallery(
+          //             ImageShape.fromJson(value)),
+          //         fit: BoxFit.cover,
+          //       ),
+          //     ),
+          //   );
+          // }
+          else {
             value = Uint8List.fromList(List<int>.from(value));
             return Padding(
               padding: const EdgeInsets.only(top: 14),
