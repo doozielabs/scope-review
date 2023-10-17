@@ -127,8 +127,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
     );
   }
 
-  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-      dynamic section) {
+  List<int> commentsCount(dynamic section) {
     int diffencyCount = 0;
     int totalNumberOfSectionComments = 0;
     for (var item in section.items) {
@@ -145,6 +144,28 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
         diffencyCount++;
       }
     }
+    return [diffencyCount, totalNumberOfSectionComments];
+  }
+
+  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+      dynamic section, bool sectionType) {
+    int diffencyCount = 0;
+    int totalNumberOfSectionComments = 0;
+    int subSectionDiffencyCount = 0;
+    int totalNumberOfSubSectionComments = 0;
+    diffencyCount = commentsCount(section)[0];
+    totalNumberOfSectionComments = commentsCount(section)[1];
+    if (sectionType && section != null && section.subSections.length > 0) {
+      for (var subSection in section.subSections) {
+        if (subSection != null) {
+          subSectionDiffencyCount += commentsCount(subSection)[0];
+          totalNumberOfSubSectionComments += commentsCount(subSection)[1];
+        }
+      }
+    }
+    diffencyCount = (diffencyCount + subSectionDiffencyCount);
+    totalNumberOfSectionComments =
+        (totalNumberOfSectionComments + totalNumberOfSubSectionComments);
     return [diffencyCount, totalNumberOfSectionComments];
   }
 
@@ -407,7 +428,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                   Divider(color: ProjectColors.firefly.withOpacity(0.15)),
                   Row(
                     children: [
-                      Container(
+                      SizedBox(
                           width: MediaQuery.of(context).size.width * 0.2,
                           height: 82.h,
                           child: ScrollConfiguration(
@@ -587,12 +608,14 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                   ),
                                                                   child:
                                                                       SectionTile(
-                                                                    diffencyCount:
-                                                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                                            appendedSections[sectionIndex])[0],
-                                                                    totalComments:
-                                                                        numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                                            appendedSections[sectionIndex])[1],
+                                                                    diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                                                        appendedSections[
+                                                                            sectionIndex],
+                                                                        true)[0],
+                                                                    totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+                                                                        appendedSections[
+                                                                            sectionIndex],
+                                                                        true)[1],
                                                                     isExpanded:
                                                                         isExpanded,
                                                                     hasSubsections:
@@ -650,8 +673,8 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                                                                                     isExpanded: isExpanded,
                                                                                     sectionIndex: sectionIndex,
                                                                                     hasSubsections: false,
-                                                                                    totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[1],
-                                                                                    diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection)[0],
+                                                                                    totalComments: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection, false)[1],
+                                                                                    diffencyCount: numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(subSection, false)[0],
                                                                                     inspection: widget.inspection,
                                                                                     selectedTemplate: selectedTemplate,
                                                                                   ),
@@ -769,7 +792,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                               ),
                             ),
                           )),
-                      Container(
+                      SizedBox(
                           width: MediaQuery.of(context).size.width *
                               0.8, // 80% of screen width
                           height:
@@ -807,9 +830,9 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
               Align(
                 alignment: FractionalOffset.bottomLeft,
                 child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   // width: 19.w,
-                  margin: EdgeInsets.all(2),
+                  margin: const EdgeInsets.all(2),
                   width: (MediaQuery.of(context).size.width - 30) * 0.2,
                   height: 70,
                   color: Colors.white,
@@ -827,7 +850,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                               borderRadius: BorderRadius.circular(8.0),
                             ),
                             backgroundColor: ProjectColors.firefly),
-                        child: Padding(
+                        child: const Padding(
                           padding: EdgeInsets.all(10.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,

@@ -77,8 +77,7 @@ class _SectionEyeShotForMobileState
     );
   }
 
-  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-      dynamic section) {
+  List<int> commentsCount(dynamic section) {
     int diffencyCount = 0;
     int totalNumberOfSectionComments = 0;
     for (var item in section.items) {
@@ -95,6 +94,28 @@ class _SectionEyeShotForMobileState
         diffencyCount++;
       }
     }
+    return [diffencyCount, totalNumberOfSectionComments];
+  }
+
+  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+      dynamic section, bool sectionType) {
+    int diffencyCount = 0;
+    int totalNumberOfSectionComments = 0;
+    int subSectionDiffencyCount = 0;
+    int totalNumberOfSubSectionComments = 0;
+    diffencyCount = commentsCount(section)[0];
+    totalNumberOfSectionComments = commentsCount(section)[1];
+    if (sectionType && section != null && section.subSections.length > 0) {
+      for (var subSection in section.subSections) {
+        if (subSection != null) {
+          subSectionDiffencyCount += commentsCount(subSection)[0];
+          totalNumberOfSubSectionComments += commentsCount(subSection)[1];
+        }
+      }
+    }
+    diffencyCount = (diffencyCount + subSectionDiffencyCount);
+    totalNumberOfSectionComments =
+        (totalNumberOfSectionComments + totalNumberOfSubSectionComments);
     return [diffencyCount, totalNumberOfSectionComments];
   }
 
@@ -316,10 +337,12 @@ class _SectionEyeShotForMobileState
                                   child: SectionTile(
                                     diffencyCount:
                                         numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                            appendedSections[sectionIndex])[0],
+                                            appendedSections[sectionIndex],
+                                            true)[0],
                                     totalComments:
                                         numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                            appendedSections[sectionIndex])[1],
+                                            appendedSections[sectionIndex],
+                                            true)[1],
                                     isExpanded: isExpanded,
                                     hasSubsections: hasSubSections,
                                     section: section,
@@ -394,10 +417,12 @@ class _SectionEyeShotForMobileState
                                                       hasSubsections: false,
                                                       totalComments:
                                                           numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                              subSection)[1],
+                                                              subSection,
+                                                              false)[1],
                                                       diffencyCount:
                                                           numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                              subSection)[0],
+                                                              subSection,
+                                                              false)[0],
                                                       inspection:
                                                           widget.inspection,
                                                       selectedTemplate: widget
