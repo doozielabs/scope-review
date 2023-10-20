@@ -867,8 +867,9 @@ class GeneralHelper {
         if (item.value == null || (item.value as List).isEmpty) return false;
         break;
       case TemplateItemType.signature:
-        if (item.value == "" || item.value == null || item.value is Map)
+        if (item.value == "" || item.value == null || item.value is Map) {
           return false;
+        }
         break;
       case TemplateItemType.text:
       case TemplateItemType.email:
@@ -1040,6 +1041,10 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   final CarouselController _controller = CarouselController();
   final PageController _pageController = PageController();
   late PhotoViewScaleStateController scaleStateController;
+  var topContainerHeight = 8.sp;
+  var buttonSize = 5.sp;
+  var arrowSize = 10.sp;
+  var isOnlyWeb = false;
 
   @override
   void initState() {
@@ -1085,10 +1090,29 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
 
   @override
   Widget build(BuildContext context) {
-    var zooming = false;
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      topContainerHeight = 40.sp;
+      buttonSize = 20.sp;
+      arrowSize = 20.sp;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      topContainerHeight = 30.sp;
+      buttonSize = 10.sp;
+      arrowSize = 15.sp;
+    } else if (SizerUtil.deviceType == DeviceType.web) {
+      if (globalConstraints.maxWidth < 600) {
+        topContainerHeight = 35.sp;
+        buttonSize = 20.sp;
+        arrowSize = 20.sp;
+      } else if (globalConstraints.maxWidth < 1230) {
+        topContainerHeight = 25.sp;
+        buttonSize = 10.sp;
+        arrowSize = 15.sp;
+      }
+    }
+
     if (kIsWeb) {
       if (globalConstraints.maxWidth > 1230) {
-        zooming = true;
+        isOnlyWeb = true;
       }
     }
     return AlertDialog(
@@ -1144,19 +1168,19 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                 )),
             Container(
               width: MediaQuery.of(context).size.width,
-              height: 8.sp,
+              height: topContainerHeight,
               color: Colors.transparent.withOpacity(0.5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  zooming
+                  isOnlyWeb
                       ? InkWell(
                           onTap: () => {zoomOut()},
                           child: SvgPicture.asset(
                             "assets/svg/Zoom-out-light.svg",
                             package: "pdf_report_scope",
-                            width: 5.sp,
-                            height: 5.sp,
+                            width: buttonSize,
+                            height: buttonSize,
                             color: ProjectColors.white,
                           ),
                         )
@@ -1164,14 +1188,14 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                   const SizedBox(
                     width: 10,
                   ),
-                  zooming
+                  isOnlyWeb
                       ? InkWell(
                           onTap: () => {zoomIn()},
                           child: SvgPicture.asset(
                             "assets/svg/Zoom-in-light.svg",
                             package: "pdf_report_scope",
-                            width: 5.sp,
-                            height: 5.sp,
+                            width: buttonSize,
+                            height: buttonSize,
                             color: ProjectColors.white,
                           ),
                         )
@@ -1184,10 +1208,13 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                     child: SvgPicture.asset(
                       "assets/svg/Close2.svg",
                       package: "pdf_report_scope",
-                      width: 5.sp,
-                      height: 5.sp,
+                      width: buttonSize,
+                      height: buttonSize,
                       color: ProjectColors.white,
                     ),
+                  ),
+                  const SizedBox(
+                    width: 20,
                   ),
                 ],
               ),
@@ -1198,48 +1225,52 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        InkWell(
-                            onTap: () {
-                              if (_current != 0) {
-                                scaleStateController.scaleState =
-                                    PhotoViewScaleState.initial;
-                                _current--;
-                                setState(() {});
-                              }
-                              _pageController.animateToPage(
-                                _current,
-                                curve: Curves.fastOutSlowIn,
-                                duration: const Duration(milliseconds: 800),
-                              );
-                            },
-                            child: SvgPicture.asset(
-                              "assets/svg/left_chevron.svg",
-                              package: "pdf_report_scope",
-                              width: 10.sp,
-                              height: 10.sp,
-                              // color: ProjectColors.white,
-                            )),
-                        InkWell(
-                            onTap: () {
-                              if (_current != widget.media.lastIndex) {
-                                scaleStateController.scaleState =
-                                    PhotoViewScaleState.initial;
-                                _current++;
-                                setState(() {});
-                              }
-                              _pageController.animateToPage(
-                                _current,
-                                curve: Curves.fastOutSlowIn,
-                                duration: const Duration(milliseconds: 800),
-                              );
-                            },
-                            child: SvgPicture.asset(
-                              "assets/svg/right_chevron.svg",
-                              package: "pdf_report_scope",
-                              width: 10.sp,
-                              height: 10.sp,
-                              // color: ProjectColors.white,
-                            )),
+                        isOnlyWeb
+                            ? InkWell(
+                                onTap: () {
+                                  if (_current != 0) {
+                                    scaleStateController.scaleState =
+                                        PhotoViewScaleState.initial;
+                                    _current--;
+                                    setState(() {});
+                                  }
+                                  _pageController.animateToPage(
+                                    _current,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: const Duration(milliseconds: 800),
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/svg/left_chevron.svg",
+                                  package: "pdf_report_scope",
+                                  width: arrowSize,
+                                  height: arrowSize,
+                                  // color: ProjectColors.white,
+                                ))
+                            : const SizedBox(),
+                        isOnlyWeb
+                            ? InkWell(
+                                onTap: () {
+                                  if (_current != widget.media.lastIndex) {
+                                    scaleStateController.scaleState =
+                                        PhotoViewScaleState.initial;
+                                    _current++;
+                                    setState(() {});
+                                  }
+                                  _pageController.animateToPage(
+                                    _current,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: const Duration(milliseconds: 800),
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/svg/right_chevron.svg",
+                                  package: "pdf_report_scope",
+                                  width: arrowSize,
+                                  height: arrowSize,
+                                  // color: ProjectColors.white,
+                                ))
+                            : const SizedBox(),
                       ],
                     ),
                   )
@@ -1281,6 +1312,7 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
   var ar = 16 / 1;
   var vf = 0.1;
   var tmpIndex = 0;
+  var containerwithOpacity = 0.5;
 
   @override
   void initState() {
@@ -1319,16 +1351,20 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
     if (SizerUtil.deviceType == DeviceType.mobile) {
       ar = 16 / 3;
       vf = 0.2;
+      containerwithOpacity = 0.0;
     } else if (SizerUtil.deviceType == DeviceType.tablet) {
       ar = 16 / 2;
       vf = 0.2;
+      containerwithOpacity = 0.0;
     } else if (SizerUtil.deviceType == DeviceType.web) {
       if (globalConstraints.maxWidth < 600) {
         ar = 16 / 3;
         vf = 0.2;
+        containerwithOpacity = 0.0;
       } else if (globalConstraints.maxWidth < 1230) {
         ar = 16 / 2;
         vf = 0.2;
+        containerwithOpacity = 0.0;
       }
     }
 
@@ -1336,8 +1372,8 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
         alignment: Alignment.bottomCenter,
         child: Container(
           width: MediaQuery.of(context).size.width,
-          height: 17.sp,
-          color: Colors.transparent.withOpacity(0.5),
+          // height: ch,
+          color: Colors.transparent.withOpacity(containerwithOpacity),
           child: Row(
             children: [
               Expanded(

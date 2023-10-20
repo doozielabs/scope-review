@@ -450,127 +450,129 @@ class _SectionEyeShotForMobileState
                 ),
               ),
             ),
-            !kIsWeb
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          // add your onPressed function here
-                          if (widget.needUpgrade != null) {
-                            await widget.needUpgrade!();
-                          } else {
-                            if (widget.sharePdf != null) {
-                              widget.sharePdf!();
-                            }
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            backgroundColor: ProjectColors.primary),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.share,
-                                color: ProjectColors.white,
+
+            //  Align(
+            //     alignment: Alignment.bottomCenter,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: ElevatedButton(
+            //         onPressed: () async {
+            //           // add your onPressed function here
+            //           if (widget.needUpgrade != null) {
+            //             await widget.needUpgrade!();
+            //           } else {
+            //             if (widget.sharePdf != null) {
+            //               widget.sharePdf!();
+            //             }
+            //           }
+            //         },
+            //         style: ElevatedButton.styleFrom(
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(10.0),
+            //             ),
+            //             backgroundColor: ProjectColors.primary),
+            //         child: Padding(
+            //           padding: const EdgeInsets.all(12.0),
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               const Icon(
+            //                 Icons.share,
+            //                 color: ProjectColors.white,
+            //               ),
+            //               const SizedBox(width: 10),
+            //               Text('Share PDF',
+            //                   style: b2Medium.copyWith(
+            //                       color: ProjectColors.white)),
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   )
+            // :
+            Visibility(
+              visible: kIsWeb,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, bottom: 5, left: 10, right: 10),
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                        top: 10, bottom: 0, left: 10, right: 10),
+                    color: const Color.fromARGB(158, 233, 234, 231),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: (MediaQuery.of(context).size.width / 2 - 10.w),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (widget.printCallBack != null) {
+                                widget.printCallBack!();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                backgroundColor: ProjectColors.firefly),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.print),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  const Text('Print', style: b2Medium),
+                                ],
                               ),
-                              const SizedBox(width: 10),
-                              Text('Share PDF',
-                                  style: b2Medium.copyWith(
-                                      color: ProjectColors.white)),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                : Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 10, bottom: 5, left: 10, right: 10),
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 0, left: 10, right: 10),
-                        color: const Color.fromARGB(158, 233, 234, 231),
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            SizedBox(
-                              width: (MediaQuery.of(context).size.width / 2 -
-                                  10.w),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (widget.printCallBack != null) {
-                                    widget.printCallBack!();
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    backgroundColor: ProjectColors.firefly),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.print),
-                                      SizedBox(
-                                        width: 5.w,
-                                      ),
-                                      const Text('Print', style: b2Medium),
-                                    ],
-                                  ),
+                        SizedBox(
+                          width: (MediaQuery.of(context).size.width / 2 - 10.w),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (widget.downloadCallBack != null) {
+                                widget.downloadCallBack!();
+                              }
+                              // downloadFile(
+                              //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
+                                backgroundColor: ProjectColors.primary),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  isdownloading
+                                      ? const CupertinoActivityIndicator(
+                                          color: ProjectColors.firefly)
+                                      : const Icon(Icons.cloud_download),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  const Text('PDF', style: b2Medium),
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              width: (MediaQuery.of(context).size.width / 2 -
-                                  10.w),
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (widget.downloadCallBack != null) {
-                                    widget.downloadCallBack!();
-                                  }
-                                  // downloadFile(
-                                  //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    backgroundColor: ProjectColors.primary),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      isdownloading
-                                          ? const CupertinoActivityIndicator(
-                                              color: ProjectColors.firefly)
-                                          : const Icon(Icons.cloud_download),
-                                      SizedBox(
-                                        width: 5.w,
-                                      ),
-                                      const Text('PDF', style: b2Medium),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
+                  ),
+                ),
+              ),
+            )
           ],
         ));
 
