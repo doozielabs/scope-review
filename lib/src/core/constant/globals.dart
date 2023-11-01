@@ -1,14 +1,12 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:pdf_report_scope/pdf_report_scope.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:sizer/sizer.dart';
 
-const baseUrlLive = 'https://staging-api.scopeinspectapp.com/';
+const baseUrlLive = 'https://api.scopeinspectapp.com/';
 const baseUrlStaging = 'https://staging-api.scopeinspectapp.com/';
 const baseUrlLocal = 'http://localhost:1337/';
 // const baseUrlLive = 'http://192.168.88.15:1337/';
@@ -25,7 +23,7 @@ const double kMobileMaxWidth = 550.0;
 const double kTabletMaxWidth = 959.0;
 const double kDesktopMinWidth = 960.0;
 const double headerHeight = 5000;
-BoxConstraints globalConstraints = BoxConstraints();
+BoxConstraints globalConstraints = const BoxConstraints();
 
 final ScrollController mainListviewController = ScrollController();
 final ScrollController sectionsListviewController = ScrollController();
