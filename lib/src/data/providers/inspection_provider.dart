@@ -17,7 +17,7 @@ class InspectionProvider {
   Future<List<dynamic>> getPhotoByIds(InspectionModel report) async {
     List<ImageShape> _imageShape = [];
     try {
-      var inspectionImages = report.inspectionImages;
+      var inspectionImages = [];
       String s = inspectionImages.join(',');
       final mediaResponse = await Api.get("/inspection/media/$s");
       final json = mediaResponse.data as List;

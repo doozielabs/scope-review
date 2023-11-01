@@ -9,13 +9,11 @@ class Template {
   late String name;
   late int? sortNo;
   late String pageFooter;
-  late bool baseTemplate;
   late String description;
   late String reportHeader;
   late String reportFooter;
   late int? templateStatus;
   late bool adminPublished;
-  late bool defaultTemplate;
   late bool tableOfContents;
   late String printedReportTitle;
   late String preparedForDescription;
@@ -30,14 +28,18 @@ class Template {
   late TemplateConditionRatingOptions? conditionRatingOptions;
   late int? boxKey;
   late bool listWithUserTemplates;
+  late bool isBaseTemplate;
   late int? serverTimestamp;
   late int? lastModified;
   late String? uid;
+  late String? template;
+  late Map<String, dynamic>? templateHashMap;
 
   Template({
     this.boxKey,
     this.id = "",
     this.uid,
+    this.template,
     this.serverTimestamp,
     this.lastModified,
     this.sortNo = 0,
@@ -54,19 +56,20 @@ class Template {
     this.preparedForDescription = "",
     this.inspectorAppearanceName = "",
     this.propertyAddressDescription = "",
-    this.baseTemplate = false,
     this.adminPublished = false,
     this.listWithUserTemplates = false,
-    this.defaultTemplate = false,
+    this.isBaseTemplate = false,
     this.tableOfContents = false,
     this.scaleThePropertyPhotoLarge = false,
     this.startEachSectionOnNewPageInPdf = false,
     this.verticallyCenterTitlePageContent = false,
+    this.templateHashMap = const {},
   }) : sections = [];
 
   Template.fromJson(Map<String, dynamic> json) {
     id = json["id"];
     uid = json["uid"];
+    template = json["template"];
     serverTimestamp = json['serverTimestamp'] ?? 0;
     lastModified = json['lastModified'] ?? 0;
     boxKey = json["boxKey"];
@@ -75,11 +78,10 @@ class Template {
     pageFooter = json["pageFooter"];
     reportHeader = json["reportHeader"];
     reportFooter = json["reportFooter"];
-    baseTemplate = json["baseTemplate"];
     templateStatus = json["templateStatus"];
     adminPublished = json["adminPublished"];
     listWithUserTemplates = json["listWithUserTemplates"] ?? false;
-    defaultTemplate = json["defaultTemplate"];
+    isBaseTemplate = json["isBaseTemplate"] ?? false;
     description = json["templateDescription"];
     tableOfContents = json["showTableOfContents"];
     printedReportTitle = json["printedReportTitle"];
@@ -97,6 +99,13 @@ class Template {
         ? TemplateConditionRatingOptions()
         : TemplateConditionRatingOptions.fromJson(
             json["conditionRatingOptions"]);
+    if (json['templateHashMap'] != null) {
+      Map<String, dynamic> dynamicHashmap = json['templateHashMap'];
+      templateHashMap =
+          dynamicHashmap.map((key, value) => MapEntry(key, value.toString()));
+    } else {
+      templateHashMap = <String, dynamic>{};
+    }
   }
 
   static List<Template> fromListJson(List list) =>
@@ -106,6 +115,7 @@ class Template {
     final Map<String, dynamic> data = <String, dynamic>{};
     data["id"] = id;
     data["uid"] = uid;
+    data["template"] = template;
     data['serverTimestamp'] = serverTimestamp;
     data['lastModified'] = lastModified;
     data["boxKey"] = boxKey;
@@ -114,11 +124,10 @@ class Template {
     data["pageFooter"] = pageFooter;
     data["reportHeader"] = reportHeader;
     data["reportFooter"] = reportFooter;
-    data["baseTemplate"] = baseTemplate;
     data["templateStatus"] = templateStatus;
     data["adminPublished"] = adminPublished;
     data["listWithUserTemplates"] = listWithUserTemplates;
-    data["defaultTemplate"] = defaultTemplate;
+    data["isBaseTemplate"] = isBaseTemplate;
     data["templateDescription"] = description;
     data["showTableOfContents"] = tableOfContents;
     data["printedReportTitle"] = printedReportTitle;
@@ -129,6 +138,7 @@ class Template {
     data["propertyAddressDescription"] = propertyAddressDescription;
     data["startEachSectionOnNewPageInPdf"] = startEachSectionOnNewPageInPdf;
     data["verticallyCenterTitlePageContent"] = verticallyCenterTitlePageContent;
+    data['templateHashMap'] = templateHashMap;
     data["templateContent"] = List.generate(
       sections.length,
       (index) => sections[index].toJson(),

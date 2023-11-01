@@ -9,6 +9,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
+import 'package:pdf_report_scope/src/data/models/address_model.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
@@ -17,7 +18,10 @@ import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
+import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/constant/globals.dart';
@@ -40,22 +44,24 @@ class GeneralHelper {
     }
   }
 
-  static getInspectionAddress(address) {
+  static getInspectionAddress(Address? address) {
     var addressString = "";
-    if (address.street.isNotEmpty) {
-      addressString = (addressString + address.street);
-    }
-    if (address.zipcode.isNotEmpty) {
-      if (address != "") ("$addressString, ");
-      addressString = ('$addressString ' + address.zipcode);
-    }
-    if (address.state.isNotEmpty) {
-      if (address != "") ("$addressString, ");
-      addressString = ('$addressString ' + address.state);
-    }
-    if (address.city.isNotEmpty) {
-      if (address != "") ("$addressString, ");
-      addressString = ('$addressString ' + address.city);
+    if (address != null) {
+      if (address.street.isNotEmpty) {
+        addressString = (addressString + address.street);
+      }
+      if (address.zipcode.isNotEmpty) {
+        // if (address != "") ("$addressString, ");
+        addressString = ('$addressString ${address.zipcode}');
+      }
+      if (address.state.isNotEmpty) {
+        // if (address != "") ("$addressString, ");
+        addressString = ('$addressString ${address.state}');
+      }
+      if (address.city.isNotEmpty) {
+        // if (address != "") ("$addressString, ");
+        addressString = ('$addressString ${address.city}');
+      }
     }
     return addressString;
   }
@@ -257,7 +263,11 @@ class GeneralHelper {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url.envRelativePath()), scale: scale);
       } else {
-        return AssetImage(image.url);
+        if (image.url.contains("https")) {
+          return NetworkImage(image.url, scale: 1.0);
+        } else {
+          return AssetImage(image.url);
+        }
       }
     }
   }
@@ -280,7 +290,7 @@ class GeneralHelper {
                         top: 40.0, bottom: 30.0, right: 30.0, left: 30.0),
                     child: CupertinoActivityIndicator(
                       radius: 15,
-                      color: ProjectColors.firefly,
+                      color: Color.fromARGB(255, 234, 234, 234),
                     ))),
           );
 // const Align(
@@ -312,6 +322,18 @@ class GeneralHelper {
           height: height,
           fit: BoxFit.cover,
         );
+      }
+    }
+  }
+
+  static imageHandlerForPhotoView(ImageShape image, width, height) {
+    if (kIsWeb) {
+      return NetworkImage(baseUrlLive + image.url);
+    } else {
+      if ((image.url).isDeviceUrl || (image.url).isAsset) {
+        return FileImage(File(image.url.envRelativePath()));
+      } else {
+        return AssetImage(image.url);
       }
     }
   }
@@ -645,6 +667,224 @@ class GeneralHelper {
     }
     return deficiencyCommets;
   }
+
+  static setTrailItem(templates, selectedTemplate, inspection, user) {
+    if (selectedTemplate.sections.isNotEmpty) {
+      for (var section in selectedTemplate.sections) {
+        // if (section.items.isNotEmpty) {
+        setSectionItemsMapping(templates, section.items, inspection, user);
+        // }
+        if (section.subSections.isNotEmpty) {
+          for (var subSection in section.subSections) {
+            // if (subSection.items.isNotEmpty) {
+            setSectionItemsMapping(
+                templates, subSection.items, inspection, user);
+            // }
+          }
+        }
+      }
+    }
+    return selectedTemplate;
+  }
+
+  static setSectionItemsMapping(List<Template> templates,
+      List<TemplateItem> templateItems, InspectionModel inspection, User user) {
+    for (var item in templateItems) {
+      bool hasValue = hasItemValue(item);
+      if (!hasValue) {
+        item.itemTrail?.forEach(
+          (key, value) {
+            switch (key) {
+              case "Inspector":
+              case "Inspection":
+                if (value.ref != null) {
+                  autoFillDetails(
+                      item: item,
+                      ref: value.ref!,
+                      inspection: inspection,
+                      user: user);
+                }
+                break;
+              default:
+                if (templates.isNotEmpty) {
+                  for (var insTemplate in templates) {
+                    if (insTemplate.template == key &&
+                        insTemplate.isBaseTemplate == true) {
+                      String itemTrail =
+                          insTemplate.templateHashMap?[value.uid];
+                      Id id = Id.decode(itemTrail);
+                      if (id.subSection > 0) {
+                        TemplateItem itemToUse = insTemplate
+                            .sections[id.section - 1]
+                            .subSections[id.subSection - 1]
+                            .items[id.item - 1];
+                        swapItemValues(item, itemToUse);
+                        break;
+                      } else {
+                        TemplateItem itemToUse = insTemplate
+                            .sections[id.section - 1].items[id.item - 1];
+                        swapItemValues(item, itemToUse);
+                        break;
+                      }
+                    }
+                  }
+                }
+            }
+          },
+        );
+      }
+    }
+  }
+
+  static autoFillDetails(
+      {required TemplateItem item,
+      required String ref,
+      required InspectionModel inspection,
+      required User user}) {
+    switch (ref) {
+      case "InspectionAddress":
+        item.value = inspection.address?.fullAdress;
+        break;
+      case "InspectionAddressStreet":
+        item.value = inspection.address?.street;
+        break;
+      case "InspectionAddressCity":
+        item.value = inspection.address?.city;
+        break;
+      case "InspectionAddressZipcode":
+        item.value = inspection.address?.zipcode;
+        break;
+      case "InspectorAddressState":
+        item.value = inspection.address?.state;
+        break;
+      case "InspectionAddressCountry":
+        item.value = "United State";
+        break;
+      case "InspectionDate":
+        item.value = inspection.startDate;
+        break;
+      case "ClientName":
+        item.value = inspection.client.fullName;
+        break;
+      case "ClientPhone":
+        item.value = inspection.client?.phone;
+        break;
+      case "ClientEmail":
+        item.value = inspection.client?.email;
+        break;
+      case "BuyerName":
+        item.value = inspection.buyerAgent.fullName;
+        break;
+      case "BuyerPhone":
+        item.value = inspection.buyerAgent?.phone;
+        break;
+      case "BuyerEmail":
+        item.value = inspection.buyerAgent?.email;
+        break;
+      case "SellerName":
+        item.value = inspection.sellerAgent.fullName;
+        break;
+      case "SellerPhone":
+        item.value = inspection.sellerAgent?.phone;
+        break;
+      case "SellerEmail":
+        item.value = inspection.sellerAgent?.email;
+        break;
+      case "InspectorName":
+        item.value = user.fullName;
+        break;
+      case "InspectorEmail":
+        item.value = user.email;
+        break;
+      case "InspectorPhone":
+        item.value = user.phone;
+        break;
+      case "InspectorAddress":
+        item.value = user.address ?? user.companyAddress.fullAdress;
+        break;
+      case "InspectorAddressStreet":
+        item.value = user.address ?? user.companyAddress?.street;
+        break;
+      case "InspectorAddressCity":
+        item.value = user.address ?? user.companyAddress?.city;
+        break;
+      case "InspectorAddressZipcode":
+        item.value = user.address ?? user.companyAddress?.zipcode;
+        break;
+      case "InspectionAddressState":
+        item.value = user.address ?? user.companyAddress?.state;
+        break;
+      case "InspectorAddressCountry":
+        item.value = "United State";
+        break;
+      case "InspectorLicense":
+        item.value = user.licenseNumber;
+        break;
+      case "InspectorWebsite":
+        item.value = user.website;
+        break;
+      case "InspectorOrganization":
+        item.value = user.organization;
+        break;
+      case "InspectorSignature":
+        item.value = user.signature;
+        break;
+      case "InspectorInitials":
+        item.value = getInitials(user.firstname ?? "", user.lastname ?? "");
+        break;
+      default:
+    }
+  }
+
+  static String getInitials(String firstName, String lastName) {
+    if (firstName.isEmpty || lastName.isEmpty) {
+      return '';
+    }
+    return '${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}';
+  }
+
+  static swapItemValues(TemplateItem item, TemplateItem itemToUse) {
+    item.value = itemToUse.value;
+    item.options = itemToUse.options;
+    item.completed = itemToUse.completed;
+    item.condition = itemToUse.condition;
+    item.visibility = itemToUse.visibility;
+    item.defaultOptions = itemToUse.defaultOptions;
+    item.defaultOption = itemToUse.defaultOption;
+    item.conditionOptions = itemToUse.conditionOptions;
+    item.prohibitConditionRating = itemToUse.prohibitConditionRating;
+    item.allowMultipleSelection = itemToUse.allowMultipleSelection;
+    item.images = itemToUse.images;
+  }
+
+  static bool hasItemValue(TemplateItem item) {
+    switch (item.type) {
+      case TemplateItemType.photo:
+        var images = List<String>.from(item.value ?? []);
+        if (images.isEmpty) return false;
+        break;
+      case TemplateItemType.choice:
+        if (item.value == null || (item.value as List).isEmpty) return false;
+        break;
+      case TemplateItemType.signature:
+        if (item.value == "" || item.value == null || item.value is Map) {
+          return false;
+        }
+        break;
+      case TemplateItemType.text:
+      case TemplateItemType.email:
+      case TemplateItemType.phone:
+      case TemplateItemType.website:
+      case TemplateItemType.currency:
+      case TemplateItemType.timestamp:
+      case TemplateItemType.organization:
+        if (item.value == null || item.value == "") return false;
+        break;
+      default:
+        return true;
+    }
+    return true;
+  }
 }
 
 class Id {
@@ -780,595 +1020,407 @@ class CustomDialog extends StatefulWidget {
 }
 
 class _CustomDialogState extends State<CustomDialog> {
-  final CarouselController _controller = CarouselController();
-  int _current = 0;
   @override
   Widget build(BuildContext context) {
     final List<ImageShape> imageUrl =
         GeneralHelper.getMediaList(widget.ids, widget.media);
-    if (SizerUtil.deviceType == DeviceType.mobile) {
-      return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: SvgPicture.asset(
-                  "assets/svg/close.svg",
-                  package: "pdf_report_scope",
-                  color: ProjectColors.white,
-                ),
-              )
-            ],
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CarouselSlider(
-                      carouselController: _controller,
-                      options: CarouselOptions(
-                        aspectRatio: 1,
-                        enlargeCenterPage: true,
-                        clipBehavior: Clip.none,
-                        enableInfiniteScroll: false,
-                        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                        onPageChanged: (indexed, r) =>
-                            setState(() => _current = indexed),
-                      ),
-                      items: imageUrl
-                          .map((item) => ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child:
-                                    GeneralHelper.imageHandlerForRoundedConner(
-                                  item,
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[0],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[1],
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 24.0),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      children: List.generate(
-                        imageUrl.length,
-                        (index) => GestureDetector(
-                          onTap: () => _controller.animateToPage(
-                            index,
-                            curve: Curves.fastOutSlowIn,
-                            duration: const Duration(milliseconds: 800),
-                          ),
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            margin:
-                                EdgeInsets.only(left: index.isZero ? 0 : 10),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context)
-                                  .scaffoldBackgroundColor
-                                  .withOpacity(_current == index ? 1.0 : 0.4),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )));
-    } else if (SizerUtil.deviceType == DeviceType.tablet) {
-      return AlertDialog(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              InkWell(
-                onTap: () => Navigator.pop(context),
-                child: SvgPicture.asset(
-                  "assets/svg/close.svg",
-                  package: "pdf_report_scope",
-                  color: ProjectColors.white,
-                ),
-              )
-            ],
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          content: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    CarouselSlider(
-                      carouselController: _controller,
-                      options: CarouselOptions(
-                        aspectRatio: 1,
-                        enlargeCenterPage: true,
-                        clipBehavior: Clip.none,
-                        enableInfiniteScroll: false,
-                        enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                        onPageChanged: (indexed, r) =>
-                            setState(() => _current = indexed),
-                      ),
-                      items: imageUrl
-                          .map((item) => ClipRRect(
-                                borderRadius: BorderRadius.circular(10),
-                                child:
-                                    GeneralHelper.imageHandlerForRoundedConner(
-                                  item,
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[0],
-                                  getImageWidthHeight(
-                                      ImageType.sectionImage, imageUrl)[1],
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                    const SizedBox(height: 24.0),
-                    Wrap(
-                      direction: Axis.horizontal,
-                      children: List.generate(
-                        imageUrl.length,
-                        (index) => GestureDetector(
-                          onTap: () => _controller.animateToPage(
-                            index,
-                            curve: Curves.fastOutSlowIn,
-                            duration: const Duration(milliseconds: 800),
-                          ),
-                          child: Container(
-                            width: 10,
-                            height: 10,
-                            margin:
-                                EdgeInsets.only(left: index.isZero ? 0 : 10),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context)
-                                  .scaffoldBackgroundColor
-                                  .withOpacity(_current == index ? 1.0 : 0.4),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )));
-    } else {
-      if (globalConstraints.maxWidth < 600) {
-        //Mobile (Done)
-        return MyDialogue(media: imageUrl);
-      } else if (globalConstraints.maxWidth < 900) {
-        //Tablet
-        return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgPicture.asset(
-                    "assets/svg/close.svg",
-                    package: "pdf_report_scope",
-                    color: ProjectColors.white,
-                  ),
-                )
-              ],
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            content: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 150.sp,
-                        child: CarouselSlider(
-                          carouselController: _controller,
-                          options: CarouselOptions(
-                            aspectRatio: 1,
-                            enlargeCenterPage: true,
-                            clipBehavior: Clip.none,
-                            enableInfiniteScroll: false,
-                            enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                            onPageChanged: (indexed, r) =>
-                                setState(() => _current = indexed),
-                          ),
-                          items: imageUrl
-                              .map((item) => ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: GeneralHelper
-                                        .imageHandlerForRoundedConner(
-                                      item,
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[0],
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[1],
-                                    ),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                      const SizedBox(height: 24.0),
-                      Wrap(
-                        direction: Axis.horizontal,
-                        children: List.generate(
-                          imageUrl.length,
-                          (index) => GestureDetector(
-                            onTap: () => _controller.animateToPage(
-                              index,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            ),
-                            child: Container(
-                              width: 10,
-                              height: 10,
-                              margin:
-                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .scaffoldBackgroundColor
-                                    .withOpacity(_current == index ? 1.0 : 0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                )));
-      } else if (globalConstraints.maxWidth < 1260) {
-        //Tablet
-        return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgPicture.asset(
-                    "assets/svg/close.svg",
-                    package: "pdf_report_scope",
-                    color: ProjectColors.white,
-                  ),
-                )
-              ],
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            content: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 150.sp,
-                        child: CarouselSlider(
-                          carouselController: _controller,
-                          options: CarouselOptions(
-                            aspectRatio: 1,
-                            enlargeCenterPage: true,
-                            clipBehavior: Clip.none,
-                            enableInfiniteScroll: false,
-                            enlargeStrategy: CenterPageEnlargeStrategy.scale,
-                            onPageChanged: (indexed, r) =>
-                                setState(() => _current = indexed),
-                          ),
-                          items: imageUrl
-                              .map((item) => ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: GeneralHelper
-                                        .imageHandlerForRoundedConner(
-                                      item,
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[0],
-                                      getImageWidthHeight(
-                                          ImageType.sectionImage, imageUrl)[1],
-                                    ),
-                                  ))
-                              .toList(),
-                        ),
-                      ),
-                      const SizedBox(height: 24.0),
-                      Wrap(
-                        direction: Axis.horizontal,
-                        children: List.generate(
-                          imageUrl.length,
-                          (index) => GestureDetector(
-                            onTap: () => _controller.animateToPage(
-                              index,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            ),
-                            child: Container(
-                              width: 10,
-                              height: 10,
-                              margin:
-                                  EdgeInsets.only(left: index.isZero ? 0 : 10),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Theme.of(context)
-                                    .scaffoldBackgroundColor
-                                    .withOpacity(_current == index ? 1.0 : 0.4),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                )));
-      } else {
-        //Web
-        return AlertDialog(
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.pop(context),
-                  child: SvgPicture.asset(
-                    "assets/svg/close.svg",
-                    package: "pdf_report_scope",
-                    color: ProjectColors.white,
-                  ),
-                )
-              ],
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            elevation: 0.0,
-            backgroundColor: Colors.transparent,
-            content: Stack(
-              children: [
-                SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    child: SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 50.0, bottom: 50),
-                        child: Column(
-                          children: [
-                            SizedBox(
-                              height: 100.sp,
-                              width: 100.sp,
-                              child: CarouselSlider(
-                                carouselController: _controller,
-                                options: CarouselOptions(
-                                  aspectRatio: 1,
-                                  enlargeCenterPage: true,
-                                  clipBehavior: Clip.none,
-                                  enableInfiniteScroll: false,
-                                  enlargeStrategy:
-                                      CenterPageEnlargeStrategy.scale,
-                                  onPageChanged: (indexed, r) =>
-                                      setState(() => _current = indexed),
-                                ),
-                                items: imageUrl
-                                    .map((item) => ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          child: GeneralHelper
-                                              .imageHandlerForRoundedConner(
-                                            item,
-                                            getImageWidthHeight(
-                                                ImageType.sectionImage,
-                                                imageUrl)[0],
-                                            getImageWidthHeight(
-                                                ImageType.sectionImage,
-                                                imageUrl)[1],
-                                          ),
-                                        ))
-                                    .toList(),
-                              ),
-                            ),
-                            const SizedBox(height: 24.0),
-                            Wrap(
-                              direction: Axis.horizontal,
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: List.generate(
-                                imageUrl.length,
-                                (index) => GestureDetector(
-                                  onTap: () => _controller.animateToPage(
-                                    index,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: const Duration(milliseconds: 800),
-                                  ),
-                                  child: Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.only(
-                                        left: index.isZero ? 0 : 10),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor
-                                          .withOpacity(
-                                              _current == index ? 1.0 : 0.4),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    )),
-                Align(
-                  alignment: Alignment.center,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                          onTap: () {
-                            if (_current != 0) {
-                              _current--;
-                              setState(() {});
-                            }
-                            _controller.animateToPage(
-                              _current,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            );
-                          },
-                          child: SvgPicture.asset(
-                            "assets/svg/left_chevron.svg",
-                            package: "pdf_report_scope",
-                            width: 10.sp,
-                            height: 10.sp,
-                          )),
-                      InkWell(
-                          onTap: () {
-                            if (_current != imageUrl.lastIndex) {
-                              _current++;
-                              setState(() {});
-                            }
-                            _controller.animateToPage(
-                              _current,
-                              curve: Curves.fastOutSlowIn,
-                              duration: const Duration(milliseconds: 800),
-                            );
-                          },
-                          child: SvgPicture.asset(
-                            "assets/svg/right_chevron.svg",
-                            package: "pdf_report_scope",
-                            width: 10.sp,
-                            height: 10.sp,
-                          )),
-                    ],
-                  ),
-                )
-              ],
-            ));
-      }
-    }
+    return LightBoxPhotoView(media: imageUrl);
   }
 }
 
-class MyDialogue extends StatefulWidget {
+class LightBoxPhotoView extends StatefulWidget {
   final List<ImageShape> media;
-
-  const MyDialogue({Key? key, required this.media}) : super(key: key);
+  const LightBoxPhotoView({Key? key, required this.media}) : super(key: key);
 
   @override
-  State<MyDialogue> createState() => _MyDialogueState();
+  State<LightBoxPhotoView> createState() => _LightBoxPhotoViewState();
 }
 
-class _MyDialogueState extends State<MyDialogue> {
+class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   int _current = 0;
   final CarouselController _controller = CarouselController();
+  final PageController _pageController = PageController();
+  late PhotoViewScaleStateController scaleStateController;
+  var topContainerHeight = 8.sp;
+  var buttonSize = 5.sp;
+  var arrowSize = 10.sp;
+  var isOnlyWeb = false;
+
   @override
   void initState() {
+    scaleStateController = PhotoViewScaleStateController()
+      ..outputScaleStateStream.listen(printScaleState);
     super.initState();
+  }
+
+  Future<void> selectedImage(index) async {
+    _current = index;
+    setState(() {});
+  }
+
+  void zoomIn() {
+    if (scaleStateController.scaleState == PhotoViewScaleState.initial) {
+      scaleStateController.scaleState = PhotoViewScaleState.originalSize;
+    } else if (scaleStateController.scaleState ==
+        PhotoViewScaleState.originalSize) {
+      scaleStateController.scaleState = PhotoViewScaleState.covering;
+    }
+    setState(() {});
+  }
+
+  void zoomOut() {
+    if (scaleStateController.scaleState == PhotoViewScaleState.covering) {
+      scaleStateController.scaleState = PhotoViewScaleState.originalSize;
+    } else if (scaleStateController.scaleState ==
+        PhotoViewScaleState.originalSize) {
+      scaleStateController.scaleState = PhotoViewScaleState.initial;
+    }
+    setState(() {});
+  }
+
+  void printScaleState(PhotoViewScaleState scaleState) => {
+        //     print('scaleState: $scaleState');
+      };
+
+  @override
+  void dispose() {
+    scaleStateController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor: Colors.grey.withOpacity(0.3),
-        body: Padding(
-          padding: EdgeInsets.all(3.sp),
-          child: Column(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  // color: Colors.red,
-                  width: 100.w,
-                  // height: 60.h,
-                  child: SizedBox(
-                      width: 100.w,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: 20.h, bottom: 5.h, right: 10.w),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  InkWell(
-                                    onTap: () => Navigator.pop(context),
-                                    child: SvgPicture.asset(
-                                      "assets/svg/close.svg",
-                                      package: "pdf_report_scope",
-                                      color: ProjectColors.white,
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                            CarouselSlider(
-                              carouselController: _controller,
-                              options: CarouselOptions(
-                                aspectRatio: 1,
-                                enlargeCenterPage: true,
-                                clipBehavior: Clip.none,
-                                enableInfiniteScroll: false,
-                                enlargeStrategy:
-                                    CenterPageEnlargeStrategy.scale,
-                                onPageChanged: (indexed, r) =>
-                                    setState(() => _current = indexed),
-                              ),
-                              items: widget.media
-                                  .map((item) => ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: GeneralHelper
-                                            .imageHandlerForRoundedConner(
-                                                item,
-                                                getImageWidthHeight(
-                                                    ImageType.sectionImage,
-                                                    widget.media)[0],
-                                                getImageWidthHeight(
-                                                    ImageType.sectionImage,
-                                                    widget.media)[1]),
-                                      ))
-                                  .toList(),
-                            ),
-                            const SizedBox(height: 24.0),
-                            Wrap(
-                              direction: Axis.horizontal,
-                              children: List.generate(
-                                widget.media.length,
-                                (index) => GestureDetector(
-                                  onTap: () => _controller.animateToPage(
-                                    index,
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      topContainerHeight = 40.sp;
+      buttonSize = 20.sp;
+      arrowSize = 20.sp;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      topContainerHeight = 30.sp;
+      buttonSize = 10.sp;
+      arrowSize = 15.sp;
+    } else if (SizerUtil.deviceType == DeviceType.web) {
+      if (globalConstraints.maxWidth < 600) {
+        topContainerHeight = 35.sp;
+        buttonSize = 20.sp;
+        arrowSize = 20.sp;
+      } else if (globalConstraints.maxWidth < 1230) {
+        topContainerHeight = 25.sp;
+        buttonSize = 10.sp;
+        arrowSize = 15.sp;
+      }
+    }
+
+    if (kIsWeb) {
+      if (globalConstraints.maxWidth > 1230) {
+        isOnlyWeb = true;
+      }
+    }
+    return AlertDialog(
+        contentPadding: const EdgeInsets.all(5),
+        insetPadding: const EdgeInsets.all(0),
+        title: null,
+        elevation: 0.0,
+        backgroundColor: Colors.transparent,
+        content: Stack(
+          children: [
+            SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child: PhotoViewGallery.builder(
+                  pageController: _pageController,
+                  onPageChanged: (_) {
+                    selectedImage(_);
+                  },
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  builder: (BuildContext context, int current) {
+                    return PhotoViewGalleryPageOptions(
+                        imageProvider: GeneralHelper.imageHandlerForPhotoView(
+                          widget.media[current],
+                          getImageWidthHeight(
+                              ImageType.sectionImage, widget.media)[0],
+                          getImageWidthHeight(
+                              ImageType.sectionImage, widget.media)[1],
+                        ),
+                        // tightMode: true,
+                        basePosition: Alignment.center,
+                        initialScale: PhotoViewComputedScale.contained * 0.4,
+                        heroAttributes: PhotoViewHeroAttributes(
+                            tag: widget.media[current].id),
+                        minScale: PhotoViewComputedScale.contained * 1.0,
+                        maxScale: PhotoViewComputedScale.covered * 2.0,
+                        scaleStateController: scaleStateController);
+                  },
+                  itemCount: widget.media.length,
+                  loadingBuilder: (context, event) => Center(
+                    child: SizedBox(
+                      width: 50.sp,
+                      height: 50.sp,
+                      child: CircularProgressIndicator(
+                        value: event == null
+                            ? 0
+                            : event.cumulativeBytesLoaded / 1.8,
+                      ),
+                    ),
+                  ),
+                  backgroundDecoration: BoxDecoration(
+                    color: Colors.transparent.withOpacity(0),
+                  ),
+                )),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              height: topContainerHeight,
+              color: Colors.transparent.withOpacity(0.5),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  isOnlyWeb
+                      ? InkWell(
+                          onTap: () => {zoomOut()},
+                          child: SvgPicture.asset(
+                            "assets/svg/Zoom-out-light.svg",
+                            package: "pdf_report_scope",
+                            width: buttonSize,
+                            height: buttonSize,
+                            color: ProjectColors.white,
+                          ),
+                        )
+                      : const SizedBox(),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  isOnlyWeb
+                      ? InkWell(
+                          onTap: () => {zoomIn()},
+                          child: SvgPicture.asset(
+                            "assets/svg/Zoom-in-light.svg",
+                            package: "pdf_report_scope",
+                            width: buttonSize,
+                            height: buttonSize,
+                            color: ProjectColors.white,
+                          ),
+                        )
+                      : const SizedBox(),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  InkWell(
+                    onTap: () => {Navigator.pop(context)},
+                    child: SvgPicture.asset(
+                      "assets/svg/Close2.svg",
+                      package: "pdf_report_scope",
+                      width: buttonSize,
+                      height: buttonSize,
+                      color: ProjectColors.white,
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                ],
+              ),
+            ),
+            (widget.media.length > 1)
+                ? Align(
+                    alignment: Alignment.center,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        isOnlyWeb
+                            ? InkWell(
+                                onTap: () {
+                                  if (_current != 0) {
+                                    scaleStateController.scaleState =
+                                        PhotoViewScaleState.initial;
+                                    _current--;
+                                    setState(() {});
+                                  }
+                                  _pageController.animateToPage(
+                                    _current,
                                     curve: Curves.fastOutSlowIn,
                                     duration: const Duration(milliseconds: 800),
-                                  ),
-                                  child: Container(
-                                    width: 10,
-                                    height: 10,
-                                    margin: EdgeInsets.only(
-                                        left: index.isZero ? 0 : 10),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Theme.of(context)
-                                          .scaffoldBackgroundColor
-                                          .withOpacity(
-                                              _current == index ? 1.0 : 0.4),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      )),
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/svg/left_chevron.svg",
+                                  package: "pdf_report_scope",
+                                  width: arrowSize,
+                                  height: arrowSize,
+                                  // color: ProjectColors.white,
+                                ))
+                            : const SizedBox(),
+                        isOnlyWeb
+                            ? InkWell(
+                                onTap: () {
+                                  if (_current != widget.media.lastIndex) {
+                                    scaleStateController.scaleState =
+                                        PhotoViewScaleState.initial;
+                                    _current++;
+                                    setState(() {});
+                                  }
+                                  _pageController.animateToPage(
+                                    _current,
+                                    curve: Curves.fastOutSlowIn,
+                                    duration: const Duration(milliseconds: 800),
+                                  );
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/svg/right_chevron.svg",
+                                  package: "pdf_report_scope",
+                                  width: arrowSize,
+                                  height: arrowSize,
+                                  // color: ProjectColors.white,
+                                ))
+                            : const SizedBox(),
+                      ],
+                    ),
+                  )
+                : const SizedBox(),
+            (widget.media.length > 1)
+                ? ThumbPhotoNavigation(
+                    media: widget.media,
+                    current: _current,
+                    // selectedImage: selectedImage,
+                    pageController: _pageController,
+                    navController: _controller,
+                  )
+                : const SizedBox()
+          ],
+        ));
+  }
+}
+
+class ThumbPhotoNavigation extends StatefulWidget {
+  final List<ImageShape>? media;
+  final int current;
+  final PageController? pageController;
+  final CarouselController? navController;
+  // final Function? selectedImage;
+
+  const ThumbPhotoNavigation({
+    Key? key,
+    required this.media,
+    this.pageController,
+    this.navController,
+    // this.selectedImage,
+    required this.current,
+  }) : super(key: key);
+  @override
+  State<ThumbPhotoNavigation> createState() => _ThumbPhotoNavigationState();
+}
+
+class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
+  var ar = 16 / 1;
+  var vf = 0.1;
+  var tmpIndex = 0;
+  var containerwithOpacity = 0.5;
+
+  @override
+  void initState() {
+    tmpIndex = widget.current;
+    super.initState();
+  }
+
+  void _animateToIndex(int index) {
+    double width = MediaQuery.of(context).size.width;
+    double numBox = 10.0;
+    if (SizerUtil.deviceType == DeviceType.mobile || width < 600) {
+      numBox = 5.0;
+    } else if (SizerUtil.deviceType == DeviceType.tablet || width < 1230) {
+      numBox = 5.0;
+    }
+    if (widget.media!.length - index > (numBox - 1)) {
+      widget.navController!.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.fastOutSlowIn,
+      );
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant ThumbPhotoNavigation oldWidget) {
+    if (oldWidget.current != widget.current) {
+      _animateToIndex(widget.current);
+      tmpIndex = widget.current;
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (SizerUtil.deviceType == DeviceType.mobile) {
+      ar = 16 / 3;
+      vf = 0.2;
+      containerwithOpacity = 0.0;
+    } else if (SizerUtil.deviceType == DeviceType.tablet) {
+      ar = 16 / 2;
+      vf = 0.2;
+      containerwithOpacity = 0.0;
+    } else if (SizerUtil.deviceType == DeviceType.web) {
+      if (globalConstraints.maxWidth < 600) {
+        ar = 16 / 3;
+        vf = 0.2;
+        containerwithOpacity = 0.0;
+      } else if (globalConstraints.maxWidth < 1230) {
+        ar = 16 / 2;
+        vf = 0.2;
+        containerwithOpacity = 0.0;
+      }
+    }
+
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          // height: ch,
+          color: Colors.transparent.withOpacity(containerwithOpacity),
+          child: Row(
+            children: [
+              Expanded(
+                child: CarouselSlider(
+                  carouselController: widget.navController,
+                  options: CarouselOptions(
+                    aspectRatio: ar,
+                    viewportFraction: vf,
+                    reverse: false,
+                    padEnds: false,
+                    enableInfiniteScroll: false,
+                    // initialPage: widget.current,
+                    scrollDirection: Axis.horizontal,
+                  ),
+                  items: widget.media!
+                      .asMap()
+                      .entries
+                      .map((e) => Container(
+                          child: Card(
+                              shape: (e.key == tmpIndex)
+                                  ? RoundedRectangleBorder(
+                                      side: const BorderSide(
+                                          color: ProjectColors.primary,
+                                          width: 3),
+                                      borderRadius: BorderRadius.circular(0),
+                                    )
+                                  : null,
+                              color: Colors.transparent.withOpacity(0),
+                              child: Container(
+                                padding: const EdgeInsets.all(2),
+                                color: Colors.transparent.withOpacity(0),
+                                child: InkWell(
+                                    onTap: () {
+                                      // _animateToIndex(e.key);
+                                      widget.pageController!.animateToPage(
+                                        e.key,
+                                        curve: Curves.fastOutSlowIn,
+                                        duration:
+                                            const Duration(milliseconds: 800),
+                                      );
+                                      setState(() {});
+                                    },
+                                    child: GeneralHelper
+                                        .imageHandlerForRoundedConner(
+                                            e.value, 90.w, 10.h)),
+                              ))))
+                      .toList(),
                 ),
               ),
             ],
@@ -1376,3 +1428,50 @@ class _MyDialogueState extends State<MyDialogue> {
         ));
   }
 }
+
+
+
+// Align(
+      //   alignment: Alignment.center,
+      //   child: Row(
+      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //     children: [
+      //       InkWell(
+      //           onTap: () {
+      //             if (tmpIndex != 0) {
+      //               tmpIndex;
+      //               setState(() {});
+      //             }
+      //             widget.pageController!.animateToPage(
+      //               tmpIndex,
+      //               curve: Curves.fastOutSlowIn,
+      //               duration: const Duration(milliseconds: 800),
+      //             );
+      //           },
+      //           child: SvgPicture.asset(
+      //             "assets/svg/left_chevron.svg",
+      //             package: "pdf_report_scope",
+      //             width: 10.sp,
+      //             height: 10.sp,
+      //           )),
+      //       InkWell(
+      //           onTap: () {
+      //             if (tmpIndex != widget.media!.lastIndex) {
+      //               tmpIndex++;
+      //               setState(() {});
+      //             }
+      //             widget.pageController!.animateToPage(
+      //               tmpIndex,
+      //               curve: Curves.fastOutSlowIn,
+      //               duration: const Duration(milliseconds: 800),
+      //             );
+      //           },
+      //           child: SvgPicture.asset(
+      //             "assets/svg/right_chevron.svg",
+      //             package: "pdf_report_scope",
+      //             width: 10.sp,
+      //             height: 10.sp,
+      //           )),
+      //     ],
+      //   ),
+      // )

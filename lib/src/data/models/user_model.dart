@@ -14,6 +14,8 @@ class User {
 
   late String? address;
 
+  late Address? companyAddress;
+
   late String? phone;
 
   late ImageShape? logo;
@@ -37,6 +39,7 @@ class User {
   late Cordinates? location;
 
   late ImageShape? signature;
+  // late String signature;
 
   late String licenseNumber;
 
@@ -54,6 +57,7 @@ class User {
       this.lastname,
       this.email,
       this.address,
+      this.companyAddress,
       this.phone,
       this.logo,
       this.planMode,
@@ -79,6 +83,9 @@ class User {
     email = json["email"];
     address = json["address"];
     phone = json["phone"];
+    companyAddress = json["companyAddress"] == null
+        ? null
+        : Address.fromJson(json["companyAddress"]);
     // logo = json["logo"] == null ? null : ImageShape.fromJson(json["logo"]);
     // reportLimits = json["reportLimits"];
     // accessToken = json["accessToken"];
@@ -94,13 +101,14 @@ class User {
     //   json["userType"],
     // );
     // photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
-    // website = json["website"];
+    website = json["website"];
     organization = json["organization"];
+    // signature = json['signature'];
     // location = json["location"];
-    // signature = json["signature"] == null
-    //     ? null
-    //     : ImageShape.fromJson(json["signature"]);
-    // licenseNumber = json["licenseNumber"] ?? "";
+    signature = json["signature"] == null
+        ? null
+        : ImageShape.fromJson(json["signature"]);
+    licenseNumber = json["licenseNumber"] ?? "";
     // licenseIssueDate = json["licenseIssueDate"] ?? 0;
     // licenseExpirationDate = json["licenseExpirationDate"] ?? 0;
     // stripeConnectId = json["stripeConnectId"] ?? "";
@@ -115,18 +123,21 @@ class User {
     data["email"] = email;
     data["address"] = address;
     data["phone"] = phone;
+    data["companyAddress"] = companyAddress?.toJson();
     // data["reportLimits"] = reportLimits;
     // data["accessToken"] = accessToken;
     // data["expireAt"] = expireAt;
     // data["planMode"] = GeneralHelper.typeValue(PlanType);
     // data["userType"] = GeneralHelper.typeValue(UserType);
-    // data["website"] = website;
+    data["website"] = website;
     // data["photo"] = photo?.toJson();
     data["organization"] = organization;
+    // data["signature"] = signature;
+    data["signature"] = signature?.toJson();
     // data["location"] = location;
     // data["logo"] = !deep ? logo?.id : logo?.toJson();
     // data["signature"] = !deep ? signature?.id : signature?.toJson();
-    // data["licenseNumber"] = licenseNumber;
+    data["licenseNumber"] = licenseNumber;
     // data["licenseIssueDate"] = licenseIssueDate;
     // data["licenseExpirationDate"] = licenseExpirationDate;
     // data["stripeConnectId"] = stripeConnectId;

@@ -5,6 +5,7 @@ import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/primary_heading_text_with_background.dart';
@@ -20,15 +21,17 @@ class TemplateSubSection extends StatelessWidget {
     required this.inspection,
     required this.media,
     required this.sectionIndex,
+    required this.selectedTemplate,
   }) : super(key: key);
 
   final InspectionModel inspection;
   final List<ImageShape> media;
   final int sectionIndex;
+  final Template selectedTemplate;
 
   @override
   Widget build(BuildContext context) {
-    final subSections = inspection.template!.sections[sectionIndex].subSections;
+    final subSections = selectedTemplate.sections[sectionIndex].subSections;
     return MasonryGridView.count(
         physics: const NeverScrollableScrollPhysics(),
         shrinkWrap: true,
@@ -78,10 +81,10 @@ class TemplateSubSection extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(bottom: 14.0),
                   child: PrimaryHeadingTextWithBackground(
-                      key: itemKeys[inspection.template!.sections[sectionIndex]
+                      key: itemKeys[selectedTemplate.sections[sectionIndex]
                           .subSections[subSectionIndex].uid!],
                       headingText:
-                          "${inspection.template!.sections[sectionIndex].name}: ${subSections[subSectionIndex].name!}",
+                          "${selectedTemplate.sections[sectionIndex].name}: ${subSections[subSectionIndex].name!}",
                       backgroundColor: ProjectColors.firefly),
                 ),
                 hasSubSectionItems
@@ -290,6 +293,7 @@ class TemplateSubSection extends StatelessWidget {
                                     inspection: inspection,
                                     subSectionIndex: subSectionIndex,
                                     media: media,
+                                    selectedTemplate:selectedTemplate,
                                   )
                                 ]))),
                       )
@@ -310,18 +314,19 @@ class SubSectionItemComments extends StatelessWidget {
     required this.media,
     required this.subSectionIndex,
     required this.sectionIndex,
+    required this.selectedTemplate,
   }) : super(key: key);
 
   final InspectionModel inspection;
   final List<ImageShape> media;
   final int subSectionIndex;
   final int sectionIndex;
+  final Template selectedTemplate;
 
   @override
   Widget build(BuildContext context) {
     List<Comment> subSectionItemComments = [];
-    for (var subSectionItem in inspection
-        .template!.sections[sectionIndex].subSections[subSectionIndex].items) {
+    for (var subSectionItem in selectedTemplate.sections[sectionIndex].subSections[subSectionIndex].items) {
       for (var comment in subSectionItem.comments) {
         subSectionItemComments.add(comment);
       }
@@ -352,7 +357,7 @@ class SubSectionItemComments extends StatelessWidget {
         crossAxisSpacing: 4,
         itemBuilder: (context, sectionCommentIndex) {
           return SectionCommentCard(
-              commentTitle: inspection.template!
+              commentTitle: selectedTemplate
                   .commentTitle(subSectionItemComments[sectionCommentIndex]),
               comment: subSectionItemComments[sectionCommentIndex],
               media: media);

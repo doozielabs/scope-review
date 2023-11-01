@@ -4,6 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/report_header_item.dart';
@@ -14,12 +15,14 @@ class ReportHeaderTablet extends StatelessWidget {
   final InspectionModel inspection;
   final List<ImageShape>? media;
   final User user;
-  const ReportHeaderTablet(
-      {Key? key,
-      required this.inspection,
-      required this.media,
-      required this.user})
-      : super(key: key);
+  final Template selectedTemplate;
+  const ReportHeaderTablet({
+    Key? key,
+    required this.inspection,
+    required this.media,
+    required this.user,
+    required this.selectedTemplate,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +52,9 @@ class ReportHeaderTablet extends StatelessWidget {
                       padding: const EdgeInsets.only(
                           left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
                       child: Text(
-                        inspection.template!.name == ""
+                        selectedTemplate.name == ""
                             ? "Unspecified"
-                            : inspection.template!.name.toUpperCase(),
+                            : selectedTemplate.name.toUpperCase(),
                         style: primaryHeadingTextStyle.copyWith(
                             color: ProjectColors.white),
                       ),
@@ -108,26 +111,35 @@ class ReportHeaderTablet extends StatelessWidget {
                             children: [
                               HeaderInfoItem(
                                 iconName: "clock_icon",
-                                text: GeneralHelper.getInspectionDateTimeFormat(
-                                    inspection.startDate),
+                                text:
+                                    "${inspection.startDate.fulldate} - ${inspection.endDate.time}",
                               ),
                             ],
                           ),
-                          const SizedBox(height: 20),
-                          const Text(
-                            "End Inspection Date",
-                            style: secondryHeadingTextStyle,
-                          ),
-                          const SizedBox(height: 10),
-                          Row(
-                            children: [
-                              HeaderInfoItem(
-                                iconName: "clock_icon",
-                                text: GeneralHelper.getInspectionDateTimeFormat(
-                                    inspection.endDate),
-                              ),
-                            ],
-                          )
+                          // Row(
+                          //   children: [
+                          //     HeaderInfoItem(
+                          //       iconName: "clock_icon",
+                          //       text: GeneralHelper.getInspectionDateTimeFormat(
+                          //           inspection.startDate),
+                          //     ),
+                          //   ],
+                          // ),
+                          // const SizedBox(height: 20),
+                          // const Text(
+                          //   "End Inspection Date",
+                          //   style: secondryHeadingTextStyle,
+                          // ),
+                          // const SizedBox(height: 10),
+                          // Row(
+                          //   children: [
+                          //     HeaderInfoItem(
+                          //       iconName: "clock_icon",
+                          //       text: GeneralHelper.getInspectionDateTimeFormat(
+                          //           inspection.endDate),
+                          //     ),
+                          //   ],
+                          // )
                         ],
                       ),
                     ),
@@ -146,7 +158,7 @@ class ReportHeaderTablet extends StatelessWidget {
                           HeaderInfoItem(
                               iconName: "icon-user",
                               text:
-                                  "${user.firstname.unspecified} ${user.lastname ?? ""}"),
+                                  "${user.firstname.unspecified} ${user.lastname}"),
                           const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-mail",
@@ -173,7 +185,7 @@ class ReportHeaderTablet extends StatelessWidget {
                           HeaderInfoItem(
                               iconName: "icon-user",
                               text:
-                                  "${inspection.client!.firstname.unspecified} ${inspection.client?.lastname ?? ""}"),
+                                  "${inspection.client!.firstname.unspecified} ${inspection.client!.lastname}"),
                           const SizedBox(height: 10),
                           HeaderInfoItem(
                               iconName: "icon-mail",

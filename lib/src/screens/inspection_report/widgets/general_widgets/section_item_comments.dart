@@ -4,6 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comment_card.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
@@ -13,16 +14,18 @@ class SectionItemComments extends StatelessWidget {
     required this.inspection,
     required this.media,
     required this.sectionIndex,
+    required this.selectedTemplate,
   }) : super(key: key);
 
   final InspectionModel inspection;
   final List<ImageShape> media;
   final int sectionIndex;
+  final Template selectedTemplate;
 
   @override
   Widget build(BuildContext context) {
     List<Comment> sectionItemComments = [];
-    for (var item in inspection.template!.sections[sectionIndex].items) {
+    for (var item in selectedTemplate.sections[sectionIndex].items) {
       for (var comment in item.comments) {
         sectionItemComments.add(comment);
       }
@@ -43,7 +46,7 @@ class SectionItemComments extends StatelessWidget {
         itemBuilder: (context, sectionCommentIndex) {
           return SectionCommentCard(
               // key:itemKeys[sectionItemComments[sectionCommentIndex].uid!],
-              commentTitle: inspection.template!
+              commentTitle: selectedTemplate
                   .commentTitle(sectionItemComments[sectionCommentIndex]),
               comment: sectionItemComments[sectionCommentIndex],
               media: media);

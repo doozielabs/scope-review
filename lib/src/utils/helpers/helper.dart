@@ -16,12 +16,39 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'dart:math' as math;
 
+import '../../data/models/address_model.dart';
+import '../../data/models/image_shape_model.dart';
+import '../../data/models/person_model.dart';
+import '../../data/models/user_model.dart';
+
 extension BoolExtension on bool? {
   bool get force => this ?? false;
 }
 
 extension NullableListExtension on List? {
   List levant(List value) => (this ?? []).isEmpty ? value : this!;
+}
+
+extension UserExtension on User {
+  User get copy => User.fromJson(this.toJson());
+  String get fullName =>
+      "$firstname${(lastname ?? "").isNotEmpty ? " $lastname" : ""}";
+}
+
+extension AdressExtension on Address? {
+  String get fullAdress => this.isNull
+      ? ""
+      : [
+          this?.street ?? "",
+          this?.city ?? "",
+          this?.state ?? "",
+          this?.zipcode ?? "",
+        ].where((_) => _.isNotEmpty).join(", ");
+}
+
+extension PersonExtension on Person? {
+  String get fullName =>
+      "${this?.firstname ?? ""} ${this?.lastname ?? ""}".trim();
 }
 
 extension ListOfNumExtension on List<num> {
@@ -267,7 +294,9 @@ extension TemplateItemExtension on TemplateItem {
         return value == null;
       case TemplateItemType.choice:
         return (value == null || value.isEmpty) && defaultOption == null;
-
+      case TemplateItemType.signature:
+        if (value is ImageShape) return value == null;
+        return (value == null || value.isEmpty);
       default:
         return value == null || value.isEmpty;
     }
@@ -515,7 +544,7 @@ extension DateTimeExtension on DateTime {
   DateTime addMonth(int amount) => DateTime(year, month + amount, day);
   DateTime subtractMonth(int amount) => DateTime(year, month - amount, day);
   String get time => DateFormat('h:mm a').format(this);
-  String get fulldate => DateFormat('EEE, LLL d, yyyy  -  h:mm a').format(this);
+  String get fulldate => DateFormat('EEE, LLL d, yyyy   h:mma').format(this);
   String get regularDate => DateFormat('d MMM, yyyy').format(this);
   String get smallDate => DateFormat('MMM, yyyy').format(this);
   String get fullISODate => DateFormat('EEE, d/M/yyyy  -  h:mm a').format(this);

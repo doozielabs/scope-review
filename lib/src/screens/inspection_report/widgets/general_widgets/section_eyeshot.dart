@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -7,7 +8,9 @@ import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/multi_templates_selection.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_tile_for_eyeshot.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:sizer/sizer.dart';
@@ -17,12 +20,24 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
   final Function? sharePdf;
   final Function? printCallBack;
   final Function? downloadCallBack;
+  final bool? isdownloading;
+  final String? pdfStatus;
+  final Template? selectedTemplate;
+  final List<Template>? templates;
+  final Function(int val)? switchServiceMethod;
+  final Function? needUpgrade;
   const SectionEyeShotForMobileAndTablet(
       {Key? key,
       required this.inspection,
+      this.templates,
       this.sharePdf,
+      this.switchServiceMethod,
       this.printCallBack,
-      this.downloadCallBack})
+      this.downloadCallBack,
+      this.isdownloading,
+      this.pdfStatus,
+      this.selectedTemplate,
+      this.needUpgrade})
       : super(key: key);
 
   @override
@@ -32,14 +47,18 @@ class SectionEyeShotForMobileAndTablet extends StatefulWidget {
 
 class _SectionEyeShotForMobileState
     extends State<SectionEyeShotForMobileAndTablet> {
-  late List<TemplateSection> sections = widget.inspection.template!.sections;
+  Template? selectedTemplate = Template();
+  late List<TemplateSection> sections = selectedTemplate!.sections;
   late List<TemplateSection> appendedSections = [];
+  List<Template> templates = [];
+  bool isdownloading = false;
+  String pdfStatus = 'wait';
 
   void setSectionData() {
     appendedSections = [
       TemplateSection(name: "Information", uid: '00001'),
       TemplateSection(name: "Report Summary", uid: '00002'),
-      ...widget.inspection.template!.sections
+      ...selectedTemplate!.sections
     ];
   }
 
@@ -58,8 +77,7 @@ class _SectionEyeShotForMobileState
     );
   }
 
-  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-      dynamic section) {
+  List<int> commentsCount(dynamic section) {
     int diffencyCount = 0;
     int totalNumberOfSectionComments = 0;
     for (var item in section.items) {
@@ -79,21 +97,62 @@ class _SectionEyeShotForMobileState
     return [diffencyCount, totalNumberOfSectionComments];
   }
 
+  List<int> numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
+      dynamic section, bool sectionType) {
+    int diffencyCount = 0;
+    int totalNumberOfSectionComments = 0;
+    int subSectionDiffencyCount = 0;
+    int totalNumberOfSubSectionComments = 0;
+    diffencyCount = commentsCount(section)[0];
+    totalNumberOfSectionComments = commentsCount(section)[1];
+    if (sectionType && section != null && section.subSections.length > 0) {
+      for (var subSection in section.subSections) {
+        if (subSection != null) {
+          subSectionDiffencyCount += commentsCount(subSection)[0];
+          totalNumberOfSubSectionComments += commentsCount(subSection)[1];
+        }
+      }
+    }
+    diffencyCount = (diffencyCount + subSectionDiffencyCount);
+    totalNumberOfSectionComments =
+        (totalNumberOfSectionComments + totalNumberOfSubSectionComments);
+    return [diffencyCount, totalNumberOfSectionComments];
+  }
+
   @override
   void initState() {
+    templates = widget.templates ?? [];
+    selectedTemplate = widget.selectedTemplate;
     setSectionData();
     setKeysForFilteredSection(sections);
     isExpandedForAllSections();
     super.initState();
   }
 
+  Future<void> switchService(index) async {
+    selectedTemplate = templates[index];
+    widget.switchServiceMethod?.call(index);
+    setState(() {
+      sections = selectedTemplate!.sections;
+      setSectionData();
+      setKeysForFilteredSection(sections);
+      isExpandedForAllSections();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    pdfStatus = widget.pdfStatus ?? "wait";
+    isdownloading = widget.isdownloading ?? false;
     return Scaffold(
         backgroundColor: ProjectColors.white.withOpacity(0.9),
         appBar: AppBar(
-          title: Text("Jump to Section",
-              style: h2.copyWith(color: ProjectColors.firefly)),
+          title: (kIsWeb && templates.length > 1)
+              ? Text("Services and Sections",
+                  style: h2.copyWith(color: ProjectColors.firefly))
+              : Text("Jump to Section",
+                  style: h2.copyWith(color: ProjectColors.firefly)),
+          // ),
           elevation: 0,
           backgroundColor: Colors.transparent,
           actions: [
@@ -115,6 +174,12 @@ class _SectionEyeShotForMobileState
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
+                    (kIsWeb && templates.length > 1)
+                        ? MultiTemplatesSelection(
+                            templates: templates,
+                            selectedTemplate: selectedTemplate,
+                            switchServiceMethod: switchService)
+                        : const SizedBox(),
                     TextField(
                       onChanged: _search,
                       decoration: InputDecoration(
@@ -250,7 +315,7 @@ class _SectionEyeShotForMobileState
                                   onTap: () {
                                     if (isSearchValueChanged) {
                                       int currentSectionIndex = widget
-                                          .inspection.template!.sections
+                                          .selectedTemplate!.sections
                                           .indexWhere((currentSection) =>
                                               currentSection.uid ==
                                               section.uid);
@@ -272,15 +337,18 @@ class _SectionEyeShotForMobileState
                                   child: SectionTile(
                                     diffencyCount:
                                         numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                            appendedSections[sectionIndex])[0],
+                                            appendedSections[sectionIndex],
+                                            true)[0],
                                     totalComments:
                                         numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                            appendedSections[sectionIndex])[1],
+                                            appendedSections[sectionIndex],
+                                            true)[1],
                                     isExpanded: isExpanded,
                                     hasSubsections: hasSubSections,
                                     section: section,
                                     sectionIndex: sectionIndex,
                                     inspection: widget.inspection,
+                                    selectedTemplate: widget.selectedTemplate,
                                   ),
                                 ),
                                 isExpanded[sectionIndex]
@@ -349,12 +417,16 @@ class _SectionEyeShotForMobileState
                                                       hasSubsections: false,
                                                       totalComments:
                                                           numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                              subSection)[1],
+                                                              subSection,
+                                                              false)[1],
                                                       diffencyCount:
                                                           numberOfDiffencyCommentsInSectionAndNumberOfTotalComments(
-                                                              subSection)[0],
+                                                              subSection,
+                                                              false)[0],
                                                       inspection:
                                                           widget.inspection,
+                                                      selectedTemplate: widget
+                                                          .selectedTemplate,
                                                     ),
                                                   );
                                                 } else {
@@ -378,119 +450,129 @@ class _SectionEyeShotForMobileState
                 ),
               ),
             ),
-            !kIsWeb
-                ? Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // add your onPressed function here
-                          if (widget.sharePdf != null) widget.sharePdf!();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
-                            ),
-                            primary: ProjectColors.primary),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Icon(
-                                Icons.share,
-                                color: ProjectColors.white,
+
+            //  Align(
+            //     alignment: Alignment.bottomCenter,
+            //     child: Padding(
+            //       padding: const EdgeInsets.all(8.0),
+            //       child: ElevatedButton(
+            //         onPressed: () async {
+            //           // add your onPressed function here
+            //           if (widget.needUpgrade != null) {
+            //             await widget.needUpgrade!();
+            //           } else {
+            //             if (widget.sharePdf != null) {
+            //               widget.sharePdf!();
+            //             }
+            //           }
+            //         },
+            //         style: ElevatedButton.styleFrom(
+            //             shape: RoundedRectangleBorder(
+            //               borderRadius: BorderRadius.circular(10.0),
+            //             ),
+            //             backgroundColor: ProjectColors.primary),
+            //         child: Padding(
+            //           padding: const EdgeInsets.all(12.0),
+            //           child: Row(
+            //             mainAxisAlignment: MainAxisAlignment.center,
+            //             children: [
+            //               const Icon(
+            //                 Icons.share,
+            //                 color: ProjectColors.white,
+            //               ),
+            //               const SizedBox(width: 10),
+            //               Text('Share PDF',
+            //                   style: b2Medium.copyWith(
+            //                       color: ProjectColors.white)),
+            //             ],
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   )
+            // :
+            Visibility(
+              visible: kIsWeb,
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      top: 10, bottom: 5, left: 10, right: 10),
+                  child: Container(
+                    padding: const EdgeInsets.only(
+                        top: 10, bottom: 0, left: 10, right: 10),
+                    color: const Color.fromARGB(158, 233, 234, 231),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: (MediaQuery.of(context).size.width / 2 - 10.w),
+                          child: ElevatedButton(
+                            onPressed: () {
+                              if (widget.printCallBack != null) {
+                                widget.printCallBack!();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                backgroundColor: ProjectColors.firefly),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const Icon(Icons.print),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  const Text('Print', style: b2Medium),
+                                ],
                               ),
-                              const SizedBox(width: 10),
-                              Text('Share PDF',
-                                  style: b2Medium.copyWith(
-                                      color: ProjectColors.white)),
-                            ],
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  )
-                : Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(
-                          top: 10, bottom: 5, left: 10, right: 10),
-                      child: Container(
-                        padding: const EdgeInsets.only(
-                            top: 10, bottom: 0, left: 10, right: 10),
-                        color: Color.fromARGB(158, 233, 234, 231),
-                        width: MediaQuery.of(context).size.width,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                              width: (MediaQuery.of(context).size.width / 2 -
-                                  10.w),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  if (widget.printCallBack != null) {
-                                    widget.printCallBack!();
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    backgroundColor: ProjectColors.firefly),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.print),
-                                      SizedBox(
-                                        width: 5.w,
-                                      ),
-                                      Text('Print', style: b2Medium),
-                                    ],
-                                  ),
+                        SizedBox(
+                          width: (MediaQuery.of(context).size.width / 2 - 10.w),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (widget.downloadCallBack != null) {
+                                widget.downloadCallBack!();
+                              }
+                              // downloadFile(
+                              //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
                                 ),
+                                backgroundColor: ProjectColors.primary),
+                            child: Padding(
+                              padding: const EdgeInsets.all(12.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  isdownloading
+                                      ? const CupertinoActivityIndicator(
+                                          color: ProjectColors.firefly)
+                                      : const Icon(Icons.cloud_download),
+                                  SizedBox(
+                                    width: 5.w,
+                                  ),
+                                  const Text('PDF', style: b2Medium),
+                                ],
                               ),
                             ),
-                            Container(
-                              width: (MediaQuery.of(context).size.width / 2 -
-                                  10.w),
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  print("I am called");
-                                  if (widget.downloadCallBack != null) {
-                                    widget.downloadCallBack!();
-                                  }
-                                  // downloadFile(
-                                  //     'https://api.scopeinspectapp.com/pdfs/inspections-${widget.inspection.id}.pdf');
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                    ),
-                                    backgroundColor: ProjectColors.primary),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(Icons.cloud_download),
-                                      SizedBox(
-                                        width: 5.w,
-                                      ),
-                                      Text('PDF', style: b2Medium),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
+                  ),
+                ),
+              ),
+            )
           ],
         ));
 

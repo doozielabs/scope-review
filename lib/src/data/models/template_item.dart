@@ -1,4 +1,5 @@
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
+import 'package:pdf_report_scope/src/data/models/item_trail.dart';
 import 'package:pdf_report_scope/src/data/models/template_item_default_options.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
@@ -23,6 +24,7 @@ class TemplateItem {
   late int? serverTimestamp;
   late int? lastModified;
   late String? uid;
+  late Map<String, ItemTrail>? itemTrail;
 
   TemplateItem({
     this.id,
@@ -41,6 +43,7 @@ class TemplateItem {
     this.visibility = true,
     this.allowMultipleSelection = false,
     this.prohibitConditionRating = false,
+    this.itemTrail,
   })  : comments = [],
         images = [];
 
@@ -60,6 +63,14 @@ class TemplateItem {
     allowMultipleSelection = json["allowMultipleSelection"] ?? false;
     prohibitConditionRating = json["prohibitConditionRating"] ?? false;
     conditionOptions = ((json["conditionOptions"] ?? []) as List).toStringList;
+    itemTrail = (json["itemTrail"] == null)
+        ? null
+        : Map.from(json["itemTrail"]).map((k, v) {
+            if (!(v is ItemTrail)) {
+              return MapEntry<String, ItemTrail>(k, ItemTrail.fromJson(v));
+            }
+            return MapEntry<String, ItemTrail>(k, v);
+          });
     defaultOption = json["defaultOption"] == null
         ? null
         : TemplateItemDefaultOption.fromJson(json["defaultOption"]);
@@ -95,6 +106,7 @@ class TemplateItem {
     data["allowMultipleSelection"] = allowMultipleSelection;
     data["prohibitConditionRating"] = prohibitConditionRating;
     data["images"] = images;
+    data["itemTrail"] = itemTrail;
     data["comments"] = List.generate(
       comments.length,
       (index) => comments[index].toJson(),

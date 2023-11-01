@@ -5,8 +5,9 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
-import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
+import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comment_card.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
@@ -14,7 +15,12 @@ import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 class ReportSummary extends StatefulWidget {
   final InspectionModel inspection;
   final List<ImageShape>? media;
-  const ReportSummary({Key? key, required this.inspection, required this.media})
+  final Template selectedTemplate;
+  const ReportSummary(
+      {Key? key,
+      required this.inspection,
+      required this.media,
+      required this.selectedTemplate})
       : super(key: key);
 
   @override
@@ -36,7 +42,7 @@ class _ReportSummaryState extends State<ReportSummary> {
   @override
   Widget build(BuildContext context) {
     List<Comment> deficiencyComments =
-        GeneralHelper().getDeficiencyComments(widget.inspection.template!);
+        GeneralHelper().getDeficiencyComments(widget.selectedTemplate);
 
     return Padding(
         padding: const EdgeInsets.all(10),
@@ -96,12 +102,14 @@ class _ReportSummaryState extends State<ReportSummary> {
                     ? Column(
                         children: [
                           const SizedBox(height: 14),
-                          Text(
-                            widget.inspection.template!.reportSummaryOptions!
-                                .summaryHeader, // reportSummaryText,
-                            style: secondryHeadingTextStyle.copyWith(
-                                color: ProjectColors.pickledBluewood),
-                          ),
+                          widget.selectedTemplate.reportSummaryOptions == null
+                              ? const SizedBox()
+                              : Text(
+                                  widget.selectedTemplate.reportSummaryOptions!
+                                      .summaryHeader, // reportSummaryText,
+                                  style: secondryHeadingTextStyle.copyWith(
+                                      color: ProjectColors.pickledBluewood),
+                                ),
                           const HorizontalDividerWidget(
                             color: ProjectColors.pickledBluewood,
                           ),
@@ -123,7 +131,7 @@ class _ReportSummaryState extends State<ReportSummary> {
                                   // key:itemKeys[inspection
                                   //     .template!.sections[sectionIndex].comments[sectionCommentIndex].uid!],
                                   needJumpToSectionButton: true,
-                                  commentTitle: widget.inspection.template!
+                                  commentTitle: widget.selectedTemplate
                                       .commentTitle(deficiencyComments[index]),
                                   comment: deficiencyComments[index],
                                   media: widget.media!);
@@ -136,7 +144,7 @@ class _ReportSummaryState extends State<ReportSummary> {
                           //     child: SectionCommentCard(
                           //       needJumpToSectionButton: true,
                           //       comment: deficiencyComments[index],
-                          //       commentTitle: widget.inspection.template!
+                          //       commentTitle: widget.selectedTemplate
                           //           .commentTitle(deficiencyComments[index]),
                           //       media: widget.media!,
                           //     ),
