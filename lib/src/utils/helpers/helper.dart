@@ -1,3 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
+import 'dart:math';
+import 'dart:math' as math;
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:path/path.dart' as trail;
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/data/models/comment_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
@@ -7,14 +16,6 @@ import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
-import 'package:path/path.dart' as trail;
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'dart:math';
-import 'dart:io';
-import 'package:intl/intl.dart';
-import 'dart:math' as math;
 
 import '../../data/models/address_model.dart';
 import '../../data/models/image_shape_model.dart';
@@ -30,13 +31,13 @@ extension NullableListExtension on List? {
 }
 
 extension UserExtension on User {
-  User get copy => User.fromJson(this.toJson());
+  User get copy => User.fromJson(toJson());
   String get fullName =>
       "$firstname${(lastname ?? "").isNotEmpty ? " $lastname" : ""}";
 }
 
 extension AdressExtension on Address? {
-  String get fullAdress => this.isNull
+  String get fullAdress => isNull
       ? ""
       : [
           this?.street ?? "",
@@ -215,32 +216,32 @@ extension StringExtension on String? {
 
   Future deleteDirectory() async {
     if (set.isEmpty) return;
-    var _dir = Directory(set);
-    if (await _dir.exists()) {
-      var _images = await _dir.list().where((_) => _.path == set).toList();
-      if (_images.isNotEmpty) _images.first.delete();
+    var dir = Directory(set);
+    if (await dir.exists()) {
+      var images = await dir.list().where((_) => _.path == set).toList();
+      if (images.isNotEmpty) images.first.delete();
     }
   }
 
   String firstSplit(String patern) {
-    var _list = set.split(",");
-    return _list.isEmpty ? "" : _list.first;
+    var list = set.split(",");
+    return list.isEmpty ? "" : list.first;
   }
 
   Map<String, int> get onenessId {
-    var _ids = (this ?? "").split(".").map((e) => e.toInt).toList();
+    var ids = (this ?? "").split(".").map((e) => e.toInt).toList();
     return {
-      "item": _ids[2],
-      "comment": _ids[3],
-      "section": _ids[0],
-      "subSection": _ids[1],
+      "item": ids[2],
+      "comment": ids[3],
+      "section": ids[0],
+      "subSection": ids[1],
     };
   }
 
   String nId(int index, newId) {
-    var _ids = (this ?? "").split(".");
-    _ids[index] = newId.toString();
-    return _ids.join(".");
+    var ids = (this ?? "").split(".");
+    ids[index] = newId.toString();
+    return ids.join(".");
   }
 }
 
@@ -278,10 +279,10 @@ extension TemplateSubSectionExtension on TemplateSubSection {
   TemplateSubSection get clone => TemplateSubSection.fromJson(toJson());
 
   List<Comment> remarks() {
-    List<Comment> _comments = [];
-    _comments.addAll(comments);
-    items.asMap().forEach((_index, _item) => _comments.addAll(_item.comments));
-    return _comments;
+    List<Comment> comments = [];
+    comments.addAll(comments);
+    items.asMap().forEach((index, item) => comments.addAll(item.comments));
+    return comments;
   }
 }
 
@@ -337,11 +338,11 @@ extension IntExtension on int {
   int get dec => this - 1;
   List<int> chunk(int? amount) {
     if ((amount ?? this) >= this || amount.isNull) return [this];
-    List<int> _list = [];
-    _list = List.generate((this ~/ amount!), (_) => amount);
-    _list.add((this % amount).toInt());
-    if (_list.last.isZero) _list.removeLast();
-    return _list;
+    List<int> list = [];
+    list = List.generate((this ~/ amount!), (_) => amount);
+    list.add((this % amount).toInt());
+    if (list.last.isZero) list.removeLast();
+    return list;
   }
 }
 
@@ -372,17 +373,17 @@ extension NumExtension on num {
 
 extension ListOfCommentExtension on List<Comment> {
   Future<List<String>> get media async {
-    List<String> _images = [];
+    List<String> images = [];
     await Future.forEach(this, (comment) {
-      comment as Comment;
-      _images.addAll(comment.images);
+      comment;
+      images.addAll(comment.images);
     });
-    return _images;
+    return images;
   }
 
   Future<List<Comment>> indentification(Id id) async {
     await Future.forEach(this, (comment) async {
-      comment as Comment;
+      comment;
       id.comment = indexOf(comment).inc;
       comment.id = id.id();
     });
@@ -435,15 +436,15 @@ extension TemplateSectionExtension on TemplateSection {
   // }
 
   Future<List<String>> names([bool withItems = false]) async {
-    List<String> _names = [];
-    _names.add(name ?? "");
-    if (withItems) _names.addAll(items.map((_) => _.label ?? ""));
+    List<String> names = [];
+    names.add(name ?? "");
+    if (withItems) names.addAll(items.map((_) => _.label ?? ""));
     await Future.forEach(subSections, (_) {
-      _ as TemplateSubSection;
-      _names.add(_.name ?? "");
-      if (withItems) _names.addAll((_.items).map((_) => _.label ?? ""));
+      _;
+      names.add(_.name ?? "");
+      if (withItems) names.addAll((_.items).map((_) => _.label ?? ""));
     });
-    return _names;
+    return names;
   }
 
   TemplateSection get clone => TemplateSection.fromJson(toJson());
@@ -483,10 +484,10 @@ extension TemplateSectionExtension on TemplateSection {
 
   bool hasImages() {
     for (int i = 0; i < items.length; i++) {
-      if (items[i].images.length > 0) {
+      if (items[i].images.isNotEmpty) {
         return true;
       } else if (items[i].type == TemplateItemType.signature) {
-        if (items[i].images.length > 0) {
+        if (items[i].images.isNotEmpty) {
           return true;
         }
       } else {
@@ -511,12 +512,12 @@ extension ListOfTemplateSectionExtension on List<TemplateSection>? {
   List<TemplateSection> get set => this ?? [];
 
   Future<List<List<String>>> names([bool withItems = false]) async {
-    List<List<String>> _names = [];
+    List<List<String>> names = [];
     await Future.forEach(
       set,
-      (TemplateSection _) async => _names.add(await _.names(withItems)),
+      (TemplateSection _) async => names.add(await _.names(withItems)),
     );
-    return _names;
+    return names;
   }
 
   List<TemplateSection> get visibles =>
@@ -526,10 +527,10 @@ extension ListOfTemplateSectionExtension on List<TemplateSection>? {
     String keyword, {
     bool withItems = false,
   }) async {
-    var _names = await set.names(withItems);
+    var names = await set.names(withItems);
     return set.where((_) {
-      var _labels = _names[set.indexOf(_)];
-      return _labels.where((_) => _.match(keyword)).isNotEmpty;
+      var labels = names[set.indexOf(_)];
+      return labels.where((_) => _.match(keyword)).isNotEmpty;
     }).toList();
   }
 }
@@ -743,46 +744,46 @@ extension CommentLevelExtension on CommentLevel? {
 
 extension TemplateExtension on Template {
   dynamic commentParent(String? id) {
-    var _about = about(id ?? "");
-    if (!_about.subSection.isNull) {
-      return !_about.item.isNull ? _about.item! : _about.subSection!;
-    } else if (!_about.section.isNull) {
-      return !_about.item.isNull ? _about.item! : _about.section!;
+    var aboutvar = about(id ?? "");
+    if (!aboutvar.subSection.isNull) {
+      return !aboutvar.item.isNull ? aboutvar.item! : aboutvar.subSection!;
+    } else if (!aboutvar.section.isNull) {
+      return !aboutvar.item.isNull ? aboutvar.item! : aboutvar.section!;
     } else {
       return null;
     }
   }
 
   List<String> imageClassroom(String? id) {
-    var _about = about(id?.split('-')[0] ?? "");
+    var aboutvar = about(id?.split('-')[0] ?? "");
 
     _section(section) {
-      if (!_about.comment.isNull) {
-        return _about.comment!.images;
-      } else if (!_about.item.isNull) {
-        return _about.item!.type.isPhoto
-            ? _about.item!.value
-            : _about.item!.images;
+      if (!aboutvar.comment.isNull) {
+        return aboutvar.comment!.images;
+      } else if (!aboutvar.item.isNull) {
+        return aboutvar.item!.type.isPhoto
+            ? aboutvar.item!.value
+            : aboutvar.item!.images;
       } else {
         return section!.images;
       }
     }
 
-    if (!_about.subSection.isNull) {
-      return _section(_about.subSection!);
-    } else if (!_about.section.isNull) {
-      return _section(_about.section!);
+    if (!aboutvar.subSection.isNull) {
+      return _section(aboutvar.subSection!);
+    } else if (!aboutvar.section.isNull) {
+      return _section(aboutvar.section!);
     } else {
       return [];
     }
   }
 
   String commentTitle(Comment comment) {
-    var _data = about(comment.id ?? "");
+    var data = about(comment.id ?? "");
     return [
-      _data.section?.name,
-      _data.subSection?.name,
-      _data.item?.label,
+      data.section?.name,
+      data.subSection?.name,
+      data.item?.label,
     ].where((_) {
       return (_.isNull ? "" : _)!.isNotEmpty;
     }).join(", ");
@@ -841,44 +842,44 @@ extension TemplateExtension on Template {
   // }
 
   TemplateAbout about(String id) {
-    TemplateSection? _section;
-    TemplateSubSection? _subSection;
-    TemplateItem? _item;
-    Comment? _comment;
-    var _id = Id.decode(id);
+    TemplateSection? section;
+    TemplateSubSection? subSection;
+    TemplateItem? item;
+    Comment? comment;
+    var id0 = Id.decode(id);
 
     _setSection(section) {
-      if (_id.haveItem()) {
-        if (section.items.length > _id.item.dec) {
-          _item = section.items![_id.item.dec];
+      if (id0.haveItem()) {
+        if (section.items.length > id0.item.dec) {
+          item = section.items![id0.item.dec];
         }
-        if (_item != null && _id.haveComment()) {
-          if (_item!.comments.length > _id.comment.dec) {
-            _comment = _item!.comments[_id.comment.dec];
+        if (item != null && id0.haveComment()) {
+          if (item!.comments.length > id0.comment.dec) {
+            comment = item!.comments[id0.comment.dec];
           }
         }
         // ignore: curly_braces_in_flow_control_structures
-      } else if (_id.haveComment()) if (section.comments.length >
-          _id.comment.dec) {
-        _comment = section.comments![_id.comment.dec];
+      } else if (id0.haveComment()) if (section.comments.length >
+          id0.comment.dec) {
+        comment = section.comments![id0.comment.dec];
       }
     }
 
-    if (_id.haveSection()) {
-      _section = sections[_id.section.dec];
-      _setSection(_id.haveSubSection()
-          ? _section.subSections[_id.subSection.dec]
-          : _section);
-      if (_id.haveSubSection()) {
-        _subSection = _section.subSections[_id.subSection.dec];
+    if (id0.haveSection()) {
+      section = sections[id0.section.dec];
+      _setSection(id0.haveSubSection()
+          ? section.subSections[id0.subSection.dec]
+          : section);
+      if (id0.haveSubSection()) {
+        subSection = section.subSections[id0.subSection.dec];
       }
     }
 
     return TemplateAbout(
-      item: _item,
-      section: _section,
-      comment: _comment,
-      subSection: _subSection,
+      item: item,
+      section: section,
+      comment: comment,
+      subSection: subSection,
     );
   }
   // Future updateImages() async {

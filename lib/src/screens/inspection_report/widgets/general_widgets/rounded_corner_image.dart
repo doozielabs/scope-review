@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ImageWithRoundedCorners extends StatelessWidget {
@@ -76,27 +77,50 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
         },
         child: ClipRRect(
             borderRadius: BorderRadius.circular(borderRadiusValue),
-            child: Container(
+            child: SizedBox(
                 width: width,
                 height: height,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: GeneralHelper.imageHandlerForGallery(imageUrl),
-                    // NetworkImage(
-                    //   baseUrlLive + imageUrl.original,
-                    // ),
-                    fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
-                        Colors.black.withOpacity(0.6), BlendMode.darken),
-                  ),
-                ),
-                child: Align(
-                  alignment: Alignment.center,
-                  child: RichText(
-                      text: TextSpan(
-                          text: "+ $remain",
-                          style: TextStyle(
-                              fontSize: fontSizeValue, color: Colors.white))),
+                // decoration: BoxDecoration(
+                //   image: DecorationImage(
+                //     image: GeneralHelper.imageHandlerForGallery(imageUrl),
+                //     // NetworkImage(
+                //     //   baseUrlLive + imageUrl.original,
+                //     // ),
+                //     fit: BoxFit.cover,
+                //     colorFilter: ColorFilter.mode(
+                //         Colors.black.withOpacity(0.6), BlendMode.darken),
+                //   ),
+                // ),
+                child: Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(borderRadiusValue),
+                      child: GeneralHelper.isVideo(imageUrl.url)
+                          ? VideoThumb(
+                              videoAddress: imageUrl.url,
+                              fit: BoxFit.cover,
+                              showVideoIcon: true,
+                              height: height,
+                              width: width,
+                            )
+                          : Image(
+                              image: GeneralHelper.imageHandlerForGallery(
+                                  imageUrl),
+                              fit: BoxFit.cover,
+                              color: Colors.black.withOpacity(0.6),
+                            ),
+                    ),
+                    Positioned(
+                        child: Align(
+                      alignment: Alignment.center,
+                      child: RichText(
+                          text: TextSpan(
+                              text: "+ $remain",
+                              style: TextStyle(
+                                  fontSize: fontSizeValue,
+                                  color: Colors.white))),
+                    ))
+                  ],
                 ))),
       );
     } else {
@@ -111,8 +135,15 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(borderRadiusValue),
-              child: GeneralHelper.imageHandlerForRoundedConner(
-                  imageUrl, width, height),
+              child: GeneralHelper.isVideo(imageUrl.url)
+                  ? VideoThumb(
+                      fit: BoxFit.cover,
+                      videoAddress: imageUrl.url,
+                      showVideoIcon: true,
+                      width: width,
+                      height: height)
+                  : GeneralHelper.imageHandlerForRoundedConner(
+                      imageUrl, width, height),
             ));
       } else {
         return GeneralHelper.invalidImageText();

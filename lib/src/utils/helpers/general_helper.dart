@@ -1,6 +1,10 @@
 import 'dart:io';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:device_real_orientation/device_orientation.dart' as dro;
+import 'package:device_real_orientation/device_orientation_provider.dart'
+    as dop;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,9 +23,10 @@ import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_viewer.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 import 'package:sizer/sizer.dart';
 
 import '../../core/constant/globals.dart';
@@ -261,7 +266,7 @@ class GeneralHelper {
       return NetworkImage(baseUrl + image.url, scale: 1.0);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-        return FileImage(File(image.url.envRelativePath()), scale: scale);
+        return FileImage(File(image.url), scale: scale);
       } else {
         if (image.url.contains("https")) {
           return NetworkImage(image.url, scale: 1.0);
@@ -270,6 +275,15 @@ class GeneralHelper {
         }
       }
     }
+  }
+
+  static bool isVideo(String? filePath) {
+    if (filePath != null) {
+      final videoExtensions = ['.mp4', '.mov', '.avi'];
+      final extension = filePath.split('.').last.toLowerCase();
+      return videoExtensions.contains('.$extension');
+    }
+    return false;
   }
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
@@ -310,7 +324,7 @@ class GeneralHelper {
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return Image.file(
-          File(image.url.envRelativePath()),
+          File(image.url),
           width: width,
           height: height,
           fit: BoxFit.cover,
@@ -331,7 +345,7 @@ class GeneralHelper {
       return NetworkImage(baseUrl + image.url);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-        return FileImage(File(image.url.envRelativePath()));
+        return FileImage(File(image.url));
       } else {
         return AssetImage(image.url);
       }
@@ -1045,9 +1059,17 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   var buttonSize = 5.sp;
   var arrowSize = 10.sp;
   var isOnlyWeb = false;
-
+  late Enum orientation;
   @override
   void initState() {
+    if (!kIsWeb) {
+      orientation = dro.DeviceOrientation.portrait;
+      dop.DeviceOrientationProvider.orientations.listen((orientation) {
+        setState(() {
+          this.orientation = orientation;
+        });
+      });
+    }
     scaleStateController = PhotoViewScaleStateController()
       ..outputScaleStateStream.listen(printScaleState);
     super.initState();
@@ -1124,48 +1146,102 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
         content: Stack(
           children: [
             SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height,
-                child: PhotoViewGallery.builder(
-                  pageController: _pageController,
-                  onPageChanged: (_) {
-                    selectedImage(_);
-                  },
-                  scrollPhysics: const BouncingScrollPhysics(),
-                  builder: (BuildContext context, int current) {
-                    return PhotoViewGalleryPageOptions(
-                        imageProvider: GeneralHelper.imageHandlerForPhotoView(
-                          widget.media[current],
-                          getImageWidthHeight(
-                              ImageType.sectionImage, widget.media)[0],
-                          getImageWidthHeight(
-                              ImageType.sectionImage, widget.media)[1],
-                        ),
-                        // tightMode: true,
-                        basePosition: Alignment.center,
-                        initialScale: PhotoViewComputedScale.contained * 0.4,
-                        heroAttributes: PhotoViewHeroAttributes(
-                            tag: widget.media[current].id),
-                        minScale: PhotoViewComputedScale.contained * 1.0,
-                        maxScale: PhotoViewComputedScale.covered * 2.0,
-                        scaleStateController: scaleStateController);
-                  },
-                  itemCount: widget.media.length,
-                  loadingBuilder: (context, event) => Center(
-                    child: SizedBox(
-                      width: 50.sp,
-                      height: 50.sp,
-                      child: CircularProgressIndicator(
-                        value: event == null
-                            ? 0
-                            : event.cumulativeBytesLoaded / 1.8,
-                      ),
-                    ),
-                  ),
-                  backgroundDecoration: BoxDecoration(
-                    color: Colors.transparent.withOpacity(0),
-                  ),
-                )),
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              child:
+                  // PhotoViewGallery.builder(
+                  //   pageController: _pageController,
+                  //   onPageChanged: (_) {
+                  //     selectedImage(_);
+                  //   },
+                  //   scrollPhysics: const BouncingScrollPhysics(),
+                  //   builder: (BuildContext context, int current) {
+                  //     return GeneralHelper.isVideo(widget.media[current].url)?
+                  //     PhotoViewGalleryPageOptions(
+                  //         imageProvider: GeneralHelper.imageHandlerForPhotoView(
+                  //           widget.media[current],
+                  //           getImageWidthHeight(
+                  //               ImageType.sectionImage, widget.media)[0],
+                  //           getImageWidthHeight(
+                  //               ImageType.sectionImage, widget.media)[1],
+                  //         ),
+                  //         // tightMode: true,
+                  //         basePosition: Alignment.center,
+                  //         initialScale: PhotoViewComputedScale.contained * 0.4,
+                  //         heroAttributes: PhotoViewHeroAttributes(
+                  //             tag: widget.media[current].id),
+                  //         minScale: PhotoViewComputedScale.contained * 1.0,
+                  //         maxScale: PhotoViewComputedScale.covered * 2.0,
+                  //         scaleStateController: scaleStateController);
+                  //   },
+                  //   itemCount: widget.media.length,
+                  //   loadingBuilder: (context, event) => Center(
+                  //     child: SizedBox(
+                  //       width: 50.sp,
+                  //       height: 50.sp,
+                  //       child: CircularProgressIndicator(
+                  //         value: event == null
+                  //             ? 0
+                  //             : event.cumulativeBytesLoaded / 1.8,
+                  //       ),
+                  //     ),
+                  //   ),
+                  //   backgroundDecoration: BoxDecoration(
+                  //     color: Colors.transparent.withOpacity(0),
+                  //   ),
+                  // )),
+                  Container(
+                color: Colors.transparent,
+                //  height: isTablet ? 100.h : 97.h,
+                width: 100.w,
+                child: PhotoViewGestureDetectorScope(
+                  axis: Axis.horizontal,
+                  child: CarouselSlider.builder(
+                      carouselController: _controller,
+                      itemCount: widget.media.length,
+                      itemBuilder: (context, ind1, ind2) {
+                        //  log("Path: ${_imageShapeList[ind1].url}");
+                        return GeneralHelper.isVideo(widget.media[ind1].url)
+                            ? RotatedBox(
+                                quarterTurns: kIsWeb
+                                    ? 0
+                                    : orientation ==
+                                            dro.DeviceOrientation.landscapeLeft
+                                        ? 1
+                                        : 0,
+                                child: VideoViewer(
+                                    address: widget.media[ind1].url))
+                            : PhotoView(
+                                minScale: PhotoViewComputedScale.contained,
+                                //maxScale: ,
+                                imageProvider: (kIsWeb
+                                        ? CachedNetworkImageProvider(
+                                            widget.media[ind1].url)
+                                        : widget.media[ind1].url.isDeviceUrl
+                                            ? FileImage(
+                                                File(widget.media[ind1].url))
+                                            : CachedNetworkImageProvider(
+                                                widget.media[ind1].url))
+                                    as ImageProvider,
+                              );
+                      },
+                      options: CarouselOptions(
+                          height: 90.h,
+                          pageSnapping: true,
+                          initialPage: _current,
+                          onPageChanged: (index, reason) {
+                            selectedImage(index);
+                          },
+                          viewportFraction: 1.0,
+                          // scrollPhysics: _scrollPhysics,
+                          // scrollPhysics:
+                          //     _transformationController.value == Matrix4.identity()
+                          //         ? AlwaysScrollableScrollPhysics()
+                          //         : NeverScrollableScrollPhysics(),
+                          enableInfiniteScroll: false)),
+                ),
+              ),
+            ),
             Container(
               width: MediaQuery.of(context).size.width,
               height: topContainerHeight,
@@ -1416,9 +1492,17 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                                       );
                                       setState(() {});
                                     },
-                                    child: GeneralHelper
-                                        .imageHandlerForRoundedConner(
-                                            e.value, 90.w, 10.h)),
+                                    child: GeneralHelper.isVideo(e.value.url)
+                                        ? VideoThumb(
+                                            videoAddress: e.value.url,
+                                            width: 90.w,
+                                            showVideoIcon: true,
+                                            height: 10.h,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : GeneralHelper
+                                            .imageHandlerForRoundedConner(
+                                                e.value, 90.w, 10.h)),
                               ))))
                       .toList(),
                 ),
@@ -1429,49 +1513,47 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
   }
 }
 
-
-
 // Align(
-      //   alignment: Alignment.center,
-      //   child: Row(
-      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //     children: [
-      //       InkWell(
-      //           onTap: () {
-      //             if (tmpIndex != 0) {
-      //               tmpIndex;
-      //               setState(() {});
-      //             }
-      //             widget.pageController!.animateToPage(
-      //               tmpIndex,
-      //               curve: Curves.fastOutSlowIn,
-      //               duration: const Duration(milliseconds: 800),
-      //             );
-      //           },
-      //           child: SvgPicture.asset(
-      //             "assets/svg/left_chevron.svg",
-      //             package: "pdf_report_scope",
-      //             width: 10.sp,
-      //             height: 10.sp,
-      //           )),
-      //       InkWell(
-      //           onTap: () {
-      //             if (tmpIndex != widget.media!.lastIndex) {
-      //               tmpIndex++;
-      //               setState(() {});
-      //             }
-      //             widget.pageController!.animateToPage(
-      //               tmpIndex,
-      //               curve: Curves.fastOutSlowIn,
-      //               duration: const Duration(milliseconds: 800),
-      //             );
-      //           },
-      //           child: SvgPicture.asset(
-      //             "assets/svg/right_chevron.svg",
-      //             package: "pdf_report_scope",
-      //             width: 10.sp,
-      //             height: 10.sp,
-      //           )),
-      //     ],
-      //   ),
-      // )
+//   alignment: Alignment.center,
+//   child: Row(
+//     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//     children: [
+//       InkWell(
+//           onTap: () {
+//             if (tmpIndex != 0) {
+//               tmpIndex;
+//               setState(() {});
+//             }
+//             widget.pageController!.animateToPage(
+//               tmpIndex,
+//               curve: Curves.fastOutSlowIn,
+//               duration: const Duration(milliseconds: 800),
+//             );
+//           },
+//           child: SvgPicture.asset(
+//             "assets/svg/left_chevron.svg",
+//             package: "pdf_report_scope",
+//             width: 10.sp,
+//             height: 10.sp,
+//           )),
+//       InkWell(
+//           onTap: () {
+//             if (tmpIndex != widget.media!.lastIndex) {
+//               tmpIndex++;
+//               setState(() {});
+//             }
+//             widget.pageController!.animateToPage(
+//               tmpIndex,
+//               curve: Curves.fastOutSlowIn,
+//               duration: const Duration(milliseconds: 800),
+//             );
+//           },
+//           child: SvgPicture.asset(
+//             "assets/svg/right_chevron.svg",
+//             package: "pdf_report_scope",
+//             width: 10.sp,
+//             height: 10.sp,
+//           )),
+//     ],
+//   ),
+// )
