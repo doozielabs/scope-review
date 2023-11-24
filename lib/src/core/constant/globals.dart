@@ -12,13 +12,13 @@ import 'package:sizer/sizer.dart';
 const baseUrl = 'https://scdn.scopeinspectapp.com'; // Staging
 // const baseUrl = 'http://localhost:1337'; // Local
 // const baseUrl = 'http://192.168.88.15:1337';
-const defaultHeaderImage1 = 'images/inspection_placeholder.png';
-const defaultHeaderImage = "images/house.jpeg";
-const pdfGeneration = "images/pdf-generation.gif";
-const pdfGenerated = "images/pdf-generated.png";
-const generationPdf = "images/generation-pdf.gif";
-const generatedPdf = "images/generated-pdf.gif";
-const defaultInvalidImage = "images/invalid-placholder.png";
+const defaultHeaderImage1 = '/images/inspection_placeholder.png';
+const defaultHeaderImage = "/images/house.jpeg";
+const pdfGeneration = "/images/pdf-generation.gif";
+const pdfGenerated = "/images/pdf-generated.png";
+const generationPdf = "/images/generation-pdf.gif";
+const generatedPdf = "/images/generated-pdf.gif";
+const defaultInvalidImage = "/images/invalid-placholder.png";
 String documentDirectory = "";
 
 const double kMobileMaxWidth = 550.0;
