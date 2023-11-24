@@ -6,17 +6,17 @@ import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:sizer/sizer.dart';
 
-const baseUrlLive = 'https://api.scopeinspectapp.com/';
-const baseUrlStaging = 'https://staging-api.scopeinspectapp.com/';
-const baseUrlLocal = 'http://localhost:1337/';
-// const baseUrlLive = 'http://192.168.88.15:1337/';
-const defaultHeaderImage1 = 'images/inspection_placeholder.png';
-const defaultHeaderImage = "images/house.jpeg";
-const pdfGeneration = "images/pdf-generation.gif";
-const pdfGenerated = "images/pdf-generated.png";
-const generationPdf = "images/generation-pdf.gif";
-const generatedPdf = "images/generated-pdf.gif";
-const defaultInvalidImage = "images/invalid-placholder.png";
+// const baseUrl = 'https://cdn.scopeinspectapp.com'; // Production
+const baseUrl = 'https://scdn.scopeinspectapp.com'; // Staging
+// const baseUrl = 'http://localhost:1337'; // Local
+// const baseUrl = 'http://192.168.88.15:1337';
+const defaultHeaderImage1 = '/images/inspection_placeholder.png';
+const defaultHeaderImage = "/images/house.jpeg";
+const pdfGeneration = "/images/pdf-generation.gif";
+const pdfGenerated = "/images/pdf-generated.png";
+const generationPdf = "/images/generation-pdf.gif";
+const generatedPdf = "/images/generated-pdf.gif";
+const defaultInvalidImage = "/images/invalid-placholder.png";
 String documentDirectory = "";
 
 const double kMobileMaxWidth = 550.0;
