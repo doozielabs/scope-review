@@ -24,6 +24,10 @@ dependencies:
   video_thumbnail: ^0.5.3
   cached_network_image: ^3.3.0
   device_real_orientation: ^0.0.4
+  video_player_web: ^2.0.17
+  video_thumbnail_imageview: ^0.0.5
+  shimmer: ^3.0.0
+  universal_html: ^2.2.4
 
 dev_dependencies:
   flutter_test:

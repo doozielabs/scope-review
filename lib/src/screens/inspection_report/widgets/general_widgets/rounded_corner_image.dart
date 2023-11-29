@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb_web.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ImageWithRoundedCorners extends StatelessWidget {
@@ -69,11 +70,19 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
     if (lastItem) {
       return GestureDetector(
         onTap: () async {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return CustomDialog(ids: ids!, media: media!);
-              });
+          if (kIsWeb) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => CustomDialog(ids: ids!, media: media!)),
+            );
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return CustomDialog(ids: ids!, media: media!);
+                });
+          }
         },
         child: ClipRRect(
             borderRadius: BorderRadius.circular(borderRadiusValue),
@@ -96,7 +105,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(borderRadiusValue),
                       child: GeneralHelper.isVideo(imageUrl.url)
-                          ? VideoThumb(
+                          ? VideoThumbWeb(
                               videoAddress: imageUrl.url,
                               fit: BoxFit.cover,
                               showVideoIcon: true,
@@ -127,16 +136,25 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
       if (imageUrl is ImageShape) {
         return GestureDetector(
             onTap: () async {
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return CustomDialog(ids: ids!, media: media!);
-                  });
+              if (kIsWeb) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          CustomDialog(ids: ids!, media: media!)),
+                );
+              } else {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return CustomDialog(ids: ids!, media: media!);
+                    });
+              }
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(borderRadiusValue),
               child: GeneralHelper.isVideo(imageUrl.url)
-                  ? VideoThumb(
+                  ? VideoThumbWeb(
                       fit: BoxFit.cover,
                       videoAddress: imageUrl.url,
                       showVideoIcon: true,
@@ -185,11 +203,25 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
     if (lastItem) {
       return GestureDetector(
           onTap: () async {
-            showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return CustomDialog(ids: ids!, media: media!);
-                });
+            if (kIsWeb) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        CustomDialog(ids: ids!, media: media!)),
+              );
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return CustomDialog(ids: ids!, media: media!);
+                  });
+            }
+            // showDialog(
+            //     context: context,
+            //     builder: (BuildContext context) {
+            //       return CustomDialog(ids: ids!, media: media!);
+            //     });
           },
           child: (imageUrl is ImageShape)
               ? ClipRRect(

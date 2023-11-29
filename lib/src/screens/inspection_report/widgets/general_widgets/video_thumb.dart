@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
+import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 // ignore: must_be_immutable
@@ -43,7 +44,7 @@ class _VideoThumbState extends State<VideoThumb> {
               //         ? widget.imageShape!.url.envRelativePath()
               //         : widget.imageShape!.serverUrl!
               //     :
-              widget.videoAddress,
+              baseUrl + widget.videoAddress,
           imageFormat: ImageFormat.JPEG,
           maxWidth:
               128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio

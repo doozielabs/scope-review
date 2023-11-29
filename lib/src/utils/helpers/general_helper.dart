@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -8,6 +9,7 @@ import 'package:device_real_orientation/device_orientation_provider.dart'
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 // import 'package:flutter_swiper_plus/flutter_swiper_plus.dart';
@@ -23,14 +25,17 @@ import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/full_screen_video.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb_web.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_viewer.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:sizer/sizer.dart';
+import 'package:universal_html/html.dart' as html;
 
 import '../../core/constant/globals.dart';
 import '../../screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
+import '../../screens/inspection_report/widgets/general_widgets/video_thumb.dart';
 
 class GeneralHelper {
   static String typeValue(value) => value.toString().split(".").last;
@@ -1060,6 +1065,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   var arrowSize = 10.sp;
   var isOnlyWeb = false;
   late Enum orientation;
+  Key _key = const Key("1");
+
   @override
   void initState() {
     if (!kIsWeb) {
@@ -1072,12 +1079,19 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
     }
     scaleStateController = PhotoViewScaleStateController()
       ..outputScaleStateStream.listen(printScaleState);
+
     super.initState();
+  }
+
+  updateVideoWidget() {
+    _key = Key(DateTime.now().toIso8601String());
   }
 
   Future<void> selectedImage(index) async {
     _current = index;
-    setState(() {});
+    setState(() {
+      updateVideoWidget();
+    });
   }
 
   void zoomIn() {
@@ -1110,6 +1124,20 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
     super.dispose();
   }
 
+  callFullScreen() {
+    if (kIsWeb) {
+      html.document.documentElement!.requestFullscreen();
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => FullScreenVideo(
+                videoPath: widget.media[_current].url,
+              )),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (SizerUtil.deviceType == DeviceType.mobile) {
@@ -1132,236 +1160,289 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
       }
     }
 
+    selectPrevious() {
+      if (_current != 0) {
+        scaleStateController.scaleState = PhotoViewScaleState.initial;
+        _current--;
+        setState(() {
+          updateVideoWidget();
+        });
+      }
+      _pageController.animateToPage(
+        _current,
+        curve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 800),
+      );
+    }
+
+    selectNext() {
+      if (_current != widget.media.lastIndex) {
+        scaleStateController.scaleState = PhotoViewScaleState.initial;
+        _current++;
+        setState(() {
+          updateVideoWidget();
+        });
+      }
+      _pageController.animateToPage(
+        _current,
+        curve: Curves.fastOutSlowIn,
+        duration: const Duration(milliseconds: 800),
+      );
+    }
+
     if (kIsWeb) {
       if (globalConstraints.maxWidth > 1230) {
         isOnlyWeb = true;
       }
     }
-    return AlertDialog(
-        contentPadding: const EdgeInsets.all(5),
-        insetPadding: const EdgeInsets.all(0),
-        title: null,
-        elevation: 0.0,
-        backgroundColor: Colors.transparent,
-        content: Stack(
-          children: [
-            SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
-              child:
-                  // PhotoViewGallery.builder(
-                  //   pageController: _pageController,
-                  //   onPageChanged: (_) {
-                  //     selectedImage(_);
-                  //   },
-                  //   scrollPhysics: const BouncingScrollPhysics(),
-                  //   builder: (BuildContext context, int current) {
-                  //     return GeneralHelper.isVideo(widget.media[current].url)?
-                  //     PhotoViewGalleryPageOptions(
-                  //         imageProvider: GeneralHelper.imageHandlerForPhotoView(
-                  //           widget.media[current],
-                  //           getImageWidthHeight(
-                  //               ImageType.sectionImage, widget.media)[0],
-                  //           getImageWidthHeight(
-                  //               ImageType.sectionImage, widget.media)[1],
-                  //         ),
-                  //         // tightMode: true,
-                  //         basePosition: Alignment.center,
-                  //         initialScale: PhotoViewComputedScale.contained * 0.4,
-                  //         heroAttributes: PhotoViewHeroAttributes(
-                  //             tag: widget.media[current].id),
-                  //         minScale: PhotoViewComputedScale.contained * 1.0,
-                  //         maxScale: PhotoViewComputedScale.covered * 2.0,
-                  //         scaleStateController: scaleStateController);
-                  //   },
-                  //   itemCount: widget.media.length,
-                  //   loadingBuilder: (context, event) => Center(
-                  //     child: SizedBox(
-                  //       width: 50.sp,
-                  //       height: 50.sp,
-                  //       child: CircularProgressIndicator(
-                  //         value: event == null
-                  //             ? 0
-                  //             : event.cumulativeBytesLoaded / 1.8,
-                  //       ),
-                  //     ),
-                  //   ),
-                  //   backgroundDecoration: BoxDecoration(
-                  //     color: Colors.transparent.withOpacity(0),
-                  //   ),
-                  // )),
-                  Container(
-                color: Colors.transparent,
-                //  height: isTablet ? 100.h : 97.h,
-                width: 100.w,
-                child: PhotoViewGestureDetectorScope(
-                  axis: Axis.horizontal,
-                  child: CarouselSlider.builder(
-                      carouselController: _controller,
-                      itemCount: widget.media.length,
-                      itemBuilder: (context, ind1, ind2) {
-                        //  log("Path: ${_imageShapeList[ind1].url}");
-                        return GeneralHelper.isVideo(widget.media[ind1].url)
-                            ? RotatedBox(
-                                quarterTurns: kIsWeb
-                                    ? 0
-                                    : orientation ==
-                                            dro.DeviceOrientation.landscapeLeft
-                                        ? 1
-                                        : 0,
-                                child: VideoViewer(
-                                    address: widget.media[ind1].url))
-                            : PhotoView(
-                                minScale: PhotoViewComputedScale.contained,
-                                //maxScale: ,
-                                imageProvider: (kIsWeb
-                                        ? CachedNetworkImageProvider(
-                                            widget.media[ind1].url)
-                                        : widget.media[ind1].url.isDeviceUrl
-                                            ? FileImage(
-                                                File(widget.media[ind1].url))
-                                            : CachedNetworkImageProvider(
-                                                widget.media[ind1].url))
-                                    as ImageProvider,
-                              );
-                      },
-                      options: CarouselOptions(
-                          height: 90.h,
-                          pageSnapping: true,
-                          initialPage: _current,
-                          onPageChanged: (index, reason) {
-                            selectedImage(index);
-                          },
-                          viewportFraction: 1.0,
-                          // scrollPhysics: _scrollPhysics,
-                          // scrollPhysics:
-                          //     _transformationController.value == Matrix4.identity()
-                          //         ? AlwaysScrollableScrollPhysics()
-                          //         : NeverScrollableScrollPhysics(),
-                          enableInfiniteScroll: false)),
+    log("URL: ${baseUrl + widget.media[_current].url}");
+    return KeyboardListener(
+      autofocus: true,
+      focusNode: FocusManager.instance.primaryFocus!,
+      onKeyEvent: (event) {
+        if (event.physicalKey == PhysicalKeyboardKey.arrowLeft) {
+          selectPrevious();
+        } else if (event.physicalKey == PhysicalKeyboardKey.arrowRight) {
+          selectNext();
+        }
+        // otherwise return this (propagates the events further to be handled elsewhere)
+        //return keyeventresult.ignored;
+      },
+      child: Scaffold(
+          backgroundColor: Colors.black,
+          body: Stack(
+            children: [
+              SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height,
+                child:
+                    // PhotoViewGallery.builder(
+                    //   pageController: _pageController,
+                    //   onPageChanged: (_) {
+                    //     selectedImage(_);
+                    //   },
+                    //   scrollPhysics: const BouncingScrollPhysics(),
+                    //   builder: (BuildContext context, int current) {
+                    //     return GeneralHelper.isVideo(widget.media[current].url)?
+                    //     PhotoViewGalleryPageOptions(
+                    //         imageProvider: GeneralHelper.imageHandlerForPhotoView(
+                    //           widget.media[current],
+                    //           getImageWidthHeight(
+                    //               ImageType.sectionImage, widget.media)[0],
+                    //           getImageWidthHeight(
+                    //               ImageType.sectionImage, widget.media)[1],
+                    //         ),
+                    //         // tightMode: true,
+                    //         basePosition: Alignment.center,
+                    //         initialScale: PhotoViewComputedScale.contained * 0.4,
+                    //         heroAttributes: PhotoViewHeroAttributes(
+                    //             tag: widget.media[current].id),
+                    //         minScale: PhotoViewComputedScale.contained * 1.0,
+                    //         maxScale: PhotoViewComputedScale.covered * 2.0,
+                    //         scaleStateController: scaleStateController);
+                    //   },
+                    //   itemCount: widget.media.length,
+                    //   loadingBuilder: (context, event) => Center(
+                    //     child: SizedBox(
+                    //       width: 50.sp,
+                    //       height: 50.sp,
+                    //       child: CircularProgressIndicator(
+                    //         value: event == null
+                    //             ? 0
+                    //             : event.cumulativeBytesLoaded / 1.8,
+                    //       ),
+                    //     ),
+                    //   ),
+                    //   backgroundDecoration: BoxDecoration(
+                    //     color: Colors.transparent.withOpacity(0),
+                    //   ),
+                    // )),
+                    Container(
+                  color: Colors.transparent,
+                  //  height: isTablet ? 100.h : 97.h,
+                  width: 100.w,
+                  child: PhotoViewGestureDetectorScope(
+                    axis: Axis.horizontal,
+                    child: CarouselSlider.builder(
+                        carouselController: _controller,
+                        itemCount: widget.media.length,
+                        itemBuilder: (context, ind1, ind2) {
+                          print(
+                              "Path new: ${baseUrl + widget.media[ind1].url}");
+                          return GeneralHelper.isVideo(
+                                  widget.media[_current].url)
+                              ? RotatedBox(
+                                  quarterTurns: kIsWeb
+                                      ? 0
+                                      : orientation ==
+                                              dro.DeviceOrientation
+                                                  .landscapeLeft
+                                          ? 1
+                                          : 0,
+                                  child: VideoViewer(
+                                      key: _key,
+                                      address: widget.media[_current].url))
+                              : PhotoView(
+                                  minScale: PhotoViewComputedScale.contained,
+                                  maxScale:
+                                      PhotoViewComputedScale.covered * 2.0,
+                                  scaleStateController: scaleStateController,
+                                  imageProvider: (kIsWeb
+                                      ? CachedNetworkImageProvider(
+                                          baseUrl + widget.media[_current].url)
+                                      : widget.media[ind1].url.isDeviceUrl
+                                          ? FileImage(
+                                              File(widget.media[_current].url))
+                                          : CachedNetworkImageProvider(baseUrl +
+                                              widget.media[_current]
+                                                  .url)) as ImageProvider,
+                                );
+                        },
+                        options: CarouselOptions(
+                            height: 90.h,
+                            pageSnapping: true,
+                            initialPage: _current,
+                            onPageChanged: (index, reason) {
+                              selectedImage(index);
+                              setState(() {});
+                            },
+                            viewportFraction: 1.0,
+                            // scrollPhysics: _scrollPhysics,
+                            // scrollPhysics:
+                            //     _transformationController.value == Matrix4.identity()
+                            //         ? AlwaysScrollableScrollPhysics()
+                            //         : NeverScrollableScrollPhysics(),
+                            enableInfiniteScroll: false)),
+                  ),
                 ),
               ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              height: topContainerHeight,
-              color: Colors.transparent.withOpacity(0.5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  isOnlyWeb
-                      ? InkWell(
-                          onTap: () => {zoomOut()},
-                          child: SvgPicture.asset(
-                            "assets/svg/Zoom-out-light.svg",
-                            package: "pdf_report_scope",
-                            width: buttonSize,
-                            height: buttonSize,
-                            color: ProjectColors.white,
-                          ),
-                        )
-                      : const SizedBox(),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  isOnlyWeb
-                      ? InkWell(
-                          onTap: () => {zoomIn()},
-                          child: SvgPicture.asset(
-                            "assets/svg/Zoom-in-light.svg",
-                            package: "pdf_report_scope",
-                            width: buttonSize,
-                            height: buttonSize,
-                            color: ProjectColors.white,
-                          ),
-                        )
-                      : const SizedBox(),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  InkWell(
-                    onTap: () => {Navigator.pop(context)},
-                    child: SvgPicture.asset(
-                      "assets/svg/Close2.svg",
-                      package: "pdf_report_scope",
-                      width: buttonSize,
-                      height: buttonSize,
-                      color: ProjectColors.white,
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: topContainerHeight,
+                color: Colors.transparent.withOpacity(0.5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    isOnlyWeb &&
+                            !(GeneralHelper.isVideo(widget.media[_current].url))
+                        ? InkWell(
+                            onTap: () => {zoomOut()},
+                            child: SvgPicture.asset(
+                              "assets/svg/Zoom-out-light.svg",
+                              package: "pdf_report_scope",
+                              width: buttonSize,
+                              height: buttonSize,
+                              color: ProjectColors.white,
+                            ),
+                          )
+                        : const SizedBox(),
+                    const SizedBox(
+                      width: 10,
                     ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                ],
+                    isOnlyWeb &&
+                            (GeneralHelper.isVideo(widget.media[_current].url))
+                        ? InkWell(
+                            onTap: () {
+                              callFullScreen();
+                            },
+                            child: Icon(
+                              Icons.fullscreen,
+                              size: buttonSize,
+                              color: ProjectColors.white,
+                            )
+                            // SvgPicture.asset(
+                            //   "assets/svg/clock_icon.svg",
+                            //   package: "pdf_report_scope",
+                            //   width: buttonSize,
+                            //   height: buttonSize,
+                            //   color: ProjectColors.white,
+                            // ),
+                            )
+                        : const SizedBox(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    isOnlyWeb &&
+                            !(GeneralHelper.isVideo(widget.media[_current].url))
+                        ? InkWell(
+                            onTap: () => {zoomIn()},
+                            child: SvgPicture.asset(
+                              "assets/svg/Zoom-in-light.svg",
+                              package: "pdf_report_scope",
+                              width: buttonSize,
+                              height: buttonSize,
+                              color: ProjectColors.white,
+                            ),
+                          )
+                        : const SizedBox(),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    InkWell(
+                      onTap: () => {Navigator.pop(context)},
+                      child: SvgPicture.asset(
+                        "assets/svg/Close2.svg",
+                        package: "pdf_report_scope",
+                        width: buttonSize,
+                        height: buttonSize,
+                        color: ProjectColors.white,
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            (widget.media.length > 1)
-                ? Align(
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        isOnlyWeb
-                            ? InkWell(
-                                onTap: () {
-                                  if (_current != 0) {
-                                    scaleStateController.scaleState =
-                                        PhotoViewScaleState.initial;
-                                    _current--;
-                                    setState(() {});
-                                  }
-                                  _pageController.animateToPage(
-                                    _current,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: const Duration(milliseconds: 800),
-                                  );
-                                },
-                                child: SvgPicture.asset(
-                                  "assets/svg/left_chevron.svg",
-                                  package: "pdf_report_scope",
-                                  width: arrowSize,
-                                  height: arrowSize,
-                                  // color: ProjectColors.white,
-                                ))
-                            : const SizedBox(),
-                        isOnlyWeb
-                            ? InkWell(
-                                onTap: () {
-                                  if (_current != widget.media.lastIndex) {
-                                    scaleStateController.scaleState =
-                                        PhotoViewScaleState.initial;
-                                    _current++;
-                                    setState(() {});
-                                  }
-                                  _pageController.animateToPage(
-                                    _current,
-                                    curve: Curves.fastOutSlowIn,
-                                    duration: const Duration(milliseconds: 800),
-                                  );
-                                },
-                                child: SvgPicture.asset(
-                                  "assets/svg/right_chevron.svg",
-                                  package: "pdf_report_scope",
-                                  width: arrowSize,
-                                  height: arrowSize,
-                                  // color: ProjectColors.white,
-                                ))
-                            : const SizedBox(),
-                      ],
-                    ),
-                  )
-                : const SizedBox(),
-            (widget.media.length > 1)
-                ? ThumbPhotoNavigation(
-                    media: widget.media,
-                    current: _current,
-                    // selectedImage: selectedImage,
-                    pageController: _pageController,
-                    navController: _controller,
-                  )
-                : const SizedBox()
-          ],
-        ));
+              (widget.media.length > 1)
+                  ? Align(
+                      alignment: Alignment.center,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          isOnlyWeb
+                              ? InkWell(
+                                  onTap: () {
+                                    selectPrevious();
+                                  },
+                                  child: SvgPicture.asset(
+                                    "assets/svg/left_chevron.svg",
+                                    package: "pdf_report_scope",
+                                    width: arrowSize,
+                                    height: arrowSize,
+                                    // color: ProjectColors.white,
+                                  ))
+                              : const SizedBox(),
+                          isOnlyWeb
+                              ? InkWell(
+                                  onTap: () {
+                                    selectNext();
+                                  },
+                                  child: SvgPicture.asset(
+                                    "assets/svg/right_chevron.svg",
+                                    package: "pdf_report_scope",
+                                    width: arrowSize,
+                                    height: arrowSize,
+                                    // color: ProjectColors.white,
+                                  ))
+                              : const SizedBox(),
+                        ],
+                      ),
+                    )
+                  : const SizedBox(),
+              (widget.media.length > 1)
+                  ? ThumbPhotoNavigation(
+                      media: widget.media,
+                      current: _current,
+                      // selectedImage: selectedImage,
+                      pageController: _pageController,
+                      navController: _controller,
+                      setCurrent: selectedImage,
+                    )
+                  : const SizedBox()
+            ],
+          )),
+    );
   }
 }
 
@@ -1370,13 +1451,15 @@ class ThumbPhotoNavigation extends StatefulWidget {
   final int current;
   final PageController? pageController;
   final CarouselController? navController;
+  Function? setCurrent;
   // final Function? selectedImage;
 
-  const ThumbPhotoNavigation({
+  ThumbPhotoNavigation({
     Key? key,
     required this.media,
     this.pageController,
     this.navController,
+    this.setCurrent,
     // this.selectedImage,
     required this.current,
   }) : super(key: key);
@@ -1483,7 +1566,13 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                                 color: Colors.transparent.withOpacity(0),
                                 child: InkWell(
                                     onTap: () {
-                                      // _animateToIndex(e.key);
+                                      _animateToIndex(e.key);
+                                      log("key: ${e.key}");
+                                      if (widget.setCurrent != null) {
+                                        widget.setCurrent!(e.key);
+                                        setState(() {});
+                                      }
+
                                       widget.pageController!.animateToPage(
                                         e.key,
                                         curve: Curves.fastOutSlowIn,
@@ -1493,13 +1582,21 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                                       setState(() {});
                                     },
                                     child: GeneralHelper.isVideo(e.value.url)
-                                        ? VideoThumb(
-                                            videoAddress: e.value.url,
-                                            width: 90.w,
-                                            showVideoIcon: true,
-                                            height: 10.h,
-                                            fit: BoxFit.cover,
-                                          )
+                                        ? kIsWeb
+                                            ? VideoThumbWeb(
+                                                videoAddress: e.value.url,
+                                                width: 90.w,
+                                                showVideoIcon: true,
+                                                height: 10.h,
+                                                fit: BoxFit.cover,
+                                              )
+                                            : VideoThumb(
+                                                videoAddress: e.value.url,
+                                                width: 90.w,
+                                                showVideoIcon: true,
+                                                height: 10.h,
+                                                fit: BoxFit.cover,
+                                              )
                                         : GeneralHelper
                                             .imageHandlerForRoundedConner(
                                                 e.value, 90.w, 10.h)),
