@@ -178,7 +178,7 @@ class GeneralHelper {
         return ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
-              baseUrlLive + defaultHeaderImage1,
+              imgBaseUrl + defaultHeaderImage1,
               fit: BoxFit.cover,
               width: getHeaderImageSizesForWeb()[0],
               height: getHeaderImageSizesForWeb()[1],
@@ -236,7 +236,7 @@ class GeneralHelper {
                   "assets/images/default_image.png",
                   package: "pdf_report_scope",
                 )
-              : Image.network(baseUrlLive + defaultInvalidImage)),
+              : Image.network(imgBaseUrl + defaultInvalidImage)),
     );
   }
 
@@ -244,7 +244,7 @@ class GeneralHelper {
     double scale = 0.4;
     if (kIsWeb) {
       // return Image.network(
-      //   baseUrlLive + image.url,
+      //   imgBaseUrl + image.url,
       //   scale: scale,
       //     loadingBuilder: (context, child, loadingProgress) {
       //       if (loadingProgress == null) {
@@ -258,7 +258,7 @@ class GeneralHelper {
       //     errorBuilder: (context, error, stackTrace) {
       //         return GeneralHelper.invalidImageText();
       // });
-      return NetworkImage(baseUrlLive + image.url, scale: 1.0);
+      return NetworkImage(imgBaseUrl + image.url, scale: 1.0);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url.envRelativePath()), scale: scale);
@@ -274,7 +274,7 @@ class GeneralHelper {
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
     if (kIsWeb) {
-      return Image.network(baseUrlLive + image.url,
+      return Image.network(imgBaseUrl + image.url,
           width: width,
           height: height,
           fit: BoxFit.cover, loadingBuilder: (context, child, loadingProgress) {
@@ -302,7 +302,7 @@ class GeneralHelper {
         return GeneralHelper.invalidImageText();
       });
       // return Image.network(
-      //   baseUrlLive + image.url,
+      //   imgBaseUrl + image.url,
       //   width: width,
       //   height: height,
       //   fit: BoxFit.contain,
@@ -328,7 +328,7 @@ class GeneralHelper {
 
   static imageHandlerForPhotoView(ImageShape image, width, height) {
     if (kIsWeb) {
-      return NetworkImage(baseUrlLive + image.url);
+      return NetworkImage(imgBaseUrl + image.url);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url.envRelativePath()));

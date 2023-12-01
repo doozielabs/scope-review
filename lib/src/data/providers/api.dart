@@ -11,7 +11,7 @@ var TokenStatic =
 Future<Dio> dio() async {
   return Dio(
     BaseOptions(
-      baseUrl: baseUrlLive,
+      baseUrl: baseUrl,
       headers: {
         "Authorization": 'Bearer ${TokenStatic}'
         // "Authorization": 'Bearer ${}'

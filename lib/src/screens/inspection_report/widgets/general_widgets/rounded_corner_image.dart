@@ -83,7 +83,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
                   image: DecorationImage(
                     image: GeneralHelper.imageHandlerForGallery(imageUrl),
                     // NetworkImage(
-                    //   baseUrlLive + imageUrl.original,
+                    //   imgBaseUrl + imageUrl.original,
                     // ),
                     fit: BoxFit.cover,
                     colorFilter: ColorFilter.mode(
@@ -170,7 +170,7 @@ class ImageWithRoundedCornersForHeader extends StatelessWidget {
                       image: DecorationImage(
                         image: GeneralHelper.imageHandlerForGallery(imageUrl),
                         // NetworkImage(
-                        //   baseUrlLive + imageUrl.original,
+                        //   imgBaseUrl + imageUrl.original,
                         // ),
                         fit: BoxFit.cover,
                         // colorFilter: ColorFilter.mode(

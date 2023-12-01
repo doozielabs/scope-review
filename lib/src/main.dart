@@ -113,11 +113,11 @@ class _PDFReportState extends State<PDFReport> {
                   children: [
                     isok
                         ? Image.network(
-                            baseUrlLive + generatedPdf,
+                            imgBaseUrl + generatedPdf,
                             fit: BoxFit.cover,
                           )
                         : Image.network(
-                            baseUrlLive + generationPdf,
+                            imgBaseUrl + generationPdf,
                             fit: BoxFit.cover,
                           ),
                     SizedBox(height: 16.0), // Add some spacing
