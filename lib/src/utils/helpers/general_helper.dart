@@ -1608,7 +1608,7 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                                                 height: 10.h,
                                                 fit: BoxFit.cover,
                                               )
-                                            : VideoThumbLive(
+                                            : VideoThumbApp(
                                                 path: e.value.url,
                                                 width: 90.w,
                                                 showVideoIcon: true,

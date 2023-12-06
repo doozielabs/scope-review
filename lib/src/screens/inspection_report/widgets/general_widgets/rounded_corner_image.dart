@@ -114,7 +114,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
                                   height: height,
                                   width: width,
                                 )
-                              : VideoThumbLive(
+                              : VideoThumbApp(
                                   path: imageUrl.url,
                                   fit: BoxFit.cover,
                                   showVideoIcon: true,
@@ -170,7 +170,7 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
                           showVideoIcon: true,
                           width: width,
                           height: height)
-                      : VideoThumbLive(
+                      : VideoThumbApp(
                           path: imageUrl.url,
                           fit: BoxFit.cover,
                           showVideoIcon: true,
