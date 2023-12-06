@@ -27,7 +27,7 @@ import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/full_screen_video.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb_web.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_viewer.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/video_thumb_live.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/video_thumb_app.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:sizer/sizer.dart';

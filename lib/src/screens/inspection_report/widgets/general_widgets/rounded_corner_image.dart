@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb_web.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/widgets/video_thumb_live.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/video_thumb_app.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ImageWithRoundedCorners extends StatelessWidget {
