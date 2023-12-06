@@ -154,8 +154,14 @@ class GeneralHelper {
     }
   }
 
-  static getMediaForHeader(ids, List<ImageShape> media) {
-    if (ids.length == 0 || ids[0].contains('hgui')) {
+  static getMediaForHeader(List<String>? ids, List<ImageShape> media) {
+    ImageShape? inspectionImg;
+    try {
+      if (ids == null) throw "No Inspection Thumbnail ID given";
+      inspectionImg = media.firstWhere(
+          (i) => ids.last.isHgui ? i.internalId == ids.last : i.id == ids.last);
+    } catch (e) {}
+    if ((ids != null && ids.isEmpty) || inspectionImg == null) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ClipRRect(
             borderRadius: BorderRadius.circular(16),
@@ -185,11 +191,12 @@ class GeneralHelper {
             ));
       }
     } else {
-      String lastMedia = ids.last;
-      int remainIdsCount = (ids.length - 1);
+      // String lastMedia = ids.last;
+      int remainIdsCount = ((ids?.length ?? 1) - 1);
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
+          imageUrl:
+              inspectionImg, //GeneralHelper.getMediaById(lastMedia, media),
           width: 100.w,
           boxFit: BoxFit.cover,
           remain: remainIdsCount,
@@ -199,7 +206,8 @@ class GeneralHelper {
         );
       } else if (SizerUtil.deviceType == DeviceType.tablet) {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
+          imageUrl: inspectionImg,
+          //GeneralHelper.getMediaById(lastMedia, media),
           width: 130.sp,
           boxFit: BoxFit.cover,
           height: 55.h,
@@ -210,7 +218,8 @@ class GeneralHelper {
         );
       } else {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
+          imageUrl:
+              inspectionImg, //GeneralHelper.getMediaById(lastMedia, media),
           boxFit: BoxFit.cover,
           width: getHeaderImageSizesForWeb()[0],
           height: getHeaderImageSizesForWeb()[1],

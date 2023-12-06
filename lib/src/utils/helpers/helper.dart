@@ -186,6 +186,7 @@ extension StringExtension on String? {
     return false;
   }
 
+  bool get isHgui => set.contains("hgui");
   bool get isAsset => set.contains("assets");
   bool get fromCache {
     if (set.contains("app.com.scope/cache") ||
