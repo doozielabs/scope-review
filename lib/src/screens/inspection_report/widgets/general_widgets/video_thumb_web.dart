@@ -48,15 +48,21 @@ class _VideoThumbWebState extends State<VideoThumbWeb> {
         });
     } else if (widget.videoAddress.isUrl ||
         widget.videoAddress.contains("https")) {
-      _controller =
-          VideoPlayerController.networkUrl(Uri(path: widget.videoAddress))
-            ..initialize().then((value) {
-              setState(() {
-                thumbLoading = false;
-              });
-            });
-    } else {
+      _controller = VideoPlayerController.network(widget.videoAddress)
+        ..initialize().then((value) {
+          setState(() {
+            thumbLoading = false;
+          });
+        });
+    } else if (widget.videoAddress.isDeviceUrl) {
       _controller = VideoPlayerController.file(File(widget.videoAddress))
+        ..initialize().then((value) {
+          setState(() {
+            thumbLoading = false;
+          });
+        });
+    } else {
+      _controller = VideoPlayerController.network(baseUrl + widget.videoAddress)
         ..initialize().then((value) {
           setState(() {
             thumbLoading = false;

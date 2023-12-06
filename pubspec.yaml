@@ -28,6 +28,7 @@ dependencies:
   video_thumbnail_imageview: ^0.0.5
   shimmer: ^3.0.0
   universal_html: ^2.2.4
+  flutter_animate: ^4.3.0
 
 dev_dependencies:
   flutter_test:

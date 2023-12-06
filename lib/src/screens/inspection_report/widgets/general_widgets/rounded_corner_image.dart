@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb_web.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/video_thumb_live.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class ImageWithRoundedCorners extends StatelessWidget {
@@ -105,13 +106,21 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(borderRadiusValue),
                       child: GeneralHelper.isVideo(imageUrl.url)
-                          ? VideoThumbWeb(
-                              videoAddress: imageUrl.url,
-                              fit: BoxFit.cover,
-                              showVideoIcon: true,
-                              height: height,
-                              width: width,
-                            )
+                          ? kIsWeb
+                              ? VideoThumbWeb(
+                                  videoAddress: imageUrl.url,
+                                  fit: BoxFit.cover,
+                                  showVideoIcon: true,
+                                  height: height,
+                                  width: width,
+                                )
+                              : VideoThumbLive(
+                                  path: imageUrl.url,
+                                  fit: BoxFit.cover,
+                                  showVideoIcon: true,
+                                  height: height,
+                                  width: width,
+                                )
                           : Image(
                               image: GeneralHelper.imageHandlerForGallery(
                                   imageUrl),
@@ -154,12 +163,20 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(borderRadiusValue),
               child: GeneralHelper.isVideo(imageUrl.url)
-                  ? VideoThumbWeb(
-                      fit: BoxFit.cover,
-                      videoAddress: imageUrl.url,
-                      showVideoIcon: true,
-                      width: width,
-                      height: height)
+                  ? kIsWeb
+                      ? VideoThumbWeb(
+                          fit: BoxFit.cover,
+                          videoAddress: imageUrl.url,
+                          showVideoIcon: true,
+                          width: width,
+                          height: height)
+                      : VideoThumbLive(
+                          path: imageUrl.url,
+                          fit: BoxFit.cover,
+                          showVideoIcon: true,
+                          height: height,
+                          width: width,
+                        )
                   : GeneralHelper.imageHandlerForRoundedConner(
                       imageUrl, width, height),
             ));

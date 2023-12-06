@@ -5,20 +5,21 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
+import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 // ignore: must_be_immutable
-class VideoThumb extends StatefulWidget {
-  String videoAddress;
+class VideoThumbLive extends StatefulWidget {
+  String path;
   BoxFit? fit;
   double? width;
   double? height;
   bool showVideoIcon;
   final Widget? errorBuilder;
 
-  VideoThumb(
+  VideoThumbLive(
       {super.key,
-      required this.videoAddress,
+      required this.path,
       this.errorBuilder,
       this.fit,
       this.height,
@@ -26,25 +27,19 @@ class VideoThumb extends StatefulWidget {
       this.showVideoIcon = false});
 
   @override
-  State<VideoThumb> createState() => _VideoThumbState();
+  State<VideoThumbLive> createState() => _VideoThumbLiveState();
 }
 
-class _VideoThumbState extends State<VideoThumb> {
+class _VideoThumbLiveState extends State<VideoThumbLive> {
   bool thumbLoading = true;
   Uint8List? resultThumb;
 
   loadThumb() async {
-    log("video Address: ${baseUrl + widget.videoAddress}");
     if (mounted) {
+      log(widget.path);
       try {
         resultThumb = await VideoThumbnail.thumbnailData(
-          video:
-              //  widget.imageShape != null
-              //     ? widget.imageShape!.id.isHgui
-              //         ? widget.imageShape!.url.envRelativePath()
-              //         : widget.imageShape!.serverUrl!
-              //     :
-              baseUrl + widget.videoAddress,
+          video: widget.path.isDeviceUrl ? widget.path : baseUrl + widget.path,
           imageFormat: ImageFormat.JPEG,
           maxWidth:
               128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
@@ -104,33 +99,29 @@ class _VideoThumbState extends State<VideoThumb> {
                         height: widget.height,
                       ),
                       widget.showVideoIcon
-                          ? Positioned(
-                              bottom:
-                                  // widget.height != null
-                                  //     ? widget.height! / 50
-                                  //     :
-                                  10,
-                              left:
-                                  //  widget.width != null
-                                  //     ? widget.width! / 50
-                                  //     :
-                                  10,
-                              child: Container(
-                                child: const Icon(
-                                  CupertinoIcons.video_camera_solid,
-                                  color: ProjectColors.aliceBlue,
-                                  size:
-                                      //  widget.width != null
-                                      //     ? widget.width! / 2.8
-                                      //     :
-                                      40,
-                                  shadows: [
-                                    Shadow(
-                                        blurRadius: 25,
-                                        color: Colors.black45,
-                                        offset: Offset(0, 0))
-                                  ],
-                                ),
+                          ? const Positioned(
+                              bottom: 5,
+                              // widget.height != null
+                              //     ? widget.height! / 50
+                              //     : 10,
+                              left: 5,
+                              // widget.width != null
+                              //     ? widget.width! / 50
+                              //     : 10,
+                              child: Icon(
+                                CupertinoIcons.video_camera_solid,
+                                color: ProjectColors.aliceBlue,
+                                // size: 40,
+                                // (widget.width != null
+                                //     ? widget.width! / 2.8
+                                //     : 20)
+                                //     ,
+                                shadows: [
+                                  Shadow(
+                                      blurRadius: 25,
+                                      color: Colors.black45,
+                                      offset: Offset(0, 0))
+                                ],
                               ),
                             )
                           : Container()

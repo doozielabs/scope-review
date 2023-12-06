@@ -1,12 +1,15 @@
 import 'dart:developer';
 import 'dart:io';
+import 'dart:ui';
 
+import 'package:device_real_orientation/device_orientation.dart' as dro;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
+import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoViewer extends StatefulWidget {
@@ -14,11 +17,13 @@ class VideoViewer extends StatefulWidget {
   double height;
   double width;
   bool showPlayVideo;
+  Enum orientation;
   VideoViewer(
       {super.key,
       required this.address,
       this.showPlayVideo = true,
       this.height = 15,
+      this.orientation = dro.DeviceOrientation.portrait,
       this.width = 15});
 
   @override
@@ -29,10 +34,12 @@ class _VideoViewerState extends State<VideoViewer> {
   late VideoPlayerController _controller;
   double _currentPos = 0.0;
 
+  final Key _key = const Key("1");
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+
     log(baseUrl + widget.address);
     if (kIsWeb) {
       _controller = VideoPlayerController.network(baseUrl + widget.address)
@@ -61,6 +68,14 @@ class _VideoViewerState extends State<VideoViewer> {
     });
   }
 
+  String _printDuration(Duration duration) {
+    String negativeSign = duration.isNegative ? '-' : '';
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60).abs());
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60).abs());
+    return "$twoDigitMinutes:$twoDigitSeconds";
+  }
+
   getCurrentPos() async {
     _currentPos = _controller.value.position.inSeconds /
         _controller.value.duration.inSeconds;
@@ -71,6 +86,108 @@ class _VideoViewerState extends State<VideoViewer> {
     // TODO: implement dispose
     super.dispose();
     _controller.dispose();
+  }
+
+  Widget videoControlBar() {
+    return SizedBox(
+      width: isTablet
+          ? 100.w
+          : widget.orientation == dro.DeviceOrientation.landscapeLeft
+              ? 100.h
+              : 100.w,
+      height: 100.h,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: isTablet
+                ? 100.w
+                : widget.orientation == dro.DeviceOrientation.landscapeLeft
+                    ? 100.h
+                    : 100.w,
+            height: 8.h,
+            child: Center(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(25),
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5.h),
+                        color: Colors.black.withOpacity(0.3),
+                        width: isTablet
+                            ? 70.w
+                            : widget.orientation ==
+                                    dro.DeviceOrientation.landscapeLeft
+                                ? 70.h
+                                : 70.w,
+                        // margin: EdgeInsets.symmetric(horizontal: 10.hs),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              child: Text(
+                                _printDuration(_controller.value.position),
+                                style: const TextStyle(
+                                    color: ProjectColors.white,
+                                    fontFamily: "jost-Regular",
+                                    fontSize: 14),
+                              ),
+                            ),
+                            Expanded(
+                              child: SliderTheme(
+                                data: const SliderThemeData(
+                                  trackHeight: 2,
+                                ),
+                                child: Slider(
+                                  value: _controller
+                                      .value.position.inMilliseconds
+                                      .toDouble(),
+                                  max: _controller.value.duration.inMilliseconds
+                                      .toDouble(),
+                                  onChanged: (x) {
+                                    // logWarning(x.toString());
+                                    // int ms =
+                                    //     ((_controller.value.duration.inMilliseconds *
+                                    //                 x) /
+                                    //             100)
+                                    //         .round();
+
+                                    _controller.seekTo(
+                                        Duration(milliseconds: x.round()));
+                                  },
+                                  activeColor: ProjectColors.white,
+                                  inactiveColor:
+                                      ProjectColors.white.withOpacity(0.5),
+                                ),
+                              ),
+                            ),
+                            Container(
+                              child: Text(
+                                _printDuration(_controller.value.duration),
+                                style: const TextStyle(
+                                    color: ProjectColors.white,
+                                    fontFamily: "jost-Regular",
+                                    fontSize: 14),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -175,7 +292,8 @@ class _VideoViewerState extends State<VideoViewer> {
               color: Colors.transparent,
               height: double.infinity,
               width: double.infinity,
-            ))
+            )),
+        Positioned(bottom: 10.h, child: videoControlBar()),
       ],
     );
   }

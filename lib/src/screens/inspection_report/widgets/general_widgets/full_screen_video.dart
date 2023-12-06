@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_viewer.dart';
 import 'package:sizer/sizer.dart';
-import 'package:universal_html/html.dart';
+import 'package:universal_html/html.dart' as html;
 
 class FullScreenVideo extends StatefulWidget {
   String videoPath;
@@ -18,11 +18,11 @@ class FullScreenVideo extends StatefulWidget {
 
 class _FullScreenVideoState extends State<FullScreenVideo> {
   void goFullScreen() {
-    document.documentElement!.requestFullscreen();
+    html.document.documentElement!.requestFullscreen();
   }
 
   void exitFullScreen() {
-    document.exitFullscreen();
+    html.document.exitFullscreen();
   }
 
   @override
@@ -30,10 +30,10 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
     // TODO: implement initState
     super.initState();
     if (kIsWeb) {
-      document.addEventListener('fullscreenchange', (event) {
+      html.document.addEventListener('fullscreenchange', (event) {
         log("event phase: ${event.eventPhase}");
         log("fullScreenChange");
-        if (document.fullscreenElement == null) {
+        if (html.document.fullscreenElement == null) {
           if (kDebugMode) {
             log('Video fullscreen exit');
             Navigator.of(context).pop();
@@ -53,7 +53,7 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
 
     log("dispose called");
 
-    document.removeEventListener("fullscreenchange", (event) => null);
+    html.document.removeEventListener("fullscreenchange", (event) => null);
     super.dispose();
   }
 
@@ -78,7 +78,7 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                   ),
                   onPressed: () {
                     if (kIsWeb) {
-                      document.exitFullscreen();
+                      html.document.exitFullscreen();
                     }
                     //Navigator.of(context).pop();
                   }))
