@@ -40,9 +40,9 @@ class _VideoViewerState extends State<VideoViewer> {
   void initState() {
     super.initState();
 
-    log(baseUrl + widget.address);
+    log(imgBaseUrl + widget.address);
     if (kIsWeb) {
-      _controller = VideoPlayerController.network(baseUrl + widget.address)
+      _controller = VideoPlayerController.network(imgBaseUrl + widget.address)
         ..initialize().then((value) {
           _controller.setLooping(true);
           setState(() {});
@@ -293,7 +293,7 @@ class _VideoViewerState extends State<VideoViewer> {
               height: double.infinity,
               width: double.infinity,
             )),
-        Positioned(bottom: 10.h, child: videoControlBar()),
+        Positioned(bottom: kIsWeb ? 12.h : 10.h, child: videoControlBar()),
       ],
     );
   }

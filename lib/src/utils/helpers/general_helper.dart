@@ -163,8 +163,14 @@ class GeneralHelper {
     }
   }
 
-  static getMediaForHeader(ids, List<ImageShape> media) {
-    if (ids.length == 0 || ids[0].contains('hgui')) {
+  static getMediaForHeader(List<String>? ids, List<ImageShape> media) {
+    ImageShape? inspectionImg;
+    try {
+      if (ids == null) throw "No Inspection Thumbnail ID given";
+      inspectionImg = media.firstWhere(
+          (i) => ids.last.isHgui ? i.internalId == ids.last : i.id == ids.last);
+    } catch (e) {}
+    if ((ids != null && ids.isEmpty) || inspectionImg == null) {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ClipRRect(
             borderRadius: BorderRadius.circular(16),
@@ -187,18 +193,19 @@ class GeneralHelper {
         return ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.network(
-              baseUrl + defaultHeaderImage1,
+              imgBaseUrl + defaultHeaderImage1,
               fit: BoxFit.cover,
               width: getHeaderImageSizesForWeb()[0],
               height: getHeaderImageSizesForWeb()[1],
             ));
       }
     } else {
-      String lastMedia = ids.last;
-      int remainIdsCount = (ids.length - 1);
+      // String lastMedia = ids.last;
+      int remainIdsCount = ((ids?.length ?? 1) - 1);
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
+          imageUrl:
+              inspectionImg, //GeneralHelper.getMediaById(lastMedia, media),
           width: 100.w,
           boxFit: BoxFit.cover,
           remain: remainIdsCount,
@@ -208,7 +215,8 @@ class GeneralHelper {
         );
       } else if (SizerUtil.deviceType == DeviceType.tablet) {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
+          imageUrl: inspectionImg,
+          //GeneralHelper.getMediaById(lastMedia, media),
           width: 130.sp,
           boxFit: BoxFit.cover,
           height: 55.h,
@@ -219,7 +227,8 @@ class GeneralHelper {
         );
       } else {
         return ImageWithRoundedCornersForHeader(
-          imageUrl: GeneralHelper.getMediaById(lastMedia, media),
+          imageUrl:
+              inspectionImg, //GeneralHelper.getMediaById(lastMedia, media),
           boxFit: BoxFit.cover,
           width: getHeaderImageSizesForWeb()[0],
           height: getHeaderImageSizesForWeb()[1],
@@ -245,7 +254,7 @@ class GeneralHelper {
                   "assets/images/default_image.png",
                   package: "pdf_report_scope",
                 )
-              : Image.network(baseUrl + defaultInvalidImage)),
+              : Image.network(imgBaseUrl + defaultInvalidImage)),
     );
   }
 
@@ -253,7 +262,7 @@ class GeneralHelper {
     double scale = 0.4;
     if (kIsWeb) {
       // return Image.network(
-      //   baseUrl + image.url,
+      //   imgBaseUrl + image.url,
       //   scale: scale,
       //     loadingBuilder: (context, child, loadingProgress) {
       //       if (loadingProgress == null) {
@@ -267,7 +276,7 @@ class GeneralHelper {
       //     errorBuilder: (context, error, stackTrace) {
       //         return GeneralHelper.invalidImageText();
       // });
-      return NetworkImage(baseUrl + image.url, scale: 1.0);
+      return NetworkImage(imgBaseUrl + image.url, scale: 1.0);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url), scale: scale);
@@ -292,7 +301,7 @@ class GeneralHelper {
 
   static imageHandlerForRoundedConner(ImageShape image, width, height) {
     if (kIsWeb) {
-      return Image.network(baseUrl + image.url,
+      return Image.network(imgBaseUrl + image.url,
           width: width,
           height: height,
           fit: BoxFit.cover, loadingBuilder: (context, child, loadingProgress) {
@@ -320,7 +329,7 @@ class GeneralHelper {
         return GeneralHelper.invalidImageText();
       });
       // return Image.network(
-      //   baseUrl + image.url,
+      //   imgBaseUrl + image.url,
       //   width: width,
       //   height: height,
       //   fit: BoxFit.contain,
@@ -346,7 +355,7 @@ class GeneralHelper {
 
   static imageHandlerForPhotoView(ImageShape image, width, height) {
     if (kIsWeb) {
-      return NetworkImage(baseUrl + image.url);
+      return NetworkImage(imgBaseUrl + image.url);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return FileImage(File(image.url));
@@ -1077,6 +1086,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
           });
         });
       }
+    } else {
+      orientation = dro.DeviceOrientation.portrait;
     }
     scaleStateController = PhotoViewScaleStateController()
       ..outputScaleStateStream.listen(printScaleState);
@@ -1127,6 +1138,7 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
 
   callFullScreen() {
     if (kIsWeb) {
+      updateVideoWidget();
       html.document.documentElement!.requestFullscreen();
     }
 
@@ -1196,7 +1208,7 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
         isOnlyWeb = true;
       }
     }
-    log("URL: ${baseUrl + widget.media[_current].url}");
+    log("URL: ${imgBaseUrl + widget.media[_current].url}");
     return
         // KeyboardListener(
         //   autofocus: true,
@@ -1271,7 +1283,7 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                           itemCount: widget.media.length,
                           itemBuilder: (context, ind1, ind2) {
                             print(
-                                "Path new: ${baseUrl + widget.media[ind1].url}");
+                                "Path new: ${imgBaseUrl + widget.media[ind1].url}");
                             return GeneralHelper.isVideo(
                                     widget.media[_current].url)
                                 ? RotatedBox(
@@ -1293,13 +1305,14 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                                         PhotoViewComputedScale.covered * 2.0,
                                     scaleStateController: scaleStateController,
                                     imageProvider: (kIsWeb
-                                        ? CachedNetworkImageProvider(baseUrl +
-                                            widget.media[_current].url)
+                                        ? CachedNetworkImageProvider(
+                                            imgBaseUrl +
+                                                widget.media[_current].url)
                                         : widget.media[ind1].url.isDeviceUrl
                                             ? FileImage(File(
                                                 widget.media[_current].url))
                                             : CachedNetworkImageProvider(
-                                                baseUrl +
+                                                imgBaseUrl +
                                                     widget.media[_current]
                                                         .url)) as ImageProvider,
                                   );

@@ -40,12 +40,13 @@ class _VideoThumbWebState extends State<VideoThumbWeb> {
     // TODO: implement initState
     //WidgetsBinding.instance.addPostFrameCallback((_) {
     if (kIsWeb) {
-      _controller = VideoPlayerController.network(baseUrl + widget.videoAddress)
-        ..initialize().then((value) {
-          setState(() {
-            thumbLoading = false;
-          });
-        });
+      _controller =
+          VideoPlayerController.network(imgBaseUrl + widget.videoAddress)
+            ..initialize().then((value) {
+              setState(() {
+                thumbLoading = false;
+              });
+            });
     } else if (widget.videoAddress.isUrl ||
         widget.videoAddress.contains("https")) {
       _controller = VideoPlayerController.network(widget.videoAddress)
@@ -62,12 +63,13 @@ class _VideoThumbWebState extends State<VideoThumbWeb> {
           });
         });
     } else {
-      _controller = VideoPlayerController.network(baseUrl + widget.videoAddress)
-        ..initialize().then((value) {
-          setState(() {
-            thumbLoading = false;
-          });
-        });
+      _controller =
+          VideoPlayerController.network(imgBaseUrl + widget.videoAddress)
+            ..initialize().then((value) {
+              setState(() {
+                thumbLoading = false;
+              });
+            });
     }
     //}
     //);
