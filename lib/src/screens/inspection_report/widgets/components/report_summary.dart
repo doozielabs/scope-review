@@ -136,7 +136,19 @@ class _ReportSummaryState extends State<ReportSummary> {
                                   comment: deficiencyComments[index],
                                   media: widget.media!);
                             },
-                          )
+                          ),
+                          const HorizontalDividerWidget(
+                            color: ProjectColors.pickledBluewood,
+                          ),
+                          const SizedBox(height: 10),
+                          widget.selectedTemplate.reportSummaryOptions == null
+                              ? const SizedBox()
+                              : Text(
+                                  widget.selectedTemplate.reportSummaryOptions!
+                                      .summaryFooter, // reportSummaryText,
+                                  style: secondryHeadingTextStyle.copyWith(
+                                      color: ProjectColors.pickledBluewood),
+                                ),
                           // ...List.generate(deficiencyComments.length, (index) {
                           //   return Padding(
                           //     padding:
