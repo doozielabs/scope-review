@@ -1,5 +1,3 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
@@ -141,8 +139,10 @@ class _TemplateSectionsState extends State<TemplateSections> {
                     bool hasSectionComments = selectedTemplate
                         .sections[sectionIndex].comments.isNotEmpty;
                     bool hasSectionItems = false;
-                    bool hasSectionHeader = selectedTemplate.sections[sectionIndex].header!.isNotEmpty;
-                    bool hasSectionFooter = selectedTemplate.sections[sectionIndex].footer!.isNotEmpty;
+                    bool hasSectionHeader = selectedTemplate
+                        .sections[sectionIndex].header!.isNotEmpty;
+                    bool hasSectionFooter = selectedTemplate
+                        .sections[sectionIndex].footer!.isNotEmpty;
                     for (var item
                         in selectedTemplate.sections[sectionIndex].items) {
                       if (!item.unspecified ||
@@ -218,11 +218,16 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     children: [
-                                      hasSectionHeader ? SectionHeader(
-                                        title:selectedTemplate.sections[sectionIndex].name!,
-                                        value:selectedTemplate.sections[sectionIndex].header!
-                                      )
-                                      : const Visibility(visible:false, child: SizedBox()),
+                                      hasSectionHeader
+                                          ? SectionHeader(
+                                              title: selectedTemplate
+                                                  .sections[sectionIndex].name!,
+                                              value: selectedTemplate
+                                                  .sections[sectionIndex]
+                                                  .header!)
+                                          : const Visibility(
+                                              visible: false,
+                                              child: SizedBox()),
                                       //=========================== Section Items Start ===========================
                                       hasSectionItems
                                           ? const Padding(
@@ -338,11 +343,16 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                                   color: ProjectColors.firefly),
                                             )
                                           : const SizedBox(),
-                                      hasSectionFooter ? SectionFooter(
-                                        title:selectedTemplate.sections[sectionIndex].name!,
-                                        value:selectedTemplate.sections[sectionIndex].footer!
-                                      )
-                                      : const Visibility(visible:false, child: SizedBox()),    
+                                      hasSectionFooter
+                                          ? SectionFooter(
+                                              title: selectedTemplate
+                                                  .sections[sectionIndex].name!,
+                                              value: selectedTemplate
+                                                  .sections[sectionIndex]
+                                                  .footer!)
+                                          : const Visibility(
+                                              visible: false,
+                                              child: SizedBox()),
                                       TemplateSubSection(
                                           inspection: inspection,
                                           media: media!,
