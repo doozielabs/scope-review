@@ -66,7 +66,7 @@ class _SectionTileState extends State<SectionTile> {
           child: Text(
             GeneralHelper.getNameWithDots(
                 widget.section.name!, nameWithDotsValue),
-            style: b2Regular.copyWith(
+            style: b3Regular.copyWith(
               color: ProjectColors.primary,
               // letterSpacing: 2,
               // fontFamily: fontFamilyJostMedium,
@@ -197,7 +197,7 @@ class _SectionTileState extends State<SectionTile> {
                   widget.hasSubsections
                       ? Container(
                           width: hasSubsectionDropArrow,
-                          height: 30.0,
+                          // height: 30.0,
                           color: Colors.transparent,
                           child: Center(
                             child: SvgPicture.asset(
@@ -211,7 +211,7 @@ class _SectionTileState extends State<SectionTile> {
                       : const SizedBox()
                 ],
               )
-            : SizedBox.shrink()
+            : const SizedBox.shrink()
       ],
     );
   }
