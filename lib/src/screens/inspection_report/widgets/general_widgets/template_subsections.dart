@@ -13,6 +13,8 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comment_card.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_header.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_footer.dart';
 
 class TemplateSubSection extends StatelessWidget {
   //TODO: Template section work is in progress need to rectify this.
@@ -55,6 +57,8 @@ class TemplateSubSection extends StatelessWidget {
           filterItems = GeneralHelper.getOnlyValidSectionItems(subSections[subSectionIndex].items);
           int crossAxisCountItems = 1;
           int crossAxisCountComments = 1;
+          bool hasSubSectionHeader = subSections[subSectionIndex].header!.isNotEmpty;
+          bool hasSubSectionFooter = subSections[subSectionIndex].footer!.isNotEmpty;
           // if(filterItems.length <  GeneralHelper.getSizeByDevicesForItems()){
           //   crossAxisCountItems = filterItems.length;
           // } else {
@@ -77,6 +81,7 @@ class TemplateSubSection extends StatelessWidget {
               hasSubSectionComments ||
               hasSectionItemComments) {
             return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(bottom: 14.0),
@@ -87,6 +92,11 @@ class TemplateSubSection extends StatelessWidget {
                           "${selectedTemplate.sections[sectionIndex].name}: ${subSections[subSectionIndex].name!}",
                       backgroundColor: ProjectColors.firefly),
                 ),
+                hasSubSectionHeader ? SectionHeader(
+                  title:subSections[subSectionIndex].name!,
+                  value:subSections[subSectionIndex].header!
+                )
+                : const Visibility(visible:false, child: SizedBox()),
                 hasSubSectionItems
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 14.0),
@@ -298,6 +308,11 @@ class TemplateSubSection extends StatelessWidget {
                                 ]))),
                       )
                     : const SizedBox(),
+              hasSubSectionFooter ? SectionHeader(
+                title:subSections[subSectionIndex].name!,
+                value:subSections[subSectionIndex].footer!
+              )
+              : const Visibility(visible:false, child: SizedBox()),      
               ],
             );
           } else {
