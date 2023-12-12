@@ -27,7 +27,7 @@ class ReportHeaderTablet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(5),
       child: Container(
         // height: height * 0.65,
         decoration: BoxDecoration(

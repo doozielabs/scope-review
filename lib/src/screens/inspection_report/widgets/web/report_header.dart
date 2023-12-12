@@ -27,7 +27,7 @@ class ReportHeaderWeb extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.all(1),
       child: Container(
         height: MediaQuery.of(context).size.height * 0.6,
         decoration: BoxDecoration(
@@ -37,7 +37,7 @@ class ReportHeaderWeb extends StatelessWidget {
         child: Row(
           children: [
             Padding(
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.all(1.0),
                 child:
                     GeneralHelper.getMediaForHeader(inspection.photos, media!)),
             Expanded(
@@ -48,7 +48,7 @@ class ReportHeaderWeb extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                            left: 20.0, right: 20.0, top: 1.0, bottom: 5.0),
                         child: Text(
                           selectedTemplate.name.unspecified.toUpperCase(),
                           style: primaryHeadingTextStyle.copyWith(
