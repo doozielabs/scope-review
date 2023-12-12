@@ -18,7 +18,7 @@ class User {
 
   late String? phone;
 
-  late ImageShape? logo;
+  late String? logo;
 
   late PlanType? planMode;
 
@@ -59,7 +59,7 @@ class User {
       this.address,
       this.companyAddress,
       this.phone,
-      this.logo,
+      this.logo = "",
       this.planMode,
       this.reportLimits,
       this.accessToken,
@@ -67,7 +67,7 @@ class User {
       this.userType,
       this.photo,
       this.website,
-      this.organization,
+      this.organization = "",
       this.location,
       this.signature,
       this.licenseNumber = "",
@@ -102,6 +102,7 @@ class User {
     // );
     // photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
     website = json["website"];
+    logo = json["logo"];
     organization = json["organization"];
     // signature = json['signature'];
     // location = json["location"];
@@ -130,6 +131,7 @@ class User {
     // data["planMode"] = GeneralHelper.typeValue(PlanType);
     // data["userType"] = GeneralHelper.typeValue(UserType);
     data["website"] = website;
+    data["logo"] = logo;
     // data["photo"] = photo?.toJson();
     data["organization"] = organization;
     // data["signature"] = signature;
