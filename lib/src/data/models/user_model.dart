@@ -99,7 +99,7 @@ class User {
     //   "UserType",
     //   json["userType"],
     // );
-    // photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
+    photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
     website = json["website"];
     logo = json["logo"] == null ? null : ImageShape.fromJson(json['logo']);
     organization = json["organization"];
@@ -131,7 +131,7 @@ class User {
     // data["userType"] = GeneralHelper.typeValue(UserType);
     data["website"] = website;
     data["logo"] = logo?.toJson();
-    // data["photo"] = photo?.toJson();
+    data["photo"] = photo?.toJson();
     data["organization"] = organization;
     // data["signature"] = signature;
     data["signature"] = signature?.toJson();
