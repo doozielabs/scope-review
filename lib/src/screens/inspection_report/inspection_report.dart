@@ -196,8 +196,9 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var companyLogo = GeneralHelper.getMediaById(
-        (widget.user.logo ?? ImageShape()).id, widget.media);
+    var companyLogo = widget.user.logo;
+    //  GeneralHelper.getMediaById(
+    //     (widget.user.logo ?? ImageShape()).id, widget.media);
     bool isdownloading = widget.isdownloading ?? false;
     bool isHeaderReport = (selectedTemplate.reportHeader.isNotEmpty);
     bool isFooterReport = (selectedTemplate.reportFooter.isNotEmpty);
@@ -468,7 +469,7 @@ class _InspectionReportScreenState extends State<InspectionReportScreen> {
                         //   ),
                         // ),
                         (widget.user.organization == null &&
-                                companyLogo is String)
+                                companyLogo == null)
                             ? Center(
                                 child: Padding(
                                   padding: const EdgeInsets.all(1),
