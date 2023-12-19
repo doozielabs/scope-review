@@ -8,7 +8,7 @@ const String fontFamilyJostSemiBold = "jost-SemiBold";
 
 const TextStyle primaryHeadingTextStyle = TextStyle(
   fontSize: 16,
-  fontWeight: FontWeight.w600,
+  // fontWeight: FontWeight.w600,
   fontFamily: fontFamilyJostMedium,
   package: "pdf_report_scope",
 );
