@@ -28,13 +28,13 @@ class ReportHeader extends StatelessWidget {
       if (SizerUtil.deviceType == DeviceType.mobile) {
         return ReportHeaderMobile(
             inspection: inspection,
-            media: media!,
+            media: media ?? [],
             user: user,
             selectedTemplate: selectedTemplate);
       } else if (SizerUtil.deviceType == DeviceType.tablet) {
         return ReportHeaderTablet(
             inspection: inspection,
-            media: media!,
+            media: media ?? [],
             user: user,
             selectedTemplate: selectedTemplate);
       } else {
@@ -42,7 +42,7 @@ class ReportHeader extends StatelessWidget {
           //Mobile
           return ReportHeaderMobile(
               inspection: inspection,
-              media: media!,
+              media: media ?? [],
               user: user,
               selectedTemplate: selectedTemplate);
         }
@@ -51,7 +51,7 @@ class ReportHeader extends StatelessWidget {
           //Tablet
           return ReportHeaderTablet(
               inspection: inspection,
-              media: media!,
+              media: media ?? [],
               user: user,
               selectedTemplate: selectedTemplate);
         } else {
