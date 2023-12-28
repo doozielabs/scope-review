@@ -1,5 +1,5 @@
-import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
+import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class Person {
@@ -10,8 +10,8 @@ class Person {
   late String phone;
   late ImageShape? photo;
   late PersonType? type;
-
   late List<String>? additionalEmails;
+  late String? contactType;
 
   Person({
     this.id,
@@ -22,6 +22,7 @@ class Person {
     this.email = "",
     this.phone = "",
     this.additionalEmails,
+    this.contactType,
   });
 
   Person.fromJson(Map<String, dynamic> json) {
@@ -33,9 +34,28 @@ class Person {
     photo = json['photo'] == null ? null : ImageShape.fromJson(json['photo']);
     type = GeneralHelper.getType(
         PersonType.values, "PersonType", json['type'] ?? "");
-    if (json.containsKey("additionalEmails") &&
-        json['additionalEmails'].isNotEmpty) {
-      additionalEmails = json['additionalEmails'];
+    if (json['additionalEmails'] != null) {
+      additionalEmails =
+          (json['additionalEmails'] as List<dynamic>).cast<String>();
+    } else {
+      additionalEmails = [];
+    }
+    if ((json['contactType'] == null || json['contactType'] == "") &&
+        type != null) {
+      switch (type) {
+        case PersonType.seller:
+          contactType = "Seller Agent";
+          break;
+        case PersonType.buyer:
+          contactType = "Buyer Agent";
+          break;
+        case PersonType.client:
+          contactType = "Client";
+          break;
+        default:
+      }
+    } else {
+      contactType = json['contactType'];
     }
   }
 
