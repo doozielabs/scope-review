@@ -6,13 +6,13 @@ import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:sizer/sizer.dart';
 
-// const baseUrl = 'https://api.scopeinspectapp.com'; // Production
-const baseUrl = 'https://staging-api.scopeinspectapp.com'; // Staging
+const baseUrl = 'https://api.scopeinspectapp.com'; // Production
+// const baseUrl = 'https://staging-api.scopeinspectapp.com'; // Staging
 // const baseUrl = 'http://localhost:1337'; // Local
 // const baseUrl = 'http://192.168.88.15:1337';
 
-// const imgBaseUrl = 'https://cdn.scopeinspectapp.com'; // Production
-const imgBaseUrl = 'https://scdn.scopeinspectapp.com'; // Staging
+const imgBaseUrl = 'https://cdn.scopeinspectapp.com'; // Production
+// const imgBaseUrl = 'https://scdn.scopeinspectapp.com'; // Staging
 // const imgBaseUrl = 'http://localhost:1337'; // Local
 // const imgBaseUrl = 'http://192.168.88.15:1337';
 
