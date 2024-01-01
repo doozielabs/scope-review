@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
-import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
-import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class MultiTemplatesSelection extends StatefulWidget {
   final List<Template> templates;
@@ -33,11 +32,11 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
   @override
   void initState() {
     if (widget.selectedTemplate != null) {
-      widget.templates.forEach((element) {
+      for (var element in widget.templates) {
         if (widget.selectedTemplate!.id == element.id) {
           _currVal = widget.templates.indexOf(element);
         }
-      });
+      }
     }
     super.initState();
   }
@@ -56,7 +55,8 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Template> templates = widget.templates;
+    final List<Template> templates =
+        GeneralHelper.sortTemplatesByBase(widget.templates);
     return
         // Expanded(
         //     flex: 1,

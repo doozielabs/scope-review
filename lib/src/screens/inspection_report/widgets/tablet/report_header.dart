@@ -56,7 +56,8 @@ class ReportHeaderTablet extends StatelessWidget {
                             ? "Unspecified"
                             : selectedTemplate.name.toUpperCase(),
                         style: primaryHeadingTextStyle.copyWith(
-                            color: ProjectColors.white),
+                            color: ProjectColors.white,
+                            fontWeight: FontWeight.w300),
                       ),
                     ),
                     const HorizontalDividerWidget(),

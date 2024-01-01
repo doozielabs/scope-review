@@ -258,6 +258,12 @@ class GeneralHelper {
     );
   }
 
+  static List<Template> sortTemplatesByBase(List<Template> templates) {
+    // Sort the templates with isBaseTemplate set to true first
+    return List.from(templates)
+      ..sort((a, b) => (b.isBaseTemplate ?? false) ? 1 : -1);
+  }
+
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
     if (kIsWeb) {
@@ -279,7 +285,7 @@ class GeneralHelper {
       return NetworkImage(imgBaseUrl + image.url, scale: 1.0);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-        return FileImage(File(image.url), scale: scale);
+        return FileImage(File(image.url.envRelativePath()), scale: scale);
       } else {
         if (image.url.contains("https")) {
           return NetworkImage(image.url, scale: 1.0);
@@ -337,7 +343,7 @@ class GeneralHelper {
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return Image.file(
-          File(image.url),
+          File(image.url.envRelativePath()),
           width: width,
           height: height,
           fit: BoxFit.cover,
@@ -358,7 +364,7 @@ class GeneralHelper {
       return NetworkImage(imgBaseUrl + image.url);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-        return FileImage(File(image.url));
+        return FileImage(File(image.url.envRelativePath()));
       } else {
         return AssetImage(image.url);
       }
@@ -454,14 +460,18 @@ class GeneralHelper {
     }
   }
 
-  static displayMediaList(ids, List<ImageShape> media, int counts, imagetype) {
-    int remainIdsCount = (ids.length - counts);
+  static displayMediaList(
+      List<String> ids, List<ImageShape> media, int counts, imagetype) {
+    List<String> filteredIds = ids
+        .where((element) => media.any((media) => media.id == element))
+        .toList();
+    int remainIdsCount = (filteredIds.length - counts);
     int crossAxisCountAdjust = 1;
-    if (ids.length == 1 && imagetype == ImageType.sectionImage) {
+    if (filteredIds.length == 1 && imagetype == ImageType.sectionImage) {
       crossAxisCountAdjust = 2;
-    } else if (ids.length <
+    } else if (filteredIds.length <
         GeneralHelper.getSizeByDevicesForImages(imagetype, counts)) {
-      crossAxisCountAdjust = ids.length;
+      crossAxisCountAdjust = filteredIds.length;
     } else {
       crossAxisCountAdjust =
           GeneralHelper.getSizeByDevicesForImages(imagetype, counts);
@@ -469,25 +479,27 @@ class GeneralHelper {
     if (crossAxisCountAdjust == 0) {
       crossAxisCountAdjust = 1;
     }
-    if (ids.length != 0) {
-      if (ids.length < counts) {
+    if (filteredIds.isNotEmpty) {
+      if (filteredIds.length < counts) {
         return MasonryGridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: ids.length,
+            itemCount: filteredIds.length,
             crossAxisCount: crossAxisCountAdjust,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             itemBuilder: (context, countIndex) {
-              var imageObj = GeneralHelper.getMediaById(ids[countIndex], media);
+              var imageObj =
+                  GeneralHelper.getMediaById(filteredIds[countIndex], media);
               if (imageObj is ImageShape) {
                 return ImageWithRoundedCornersV1(
-                  imageUrl: GeneralHelper.getMediaById(ids[countIndex], media),
-                  width: getImageWidthHeight(imagetype, ids)[0],
-                  height: getImageWidthHeight(imagetype, ids)[1],
+                  imageUrl: GeneralHelper.getMediaById(
+                      filteredIds[countIndex], media),
+                  width: getImageWidthHeight(imagetype, filteredIds)[0],
+                  height: getImageWidthHeight(imagetype, filteredIds)[1],
                   remain: remainIdsCount,
                   lastItem: false,
-                  ids: ids,
+                  ids: filteredIds,
                   media: media,
                   counts: counts,
                 );
@@ -506,17 +518,17 @@ class GeneralHelper {
             itemBuilder: (context, countIndex) {
               if (countIndex == (counts - 1) && remainIdsCount != 0) {
                 var imageObj =
-                    GeneralHelper.getMediaById(ids[countIndex], media);
+                    GeneralHelper.getMediaById(filteredIds[countIndex], media);
                 if (imageObj is ImageShape) {
                   // last one
                   return ImageWithRoundedCornersV1(
-                    imageUrl:
-                        GeneralHelper.getMediaById(ids[countIndex], media),
-                    width: getImageWidthHeight(imagetype, ids)[0],
-                    height: getImageWidthHeight(imagetype, ids)[1],
+                    imageUrl: GeneralHelper.getMediaById(
+                        filteredIds[countIndex], media),
+                    width: getImageWidthHeight(imagetype, filteredIds)[0],
+                    height: getImageWidthHeight(imagetype, filteredIds)[1],
                     remain: remainIdsCount,
                     lastItem: true,
-                    ids: ids,
+                    ids: filteredIds,
                     media: media,
                     counts: counts,
                   );
@@ -525,16 +537,16 @@ class GeneralHelper {
                 }
               } else {
                 var imageObj =
-                    GeneralHelper.getMediaById(ids[countIndex], media);
+                    GeneralHelper.getMediaById(filteredIds[countIndex], media);
                 if (imageObj is ImageShape) {
                   return ImageWithRoundedCornersV1(
-                    imageUrl:
-                        GeneralHelper.getMediaById(ids[countIndex], media),
-                    width: getImageWidthHeight(imagetype, ids)[0],
-                    height: getImageWidthHeight(imagetype, ids)[1],
+                    imageUrl: GeneralHelper.getMediaById(
+                        filteredIds[countIndex], media),
+                    width: getImageWidthHeight(imagetype, filteredIds)[0],
+                    height: getImageWidthHeight(imagetype, filteredIds)[1],
                     remain: remainIdsCount,
                     lastItem: false,
-                    ids: ids,
+                    ids: filteredIds,
                     media: media,
                     counts: counts,
                   );
@@ -1309,8 +1321,9 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                                             imgBaseUrl +
                                                 widget.media[_current].url)
                                         : widget.media[ind1].url.isDeviceUrl
-                                            ? FileImage(File(
-                                                widget.media[_current].url))
+                                            ? FileImage(File(widget
+                                                .media[_current].url
+                                                .envRelativePath()))
                                             : CachedNetworkImageProvider(
                                                 imgBaseUrl +
                                                     widget.media[_current]

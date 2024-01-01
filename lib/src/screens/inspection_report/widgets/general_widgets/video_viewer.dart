@@ -54,11 +54,12 @@ class _VideoViewerState extends State<VideoViewer> {
           setState(() {});
         });
     } else {
-      _controller = VideoPlayerController.file(File(widget.address))
-        ..initialize().then((value) {
-          _controller.setLooping(true);
-          setState(() {});
-        });
+      _controller =
+          VideoPlayerController.file(File(widget.address.envRelativePath()))
+            ..initialize().then((value) {
+              _controller.setLooping(true);
+              setState(() {});
+            });
     }
 
     _controller.addListener(() {
