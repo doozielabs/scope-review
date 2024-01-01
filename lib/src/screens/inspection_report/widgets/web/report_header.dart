@@ -38,7 +38,7 @@ class ReportHeaderWeb extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-                padding: const EdgeInsets.all(1.0),
+                padding: const EdgeInsets.all(10.0),
                 child:
                     GeneralHelper.getMediaForHeader(inspection.photos, media!)),
             Expanded(
@@ -49,7 +49,7 @@ class ReportHeaderWeb extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.only(
-                            left: 20.0, right: 20.0, top: 1.0, bottom: 5.0),
+                            left: 20.0, right: 20.0, top: 10.0, bottom: 0.0),
                         child: Text(
                           selectedTemplate.name.unspecified.toUpperCase(),
                           style: primaryHeadingTextStyle.copyWith(
