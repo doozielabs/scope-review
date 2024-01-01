@@ -56,7 +56,7 @@ class ReportHeaderTablet extends StatelessWidget {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(
-                              left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                              left: 20.0, right: 20.0, top: 10.0, bottom: 0.0),
                           child: Text(
                             selectedTemplate.name == ""
                                 ? "Unspecified"
