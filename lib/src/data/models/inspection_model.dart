@@ -1,9 +1,8 @@
 import 'package:pdf_report_scope/src/data/models/address_model.dart';
+import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/data/models/general_models.dart';
 import 'package:pdf_report_scope/src/data/models/payment_info_model.dart';
 import 'package:pdf_report_scope/src/data/models/person_model.dart';
-import 'package:pdf_report_scope/src/data/models/template.dart';
-import 'package:pdf_report_scope/src/data/models/enum_types.dart';
 import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class InspectionModel {
@@ -18,6 +17,7 @@ class InspectionModel {
   late String description;
   late Person? buyerAgent;
   late Person? sellerAgent;
+  List<Person>? otherPersons;
   late List<String> photos;
   late InspectionType status;
   late Cordinates? coordinates;
@@ -50,7 +50,8 @@ class InspectionModel {
       this.isManual = false,
       this.serverTimestamp,
       this.lastModified,
-      this.inspectionHashMap = const {}})
+      this.inspectionHashMap = const {},
+      this.otherPersons = const []})
       : photos = [];
 
   InspectionModel.fromJson(Map<String, dynamic> json) {
@@ -65,7 +66,11 @@ class InspectionModel {
       inspectionHashMap = <String, String>{};
     }
     name = json['name'];
-
+    if (json['otherPersons'] != null) {
+      otherPersons = Person.fromListJson(json['otherPersons']);
+    } else {
+      otherPersons = [];
+    }
     description = json['description'];
     address =
         json['address'] != null ? Address.fromJson(json['address']) : null;
@@ -135,6 +140,7 @@ class InspectionModel {
     data['status'] = GeneralHelper.typeValue(status);
     data['trash'] = trash;
     data['isManual'] = isManual;
+    data['otherPersons'] = otherPersons?.map((_) => _.toJson()).toList();
     return data;
   }
 

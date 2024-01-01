@@ -12,6 +12,8 @@ import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_w
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_comments.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item_comments.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_item_details.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_header.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/section_footer.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/template_subsections.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
@@ -137,6 +139,10 @@ class _TemplateSectionsState extends State<TemplateSections> {
                     bool hasSectionComments = selectedTemplate
                         .sections[sectionIndex].comments.isNotEmpty;
                     bool hasSectionItems = false;
+                    bool hasSectionHeader = selectedTemplate
+                        .sections[sectionIndex].header!.isNotEmpty;
+                    bool hasSectionFooter = selectedTemplate
+                        .sections[sectionIndex].footer!.isNotEmpty;
                     for (var item
                         in selectedTemplate.sections[sectionIndex].items) {
                       if (!item.unspecified ||
@@ -212,6 +218,16 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     children: [
+                                      hasSectionHeader
+                                          ? SectionHeader(
+                                              title: selectedTemplate
+                                                  .sections[sectionIndex].name!,
+                                              value: selectedTemplate
+                                                  .sections[sectionIndex]
+                                                  .header!)
+                                          : const Visibility(
+                                              visible: false,
+                                              child: SizedBox()),
                                       //=========================== Section Items Start ===========================
                                       hasSectionItems
                                           ? const Padding(
@@ -327,6 +343,16 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                                   color: ProjectColors.firefly),
                                             )
                                           : const SizedBox(),
+                                      hasSectionFooter
+                                          ? SectionFooter(
+                                              title: selectedTemplate
+                                                  .sections[sectionIndex].name!,
+                                              value: selectedTemplate
+                                                  .sections[sectionIndex]
+                                                  .footer!)
+                                          : const Visibility(
+                                              visible: false,
+                                              child: SizedBox()),
                                       TemplateSubSection(
                                           inspection: inspection,
                                           media: media!,

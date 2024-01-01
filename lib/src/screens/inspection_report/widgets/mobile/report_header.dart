@@ -4,6 +4,7 @@ import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/typography.dart';
 import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
+import 'package:pdf_report_scope/src/data/models/person_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/horizontal_divider_widget.dart';
@@ -26,6 +27,7 @@ class ReportHeaderMobile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Person> persons = inspection.otherPersons ?? [];
     return Padding(
       padding: const EdgeInsets.all(10),
       child: Container(
@@ -73,8 +75,7 @@ class ReportHeaderMobile extends StatelessWidget {
                       const SizedBox(width: 10),
                       Expanded(
                         child: Text(
-                          GeneralHelper.getInspectionAddress(
-                              inspection.address),
+                          inspection.address.fullAdress,
                           overflow: TextOverflow.visible,
                           style: secondryHeadingTextStyle.copyWith(
                             fontWeight: FontWeight.w500,
@@ -164,6 +165,44 @@ class ReportHeaderMobile extends StatelessWidget {
                 ],
               ),
             ),
+            Visibility(
+                visible: persons.isNotEmpty,
+                child: const HorizontalDividerWidget()),
+            ...List.generate(
+              persons.length,
+              (i) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "${persons[i].contactType.unspecified}:",
+                            style: secondryHeadingTextStyle,
+                          ),
+                          const SizedBox(height: 10),
+                          HeaderInfoItem(
+                              iconName: "icon-user", text: persons[i].fullName),
+                          const SizedBox(height: 10),
+                          HeaderInfoItem(
+                              iconName: "icon-mail", text: persons[i].email),
+                          const SizedBox(height: 10),
+                          HeaderInfoItem(
+                              iconName: "icon-cell", text: persons[i].phone),
+                          const SizedBox(height: 10),
+                        ],
+                      ),
+                    ),
+                    Visibility(
+                        visible: (persons.lastIndex != i),
+                        child: const HorizontalDividerWidget()),
+                  ],
+                );
+              },
+            )
           ],
         ),
       ),

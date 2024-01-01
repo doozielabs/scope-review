@@ -180,19 +180,22 @@ class _SectionEyeShotForMobileState
                             selectedTemplate: selectedTemplate,
                             switchServiceMethod: switchService)
                         : const SizedBox(),
-                    TextField(
-                      onChanged: _search,
-                      decoration: InputDecoration(
-                        prefixIcon: const Icon(Icons.search),
-                        hintText: 'Search',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                          borderSide: BorderSide.none,
+                    Padding(
+                      padding: const EdgeInsets.only(left:10.0, right:10.0),
+                      child: TextField(
+                        onChanged: _search,
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(Icons.search),
+                          hintText: 'Search',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide.none,
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[200],
+                          contentPadding:
+                              const EdgeInsets.symmetric(horizontal: 16.0),
                         ),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        contentPadding:
-                            const EdgeInsets.symmetric(horizontal: 16.0),
                       ),
                     ),
                     // InkWell(

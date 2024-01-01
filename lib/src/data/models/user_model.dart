@@ -1,7 +1,6 @@
 import 'package:pdf_report_scope/src/data/models/address_model.dart';
-import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 import 'package:pdf_report_scope/src/data/models/enum_types.dart';
-import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
+import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
 
 class User {
   late String? id;
@@ -67,7 +66,7 @@ class User {
       this.userType,
       this.photo,
       this.website,
-      this.organization,
+      this.organization = "",
       this.location,
       this.signature,
       this.licenseNumber = "",
@@ -100,8 +99,9 @@ class User {
     //   "UserType",
     //   json["userType"],
     // );
-    // photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
+    photo = json["photo"] == null ? null : ImageShape.fromJson(json["photo"]);
     website = json["website"];
+    logo = json["logo"] == null ? null : ImageShape.fromJson(json['logo']);
     organization = json["organization"];
     // signature = json['signature'];
     // location = json["location"];
@@ -130,7 +130,8 @@ class User {
     // data["planMode"] = GeneralHelper.typeValue(PlanType);
     // data["userType"] = GeneralHelper.typeValue(UserType);
     data["website"] = website;
-    // data["photo"] = photo?.toJson();
+    data["logo"] = logo?.toJson();
+    data["photo"] = photo?.toJson();
     data["organization"] = organization;
     // data["signature"] = signature;
     data["signature"] = signature?.toJson();

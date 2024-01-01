@@ -45,6 +45,14 @@ extension AdressExtension on Address? {
           this?.state ?? "",
           this?.zipcode ?? "",
         ].where((_) => _.isNotEmpty).join(", ");
+  // String get fullAdress => isNull
+  //     ? ""
+  //     : [
+  //         this?.street ?? "",
+  //         this?.city ?? "",
+  //         this?.state ?? "",
+  //         this?.zipcode ?? "",
+  //       ].where((_) => _.isNotEmpty).join(", ");
 }
 
 extension PersonExtension on Person? {
