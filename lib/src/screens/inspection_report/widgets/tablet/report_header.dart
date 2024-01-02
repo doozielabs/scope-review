@@ -192,16 +192,16 @@ class ReportHeaderTablet extends StatelessWidget {
                 )),
             Visibility(
               visible: persons.isNotEmpty,
-              child: GridView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, mainAxisExtent: 150),
-                itemCount: persons.length,
-                itemBuilder: (context, i) {
-                  return Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: Column(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                child: GridView.builder(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2, mainAxisExtent: 150),
+                  itemCount: persons.length,
+                  itemBuilder: (context, i) {
+                    return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
@@ -225,12 +225,13 @@ class ReportHeaderTablet extends StatelessWidget {
                         ),
                         const SizedBox(height: 10),
                         Visibility(
-                            visible: (i < persons.length - 1),
+                            visible: ((i < persons.length - 1) ||
+                                persons.lastIndex == i),
                             child: const HorizontalDividerWidget(padding: 0)),
                       ],
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ],
