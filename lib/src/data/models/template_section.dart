@@ -34,8 +34,8 @@ class TemplateSection {
     uid = json["uid"];
     serverTimestamp = json['serverTimestamp'] ?? 0;
     lastModified = json['lastModified'] ?? 0;
-    header = json["header"];
-    footer = json["footer"];
+    header = json["header"] ?? '';
+    footer = json["footer"] ?? '';
     name = json["sectionLabel"];
     visibility = json["visibility"] ?? true;
     images = List<String>.from(json["images"] ?? []);
