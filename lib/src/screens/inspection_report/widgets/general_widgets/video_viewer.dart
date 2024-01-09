@@ -92,7 +92,9 @@ class _VideoViewerState extends State<VideoViewer> {
   Widget videoControlBar() {
     return SizedBox(
       width: isTablet
-          ? 100.w
+          ? widget.orientation == dro.DeviceOrientation.landscapeLeft
+              ? 100.h
+              : 100.w
           : widget.orientation == dro.DeviceOrientation.landscapeLeft
               ? 100.h
               : 100.w,
@@ -211,8 +213,6 @@ class _VideoViewerState extends State<VideoViewer> {
             child: widget.showPlayVideo
                 ? !(_controller.value.isPlaying)
                     ? CupertinoButton(
-                        padding: const EdgeInsets.all(0.0),
-                        minSize: 0.0001,
                         onPressed: () async {
                           // bool playbackState =
                           //     await _videoTrimmers[videoTrimmerRef['$index']!].videoPlaybackControl(
@@ -232,17 +232,21 @@ class _VideoViewerState extends State<VideoViewer> {
                           // _controller.
                         },
                         child: Container(
+                          height: 7.h,
+                          width: 7.h,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: ProjectColors.black.withOpacity(0.4),
                           ),
-                          child: const Icon(
-                            // _controller.value.isPlaying
-                            //     ? Icons.pause
-                            //     :
-                            Icons.play_arrow,
-                            color: ProjectColors.white,
-                            size: 60,
+                          child: Center(
+                            child: Icon(
+                              // _controller.value.isPlaying
+                              //     ? Icons.pause
+                              //     :
+                              Icons.play_arrow,
+                              color: ProjectColors.white,
+                              size: 5.h,
+                            ),
                           ),
                         ))
                     : Container()

@@ -1080,8 +1080,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   final CarouselController _controller = CarouselController();
   final PageController _pageController = PageController();
   late PhotoViewScaleStateController scaleStateController;
-  var topContainerHeight = 8.sp;
-  var buttonSize = 5.sp;
+  var topContainerHeight = 8.h;
+  var buttonSize = 4.h;
   var arrowSize = 10.sp;
   var isOnlyWeb = false;
   late Enum orientation;
@@ -1165,25 +1165,25 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
 
   @override
   Widget build(BuildContext context) {
-    if (SizerUtil.deviceType == DeviceType.mobile) {
-      topContainerHeight = 40.sp;
-      buttonSize = 20.sp;
-      arrowSize = 20.sp;
-    } else if (SizerUtil.deviceType == DeviceType.tablet) {
-      topContainerHeight = 30.sp;
-      buttonSize = 10.sp;
-      arrowSize = 15.sp;
-    } else if (SizerUtil.deviceType == DeviceType.web) {
-      if (globalConstraints.maxWidth < 600) {
-        topContainerHeight = 35.sp;
-        buttonSize = 20.sp;
-        arrowSize = 20.sp;
-      } else if (globalConstraints.maxWidth < 1230) {
-        topContainerHeight = 25.sp;
-        buttonSize = 10.sp;
-        arrowSize = 15.sp;
-      }
-    }
+    // if (SizerUtil.deviceType == DeviceType.mobile) {
+    //   topContainerHeight = 40.sp;
+    //   buttonSize = 20.sp;
+    //   arrowSize = 20.sp;
+    // } else if (SizerUtil.deviceType == DeviceType.tablet) {
+    //   topContainerHeight = 30.sp;
+    //   buttonSize = 10.sp;
+    //   arrowSize = 15.sp;
+    // } else if (SizerUtil.deviceType == DeviceType.web) {
+    //   if (globalConstraints.maxWidth < 600) {
+    //     topContainerHeight = 35.sp;
+    //     buttonSize = 20.sp;
+    //     arrowSize = 20.sp;
+    //   } else if (globalConstraints.maxWidth < 1230) {
+    //     topContainerHeight = 25.sp;
+    //     buttonSize = 10.sp;
+    //     arrowSize = 15.sp;
+    //   }
+    // }
 
     selectPrevious() {
       if (_current != 0) {
@@ -1580,72 +1580,78 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
           child: Row(
             children: [
               Expanded(
-                child: CarouselSlider(
-                  carouselController: widget.navController,
-                  options: CarouselOptions(
-                    aspectRatio: ar,
-                    viewportFraction: vf,
-                    reverse: false,
-                    padEnds: false,
-                    enableInfiniteScroll: false,
-                    // initialPage: widget.current,
-                    scrollDirection: Axis.horizontal,
-                  ),
-                  items: widget.media!
-                      .asMap()
-                      .entries
-                      .map((e) => Container(
-                          child: Card(
-                              shape: (e.key == tmpIndex)
-                                  ? RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                          color: ProjectColors.primary,
-                                          width: 3),
-                                      borderRadius: BorderRadius.circular(0),
-                                    )
-                                  : null,
-                              color: Colors.transparent.withOpacity(0),
-                              child: Container(
-                                padding: const EdgeInsets.all(2),
-                                color: Colors.transparent.withOpacity(0),
-                                child: InkWell(
-                                    onTap: () {
-                                      _animateToIndex(e.key);
-                                      log("key: ${e.key}");
-                                      if (widget.setCurrent != null) {
-                                        widget.setCurrent!(e.key);
-                                        setState(() {});
-                                      }
+                child: SizedBox(
+                  //width:100.w,
+                  height: 14.h,
+                  child: CarouselSlider(
+                    carouselController: widget.navController,
+                    options: CarouselOptions(
+                      aspectRatio: 4 / 3,
+                      viewportFraction: 100.w < 600 ? 0.3 : 0.15,
 
-                                      widget.pageController!.animateToPage(
-                                        e.key,
-                                        curve: Curves.fastOutSlowIn,
-                                        duration:
-                                            const Duration(milliseconds: 800),
-                                      );
-                                      setState(() {});
-                                    },
-                                    child: GeneralHelper.isVideo(e.value.url)
-                                        ? kIsWeb
-                                            ? VideoThumbWeb(
-                                                videoAddress: e.value.url,
-                                                width: 90.w,
-                                                showVideoIcon: true,
-                                                height: 10.h,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : VideoThumbApp(
-                                                path: e.value.url,
-                                                width: 90.w,
-                                                showVideoIcon: true,
-                                                height: 10.h,
-                                                fit: BoxFit.cover,
-                                              )
-                                        : GeneralHelper
-                                            .imageHandlerForRoundedConner(
-                                                e.value, 90.w, 10.h)),
-                              ))))
-                      .toList(),
+                      //height: 15.h,
+                      reverse: false,
+                      padEnds: false,
+                      enableInfiniteScroll: false,
+                      // initialPage: widget.current,
+                      scrollDirection: Axis.horizontal,
+                    ),
+                    items: widget.media!
+                        .asMap()
+                        .entries
+                        .map((e) => Container(
+                            child: Card(
+                                shape: (e.key == tmpIndex)
+                                    ? RoundedRectangleBorder(
+                                        side: const BorderSide(
+                                            color: ProjectColors.primary,
+                                            width: 3),
+                                        borderRadius: BorderRadius.circular(0),
+                                      )
+                                    : null,
+                                color: Colors.transparent.withOpacity(0),
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  color: Colors.transparent.withOpacity(0),
+                                  child: InkWell(
+                                      onTap: () {
+                                        _animateToIndex(e.key);
+                                        log("key: ${e.key}");
+                                        if (widget.setCurrent != null) {
+                                          widget.setCurrent!(e.key);
+                                          setState(() {});
+                                        }
+
+                                        widget.pageController!.animateToPage(
+                                          e.key,
+                                          curve: Curves.fastOutSlowIn,
+                                          duration:
+                                              const Duration(milliseconds: 800),
+                                        );
+                                        setState(() {});
+                                      },
+                                      child: GeneralHelper.isVideo(e.value.url)
+                                          ? kIsWeb
+                                              ? VideoThumbWeb(
+                                                  videoAddress: e.value.url,
+                                                  width: 90.w,
+                                                  showVideoIcon: true,
+                                                  height: 14.h,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : VideoThumbApp(
+                                                  path: e.value.url,
+                                                  width: 90.w,
+                                                  showVideoIcon: true,
+                                                  height: 14.h,
+                                                  fit: BoxFit.cover,
+                                                )
+                                          : GeneralHelper
+                                              .imageHandlerForRoundedConner(
+                                                  e.value, 90.w, 10.h)),
+                                ))))
+                        .toList(),
+                  ),
                 ),
               ),
             ],
