@@ -88,7 +88,7 @@ class _PDFReportState extends State<PDFReport> {
           return StatefulBuilder(
             builder: (context, setState) {
               Widget okButton = TextButton(
-                child: Text("OK"),
+                child: const Text("OK"),
                 onPressed: () {
                   Navigator.of(context).pop();
                   pdfStatus = 'wait';
@@ -120,12 +120,12 @@ class _PDFReportState extends State<PDFReport> {
                             imgBaseUrl + generationPdf,
                             fit: BoxFit.cover,
                           ),
-                    SizedBox(height: 16.0), // Add some spacing
+                    const SizedBox(height: 16.0), // Add some spacing
                     Text(
                       message,
                       style: primaryHeadingTextStyle.copyWith(),
                     ),
-                    isok ? okButton : SizedBox(),
+                    isok ? okButton : const SizedBox(),
                   ],
                 ),
               );
@@ -143,7 +143,9 @@ class _PDFReportState extends State<PDFReport> {
       templates.add(Template.fromJson(jsonDecode(template)));
     }
     for (var image in widget.media) {
-      media.add(ImageShape.fromJson(image));
+      if (ImageShape.fromJson(image).trashed != true) {
+        media.add(ImageShape.fromJson(image));
+      }
     }
   }
 

@@ -125,18 +125,21 @@ class ImageWithRoundedCornersV1 extends StatelessWidget {
                               image: GeneralHelper.imageHandlerForGallery(
                                   imageUrl),
                               fit: BoxFit.cover,
-                              color: Colors.black.withOpacity(0.6),
+                              //color: Colors.black.withOpacity(0.6),
                             ),
                     ),
                     Positioned(
-                        child: Align(
-                      alignment: Alignment.center,
-                      child: RichText(
-                          text: TextSpan(
-                              text: "+ $remain",
-                              style: TextStyle(
-                                  fontSize: fontSizeValue,
-                                  color: Colors.white))),
+                        child: Container(
+                      color: Colors.black.withOpacity(0.3),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: RichText(
+                            text: TextSpan(
+                                text: "+ $remain",
+                                style: TextStyle(
+                                    fontSize: fontSizeValue,
+                                    color: Colors.white))),
+                      ),
                     ))
                   ],
                 ))),

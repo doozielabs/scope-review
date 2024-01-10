@@ -258,6 +258,12 @@ class GeneralHelper {
     );
   }
 
+  static List<Template> sortTemplatesByBase(List<Template> templates) {
+    // Sort the templates with isBaseTemplate set to true first
+    return List.from(templates)
+      ..sort((a, b) => (b.isBaseTemplate ?? false) ? 1 : -1);
+  }
+
   static imageHandlerForGallery(ImageShape image) {
     double scale = 0.4;
     if (kIsWeb) {
@@ -279,7 +285,7 @@ class GeneralHelper {
       return NetworkImage(imgBaseUrl + image.url, scale: 1.0);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-        return FileImage(File(image.url), scale: scale);
+        return FileImage(File(image.url.envRelativePath()), scale: scale);
       } else {
         if (image.url.contains("https")) {
           return NetworkImage(image.url, scale: 1.0);
@@ -337,7 +343,7 @@ class GeneralHelper {
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
         return Image.file(
-          File(image.url),
+          File(image.url.envRelativePath()),
           width: width,
           height: height,
           fit: BoxFit.cover,
@@ -358,7 +364,7 @@ class GeneralHelper {
       return NetworkImage(imgBaseUrl + image.url);
     } else {
       if ((image.url).isDeviceUrl || (image.url).isAsset) {
-        return FileImage(File(image.url));
+        return FileImage(File(image.url.envRelativePath()));
       } else {
         return AssetImage(image.url);
       }
@@ -454,14 +460,18 @@ class GeneralHelper {
     }
   }
 
-  static displayMediaList(ids, List<ImageShape> media, int counts, imagetype) {
-    int remainIdsCount = (ids.length - counts);
+  static displayMediaList(
+      List<String> ids, List<ImageShape> media, int counts, imagetype) {
+    List<String> filteredIds = ids
+        .where((element) => media.any((media) => media.id == element))
+        .toList();
+    int remainIdsCount = (filteredIds.length - counts);
     int crossAxisCountAdjust = 1;
-    if (ids.length == 1 && imagetype == ImageType.sectionImage) {
+    if (filteredIds.length == 1 && imagetype == ImageType.sectionImage) {
       crossAxisCountAdjust = 2;
-    } else if (ids.length <
+    } else if (filteredIds.length <
         GeneralHelper.getSizeByDevicesForImages(imagetype, counts)) {
-      crossAxisCountAdjust = ids.length;
+      crossAxisCountAdjust = filteredIds.length;
     } else {
       crossAxisCountAdjust =
           GeneralHelper.getSizeByDevicesForImages(imagetype, counts);
@@ -469,25 +479,27 @@ class GeneralHelper {
     if (crossAxisCountAdjust == 0) {
       crossAxisCountAdjust = 1;
     }
-    if (ids.length != 0) {
-      if (ids.length < counts) {
+    if (filteredIds.isNotEmpty) {
+      if (filteredIds.length < counts) {
         return MasonryGridView.count(
             physics: const NeverScrollableScrollPhysics(),
             shrinkWrap: true,
-            itemCount: ids.length,
+            itemCount: filteredIds.length,
             crossAxisCount: crossAxisCountAdjust,
             mainAxisSpacing: 4,
             crossAxisSpacing: 4,
             itemBuilder: (context, countIndex) {
-              var imageObj = GeneralHelper.getMediaById(ids[countIndex], media);
+              var imageObj =
+                  GeneralHelper.getMediaById(filteredIds[countIndex], media);
               if (imageObj is ImageShape) {
                 return ImageWithRoundedCornersV1(
-                  imageUrl: GeneralHelper.getMediaById(ids[countIndex], media),
-                  width: getImageWidthHeight(imagetype, ids)[0],
-                  height: getImageWidthHeight(imagetype, ids)[1],
+                  imageUrl: GeneralHelper.getMediaById(
+                      filteredIds[countIndex], media),
+                  width: getImageWidthHeight(imagetype, filteredIds)[0],
+                  height: getImageWidthHeight(imagetype, filteredIds)[1],
                   remain: remainIdsCount,
                   lastItem: false,
-                  ids: ids,
+                  ids: filteredIds,
                   media: media,
                   counts: counts,
                 );
@@ -506,17 +518,17 @@ class GeneralHelper {
             itemBuilder: (context, countIndex) {
               if (countIndex == (counts - 1) && remainIdsCount != 0) {
                 var imageObj =
-                    GeneralHelper.getMediaById(ids[countIndex], media);
+                    GeneralHelper.getMediaById(filteredIds[countIndex], media);
                 if (imageObj is ImageShape) {
                   // last one
                   return ImageWithRoundedCornersV1(
-                    imageUrl:
-                        GeneralHelper.getMediaById(ids[countIndex], media),
-                    width: getImageWidthHeight(imagetype, ids)[0],
-                    height: getImageWidthHeight(imagetype, ids)[1],
+                    imageUrl: GeneralHelper.getMediaById(
+                        filteredIds[countIndex], media),
+                    width: getImageWidthHeight(imagetype, filteredIds)[0],
+                    height: getImageWidthHeight(imagetype, filteredIds)[1],
                     remain: remainIdsCount,
                     lastItem: true,
-                    ids: ids,
+                    ids: filteredIds,
                     media: media,
                     counts: counts,
                   );
@@ -525,16 +537,16 @@ class GeneralHelper {
                 }
               } else {
                 var imageObj =
-                    GeneralHelper.getMediaById(ids[countIndex], media);
+                    GeneralHelper.getMediaById(filteredIds[countIndex], media);
                 if (imageObj is ImageShape) {
                   return ImageWithRoundedCornersV1(
-                    imageUrl:
-                        GeneralHelper.getMediaById(ids[countIndex], media),
-                    width: getImageWidthHeight(imagetype, ids)[0],
-                    height: getImageWidthHeight(imagetype, ids)[1],
+                    imageUrl: GeneralHelper.getMediaById(
+                        filteredIds[countIndex], media),
+                    width: getImageWidthHeight(imagetype, filteredIds)[0],
+                    height: getImageWidthHeight(imagetype, filteredIds)[1],
                     remain: remainIdsCount,
                     lastItem: false,
-                    ids: ids,
+                    ids: filteredIds,
                     media: media,
                     counts: counts,
                   );
@@ -1068,8 +1080,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   final CarouselController _controller = CarouselController();
   final PageController _pageController = PageController();
   late PhotoViewScaleStateController scaleStateController;
-  var topContainerHeight = 8.sp;
-  var buttonSize = 5.sp;
+  var topContainerHeight = 8.h;
+  var buttonSize = 4.h;
   var arrowSize = 10.sp;
   var isOnlyWeb = false;
   late Enum orientation;
@@ -1153,25 +1165,25 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
 
   @override
   Widget build(BuildContext context) {
-    if (SizerUtil.deviceType == DeviceType.mobile) {
-      topContainerHeight = 40.sp;
-      buttonSize = 20.sp;
-      arrowSize = 20.sp;
-    } else if (SizerUtil.deviceType == DeviceType.tablet) {
-      topContainerHeight = 30.sp;
-      buttonSize = 10.sp;
-      arrowSize = 15.sp;
-    } else if (SizerUtil.deviceType == DeviceType.web) {
-      if (globalConstraints.maxWidth < 600) {
-        topContainerHeight = 35.sp;
-        buttonSize = 20.sp;
-        arrowSize = 20.sp;
-      } else if (globalConstraints.maxWidth < 1230) {
-        topContainerHeight = 25.sp;
-        buttonSize = 10.sp;
-        arrowSize = 15.sp;
-      }
-    }
+    // if (SizerUtil.deviceType == DeviceType.mobile) {
+    //   topContainerHeight = 40.sp;
+    //   buttonSize = 20.sp;
+    //   arrowSize = 20.sp;
+    // } else if (SizerUtil.deviceType == DeviceType.tablet) {
+    //   topContainerHeight = 30.sp;
+    //   buttonSize = 10.sp;
+    //   arrowSize = 15.sp;
+    // } else if (SizerUtil.deviceType == DeviceType.web) {
+    //   if (globalConstraints.maxWidth < 600) {
+    //     topContainerHeight = 35.sp;
+    //     buttonSize = 20.sp;
+    //     arrowSize = 20.sp;
+    //   } else if (globalConstraints.maxWidth < 1230) {
+    //     topContainerHeight = 25.sp;
+    //     buttonSize = 10.sp;
+    //     arrowSize = 15.sp;
+    //   }
+    // }
 
     selectPrevious() {
       if (_current != 0) {
@@ -1309,8 +1321,9 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                                             imgBaseUrl +
                                                 widget.media[_current].url)
                                         : widget.media[ind1].url.isDeviceUrl
-                                            ? FileImage(File(
-                                                widget.media[_current].url))
+                                            ? FileImage(File(widget
+                                                .media[_current].url
+                                                .envRelativePath()))
                                             : CachedNetworkImageProvider(
                                                 imgBaseUrl +
                                                     widget.media[_current]
@@ -1567,72 +1580,78 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
           child: Row(
             children: [
               Expanded(
-                child: CarouselSlider(
-                  carouselController: widget.navController,
-                  options: CarouselOptions(
-                    aspectRatio: ar,
-                    viewportFraction: vf,
-                    reverse: false,
-                    padEnds: false,
-                    enableInfiniteScroll: false,
-                    // initialPage: widget.current,
-                    scrollDirection: Axis.horizontal,
-                  ),
-                  items: widget.media!
-                      .asMap()
-                      .entries
-                      .map((e) => Container(
-                          child: Card(
-                              shape: (e.key == tmpIndex)
-                                  ? RoundedRectangleBorder(
-                                      side: const BorderSide(
-                                          color: ProjectColors.primary,
-                                          width: 3),
-                                      borderRadius: BorderRadius.circular(0),
-                                    )
-                                  : null,
-                              color: Colors.transparent.withOpacity(0),
-                              child: Container(
-                                padding: const EdgeInsets.all(2),
-                                color: Colors.transparent.withOpacity(0),
-                                child: InkWell(
-                                    onTap: () {
-                                      _animateToIndex(e.key);
-                                      log("key: ${e.key}");
-                                      if (widget.setCurrent != null) {
-                                        widget.setCurrent!(e.key);
-                                        setState(() {});
-                                      }
+                child: SizedBox(
+                  //width:100.w,
+                  height: 14.h,
+                  child: CarouselSlider(
+                    carouselController: widget.navController,
+                    options: CarouselOptions(
+                      aspectRatio: 4 / 3,
+                      viewportFraction: 100.w < 600 ? 0.3 : 0.15,
 
-                                      widget.pageController!.animateToPage(
-                                        e.key,
-                                        curve: Curves.fastOutSlowIn,
-                                        duration:
-                                            const Duration(milliseconds: 800),
-                                      );
-                                      setState(() {});
-                                    },
-                                    child: GeneralHelper.isVideo(e.value.url)
-                                        ? kIsWeb
-                                            ? VideoThumbWeb(
-                                                videoAddress: e.value.url,
-                                                width: 90.w,
-                                                showVideoIcon: true,
-                                                height: 10.h,
-                                                fit: BoxFit.cover,
-                                              )
-                                            : VideoThumbApp(
-                                                path: e.value.url,
-                                                width: 90.w,
-                                                showVideoIcon: true,
-                                                height: 10.h,
-                                                fit: BoxFit.cover,
-                                              )
-                                        : GeneralHelper
-                                            .imageHandlerForRoundedConner(
-                                                e.value, 90.w, 10.h)),
-                              ))))
-                      .toList(),
+                      //height: 15.h,
+                      reverse: false,
+                      padEnds: false,
+                      enableInfiniteScroll: false,
+                      // initialPage: widget.current,
+                      scrollDirection: Axis.horizontal,
+                    ),
+                    items: widget.media!
+                        .asMap()
+                        .entries
+                        .map((e) => Container(
+                            child: Card(
+                                shape: (e.key == tmpIndex)
+                                    ? RoundedRectangleBorder(
+                                        side: const BorderSide(
+                                            color: ProjectColors.primary,
+                                            width: 3),
+                                        borderRadius: BorderRadius.circular(0),
+                                      )
+                                    : null,
+                                color: Colors.transparent.withOpacity(0),
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  color: Colors.transparent.withOpacity(0),
+                                  child: InkWell(
+                                      onTap: () {
+                                        _animateToIndex(e.key);
+                                        log("key: ${e.key}");
+                                        if (widget.setCurrent != null) {
+                                          widget.setCurrent!(e.key);
+                                          setState(() {});
+                                        }
+
+                                        widget.pageController!.animateToPage(
+                                          e.key,
+                                          curve: Curves.fastOutSlowIn,
+                                          duration:
+                                              const Duration(milliseconds: 800),
+                                        );
+                                        setState(() {});
+                                      },
+                                      child: GeneralHelper.isVideo(e.value.url)
+                                          ? kIsWeb
+                                              ? VideoThumbWeb(
+                                                  videoAddress: e.value.url,
+                                                  width: 90.w,
+                                                  showVideoIcon: true,
+                                                  height: 14.h,
+                                                  fit: BoxFit.cover,
+                                                )
+                                              : VideoThumbApp(
+                                                  path: e.value.url,
+                                                  width: 90.w,
+                                                  showVideoIcon: true,
+                                                  height: 14.h,
+                                                  fit: BoxFit.cover,
+                                                )
+                                          : GeneralHelper
+                                              .imageHandlerForRoundedConner(
+                                                  e.value, 90.w, 10.h)),
+                                ))))
+                        .toList(),
+                  ),
                 ),
               ),
             ],
