@@ -1193,11 +1193,11 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
           updateVideoWidget();
         });
       }
-      _pageController.animateToPage(
-        _current,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(milliseconds: 800),
-      );
+      // _pageController.animateToPage(
+      //   _current,
+      //   curve: Curves.fastOutSlowIn,
+      //   duration: const Duration(milliseconds: 800),
+      // );
     }
 
     selectNext() {
@@ -1208,11 +1208,11 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
           updateVideoWidget();
         });
       }
-      _pageController.animateToPage(
-        _current,
-        curve: Curves.fastOutSlowIn,
-        duration: const Duration(milliseconds: 800),
-      );
+      // _pageController.animateToPage(
+      //   _current,
+      //   curve: Curves.fastOutSlowIn,
+      //   duration: const Duration(milliseconds: 800),
+      // );
     }
 
     if (kIsWeb) {
@@ -1478,9 +1478,9 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                         media: widget.media,
                         current: _current,
                         // selectedImage: selectedImage,
-                        pageController: _pageController,
+                        // pageController: _pageController,
                         navController: _controller,
-                        setCurrent: selectedImage,
+                        // setCurrent: selectedImage,
                       )
                     : const SizedBox()
               ],
@@ -1493,17 +1493,17 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
 class ThumbPhotoNavigation extends StatefulWidget {
   final List<ImageShape>? media;
   final int current;
-  final PageController? pageController;
+  // final PageController? pageController;
   final CarouselController? navController;
-  Function? setCurrent;
+  // Function? setCurrent;
   // final Function? selectedImage;
 
-  ThumbPhotoNavigation({
+  const ThumbPhotoNavigation({
     Key? key,
     required this.media,
-    this.pageController,
+    // this.pageController,
     this.navController,
-    this.setCurrent,
+    // this.setCurrent,
     // this.selectedImage,
     required this.current,
   }) : super(key: key);
@@ -1515,7 +1515,9 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
   var ar = 16 / 1;
   var vf = 0.1;
   var tmpIndex = 0;
+  var oldIndex = 0;
   var containerwithOpacity = 0.5;
+  final CarouselController _thumbController = CarouselController();
 
   @override
   void initState() {
@@ -1523,54 +1525,46 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
     super.initState();
   }
 
-  void _animateToIndex(int index) {
+  void _animateToIndex(int currentIndex, int oldIndex) {
     double width = MediaQuery.of(context).size.width;
-    double numBox = 10.0;
-    if (SizerUtil.deviceType == DeviceType.mobile || width < 600) {
-      numBox = 5.0;
-    } else if (SizerUtil.deviceType == DeviceType.tablet || width < 1230) {
-      numBox = 5.0;
+    double numBox = 100 / ((width < 600) ? 30 : 15);
+    double pages = (widget.media?.length ?? 0) / numBox;
+
+    // if (SizerUtil.deviceType == DeviceType.mobile || width < 600) {
+    //   numBox = 5.0;
+    // } else if (SizerUtil.deviceType == DeviceType.tablet || width < 1230) {
+    //   numBox = 5.0;
+    // }
+    print(
+        "Numbox : ${widget.media?.length} $numBox, $pages, ${widget.current}");
+    if (currentIndex < oldIndex) {
+      if (currentIndex + 1 > numBox - 1) _thumbController.previousPage();
+    } else {
+      if (currentIndex - 1 < ((pages - 1) * numBox)) {
+        _thumbController.nextPage();
+      }
     }
-    if (widget.media!.length - index > (numBox - 1)) {
-      widget.navController!.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.fastOutSlowIn,
-      );
-    }
+    // if (widget.current % numBox == 0 || widget.current < oldIndex) {
+    // _thumbController.animateToPage(
+    //   currentIndex,
+    //   duration: const Duration(milliseconds: 500),
+    //   curve: Curves.slowMiddle,
+    // );
+    // }
   }
 
   @override
   void didUpdateWidget(covariant ThumbPhotoNavigation oldWidget) {
     if (oldWidget.current != widget.current) {
-      _animateToIndex(widget.current);
+      _animateToIndex(widget.current, oldWidget.current);
       tmpIndex = widget.current;
+      oldIndex = oldWidget.current;
     }
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (SizerUtil.deviceType == DeviceType.mobile) {
-      ar = 16 / 3;
-      vf = 0.2;
-      containerwithOpacity = 0.0;
-    } else if (SizerUtil.deviceType == DeviceType.tablet) {
-      ar = 16 / 2;
-      vf = 0.2;
-      containerwithOpacity = 0.0;
-    } else if (SizerUtil.deviceType == DeviceType.web) {
-      if (globalConstraints.maxWidth < 600) {
-        ar = 16 / 3;
-        vf = 0.2;
-        containerwithOpacity = 0.0;
-      } else if (globalConstraints.maxWidth < 1230) {
-        ar = 16 / 2;
-        vf = 0.2;
-        containerwithOpacity = 0.0;
-      }
-    }
-
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
@@ -1584,11 +1578,10 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                   //width:100.w,
                   height: 14.h,
                   child: CarouselSlider(
-                    carouselController: widget.navController,
+                    carouselController: _thumbController,
                     options: CarouselOptions(
                       aspectRatio: 4 / 3,
                       viewportFraction: 100.w < 600 ? 0.3 : 0.15,
-
                       //height: 15.h,
                       reverse: false,
                       padEnds: false,
@@ -1615,19 +1608,7 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
                                   color: Colors.transparent.withOpacity(0),
                                   child: InkWell(
                                       onTap: () {
-                                        _animateToIndex(e.key);
-                                        log("key: ${e.key}");
-                                        if (widget.setCurrent != null) {
-                                          widget.setCurrent!(e.key);
-                                          setState(() {});
-                                        }
-
-                                        widget.pageController!.animateToPage(
-                                          e.key,
-                                          curve: Curves.fastOutSlowIn,
-                                          duration:
-                                              const Duration(milliseconds: 800),
-                                        );
+                                        widget.navController?.jumpToPage(e.key);
                                         setState(() {});
                                       },
                                       child: GeneralHelper.isVideo(e.value.url)
