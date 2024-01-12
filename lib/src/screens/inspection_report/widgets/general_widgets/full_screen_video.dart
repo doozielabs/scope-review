@@ -79,8 +79,8 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                   onPressed: () {
                     if (kIsWeb) {
                       html.document.exitFullscreen();
+                      Navigator.of(context).pop();
                     }
-                    //Navigator.of(context).pop();
                   }))
         ],
       ),
