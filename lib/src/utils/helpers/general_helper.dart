@@ -1565,6 +1565,7 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
 
   @override
   Widget build(BuildContext context) {
+    log("screenHeight: ${100.h} ");
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
@@ -1576,13 +1577,14 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
               Expanded(
                 child: SizedBox(
                   //width:100.w,
-                  height: 14.h,
+                  height: 10.h,
                   child: CarouselSlider(
                     carouselController: _thumbController,
                     options: CarouselOptions(
                       aspectRatio: 4 / 3,
-                      viewportFraction: 100.w < 600 ? 0.3 : 0.15,
-                      //height: 15.h,
+                      viewportFraction: 100.w < 600 ? 0.2 : 0.1,
+                      //height: 12.h,
+
                       reverse: false,
                       padEnds: false,
                       enableInfiniteScroll: false,

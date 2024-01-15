@@ -109,7 +109,7 @@ class _VideoViewerState extends State<VideoViewer> {
                 : widget.orientation == dro.DeviceOrientation.landscapeLeft
                     ? 100.h
                     : 100.w,
-            height: 8.h,
+            height: 6.h,
             child: Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
