@@ -3,28 +3,29 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:device_real_orientation/device_orientation.dart' as dro;
+import 'package:device_real_orientation/device_orientation_provider.dart'
+    as dop;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pdf_report_scope/src/core/constant/colors.dart';
 import 'package:pdf_report_scope/src/core/constant/globals.dart';
 import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
-import 'package:sizer/sizer.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoViewer extends StatefulWidget {
   String address;
-  double height;
-  double width;
+  double heighta;
+  double widtha;
   bool showPlayVideo;
-  Enum orientation;
+  dro.DeviceOrientation orientation;
   VideoViewer(
       {super.key,
       required this.address,
       this.showPlayVideo = true,
-      this.height = 15,
+      this.heighta = 15,
       this.orientation = dro.DeviceOrientation.portrait,
-      this.width = 15});
+      this.widtha = 15});
 
   @override
   State<VideoViewer> createState() => _VideoViewerState();
@@ -33,12 +34,23 @@ class VideoViewer extends StatefulWidget {
 class _VideoViewerState extends State<VideoViewer> {
   late VideoPlayerController _controller;
   double _currentPos = 0.0;
+  dro.DeviceOrientation orientation = dro.DeviceOrientation.portrait;
 
   final Key _key = const Key("1");
+
+  getOrientation() async {
+    orientation = widget.orientation;
+  }
 
   @override
   void initState() {
     super.initState();
+    getOrientation();
+    dop.DeviceOrientationProvider.orientations.listen((orientation) {
+      setState(() {
+        this.orientation = orientation;
+      });
+    });
 
     log(imgBaseUrl + widget.address);
     if (kIsWeb) {
@@ -89,126 +101,104 @@ class _VideoViewerState extends State<VideoViewer> {
     _controller.dispose();
   }
 
-  Widget videoControlBar() {
+  Widget videoControlBar(double height, double width) {
     return SizedBox(
       width: isTablet
-          ? widget.orientation == dro.DeviceOrientation.landscapeLeft
-              ? 100.h
-              : 100.w
-          : widget.orientation == dro.DeviceOrientation.landscapeLeft
-              ? 100.h
-              : 100.w,
-      height: 100.h,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: isTablet
-                ? 100.w
-                : widget.orientation == dro.DeviceOrientation.landscapeLeft
-                    ? 100.h
-                    : 100.w,
-            height: 6.h,
-            child: Center(
+          ? width
+          : orientation == dro.DeviceOrientation.landscapeLeft
+              ? height
+              : width,
+      height: height * 0.06,
+      child: Center(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(25),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: height * 0.02),
+              color: Colors.black.withOpacity(0.3),
+              width: isTablet
+                  ? width * 0.7
+                  : widget.orientation == dro.DeviceOrientation.landscapeLeft
+                      ? height * 0.7
+                      : width * 0.85,
+              // margin: EdgeInsets.symmetric(horizontal: 10.hs),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(25),
-                    child: BackdropFilter(
-                      filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5.h),
-                        color: Colors.black.withOpacity(0.3),
-                        width: isTablet
-                            ? 70.w
-                            : widget.orientation ==
-                                    dro.DeviceOrientation.landscapeLeft
-                                ? 70.h
-                                : 70.w,
-                        // margin: EdgeInsets.symmetric(horizontal: 10.hs),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                              child: Text(
-                                _printDuration(_controller.value.position),
-                                style: const TextStyle(
-                                    color: ProjectColors.white,
-                                    fontFamily: "jost-Regular",
-                                    fontSize: 14),
-                              ),
-                            ),
-                            Expanded(
-                              child: SliderTheme(
-                                data: const SliderThemeData(
-                                  trackHeight: 2,
-                                ),
-                                child: Slider(
-                                  value: _controller
-                                      .value.position.inMilliseconds
-                                      .toDouble(),
-                                  max: _controller.value.duration.inMilliseconds
-                                      .toDouble(),
-                                  onChanged: (x) {
-                                    // logWarning(x.toString());
-                                    // int ms =
-                                    //     ((_controller.value.duration.inMilliseconds *
-                                    //                 x) /
-                                    //             100)
-                                    //         .round();
-
-                                    _controller.seekTo(
-                                        Duration(milliseconds: x.round()));
-                                  },
-                                  activeColor: ProjectColors.white,
-                                  inactiveColor:
-                                      ProjectColors.white.withOpacity(0.5),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              child: Text(
-                                _printDuration(_controller.value.duration),
-                                style: const TextStyle(
-                                    color: ProjectColors.white,
-                                    fontFamily: "jost-Regular",
-                                    fontSize: 14),
-                              ),
-                            ),
-                          ],
-                        ),
+                  Container(
+                    child: Text(
+                      _printDuration(_controller.value.position),
+                      style: const TextStyle(
+                          color: ProjectColors.white,
+                          fontFamily: "jost-Regular",
+                          fontSize: 14),
+                    ),
+                  ),
+                  Expanded(
+                    child: SliderTheme(
+                      data: const SliderThemeData(
+                        trackHeight: 2,
                       ),
+                      child: Slider(
+                        value: _controller.value.position.inMilliseconds
+                            .toDouble(),
+                        max: _controller.value.duration.inMilliseconds
+                            .toDouble(),
+                        onChanged: (x) {
+                          // logWarning(x.toString());
+                          // int ms =
+                          //     ((_controller.value.duration.inMilliseconds *
+                          //                 x) /
+                          //             100)
+                          //         .round();
+
+                          _controller.seekTo(Duration(milliseconds: x.round()));
+                        },
+                        activeColor: ProjectColors.white,
+                        inactiveColor: ProjectColors.white.withOpacity(0.5),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    child: Text(
+                      _printDuration(_controller.value.duration),
+                      style: const TextStyle(
+                          color: ProjectColors.white,
+                          fontFamily: "jost-Regular",
+                          fontSize: 14),
                     ),
                   ),
                 ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
+
+    log("height: $height, width: $width");
     return Stack(
       children: [
-        Container(
-          child: Center(
-            child: _controller.value.isInitialized
-                ? widget.showPlayVideo == false
-                    ? VideoPlayer(_controller)
-                    : AspectRatio(
-                        aspectRatio: _controller.value.aspectRatio,
-                        child: VideoPlayer(_controller),
-                      )
-                : Container(),
-          ),
-        ),
+        SizedBox(
+            //height: height * 0.8,
+            //width: width,
+            child: Center(
+          child: _controller.value.isInitialized
+              ? widget.showPlayVideo == false
+                  ? VideoPlayer(_controller)
+                  : AspectRatio(
+                      aspectRatio: _controller.value.aspectRatio,
+                      child: VideoPlayer(_controller))
+              : Container(),
+        )),
         Center(
             child: widget.showPlayVideo
                 ? !(_controller.value.isPlaying)
@@ -224,16 +214,16 @@ class _VideoViewerState extends State<VideoViewer> {
                           // });
                           if (_controller.value.isPlaying) {
                             _controller.pause();
-                            setState(() {});
+                            //setState(() {});
                           } else {
                             _controller.play();
-                            setState(() {});
+                            //setState(() {});
                           }
                           // _controller.
                         },
                         child: Container(
-                          height: 7.h,
-                          width: 7.h,
+                          height: height * 0.07,
+                          width: height * 0.07,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(100),
                             color: ProjectColors.black.withOpacity(0.4),
@@ -245,7 +235,7 @@ class _VideoViewerState extends State<VideoViewer> {
                               //     :
                               Icons.play_arrow,
                               color: ProjectColors.white,
-                              size: 5.h,
+                              size: height * 0.05,
                             ),
                           ),
                         ))
@@ -298,7 +288,15 @@ class _VideoViewerState extends State<VideoViewer> {
               height: double.infinity,
               width: double.infinity,
             )),
-        Positioned(bottom: kIsWeb ? 12.h : 10.h, child: videoControlBar()),
+        Positioned(
+            bottom: kIsWeb || isTablet
+                ? height * 0.05
+                : orientation == dro.DeviceOrientation.landscapeLeft
+                    ? width * 0.05
+                    : height * 0.05,
+            left: 10,
+            right: 10,
+            child: videoControlBar(height, width)),
       ],
     );
   }

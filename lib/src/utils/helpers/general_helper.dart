@@ -1084,20 +1084,19 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
   var buttonSize = 4.h;
   var arrowSize = 10.sp;
   var isOnlyWeb = false;
-  late Enum orientation;
+  late dro.DeviceOrientation orientation;
   Key _key = const Key("1");
 
   @override
   void initState() {
     if (!kIsWeb) {
       orientation = dro.DeviceOrientation.portrait;
-      if (!isTablet) {
-        dop.DeviceOrientationProvider.orientations.listen((orientation) {
-          setState(() {
-            this.orientation = orientation;
-          });
+
+      dop.DeviceOrientationProvider.orientations.listen((orientation) {
+        setState(() {
+          this.orientation = orientation;
         });
-      }
+      });
     } else {
       orientation = dro.DeviceOrientation.portrait;
     }
@@ -1165,6 +1164,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
 
   @override
   Widget build(BuildContext context) {
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     // if (SizerUtil.deviceType == DeviceType.mobile) {
     //   topContainerHeight = 40.sp;
     //   buttonSize = 20.sp;
@@ -1237,255 +1238,285 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
         //   child:
         Scaffold(
             backgroundColor: Colors.black,
-            body: Stack(
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  child:
-                      // PhotoViewGallery.builder(
-                      //   pageController: _pageController,
-                      //   onPageChanged: (_) {
-                      //     selectedImage(_);
-                      //   },
-                      //   scrollPhysics: const BouncingScrollPhysics(),
-                      //   builder: (BuildContext context, int current) {
-                      //     return GeneralHelper.isVideo(widget.media[current].url)?
-                      //     PhotoViewGalleryPageOptions(
-                      //         imageProvider: GeneralHelper.imageHandlerForPhotoView(
-                      //           widget.media[current],
-                      //           getImageWidthHeight(
-                      //               ImageType.sectionImage, widget.media)[0],
-                      //           getImageWidthHeight(
-                      //               ImageType.sectionImage, widget.media)[1],
-                      //         ),
-                      //         // tightMode: true,
-                      //         basePosition: Alignment.center,
-                      //         initialScale: PhotoViewComputedScale.contained * 0.4,
-                      //         heroAttributes: PhotoViewHeroAttributes(
-                      //             tag: widget.media[current].id),
-                      //         minScale: PhotoViewComputedScale.contained * 1.0,
-                      //         maxScale: PhotoViewComputedScale.covered * 2.0,
-                      //         scaleStateController: scaleStateController);
-                      //   },
-                      //   itemCount: widget.media.length,
-                      //   loadingBuilder: (context, event) => Center(
-                      //     child: SizedBox(
-                      //       width: 50.sp,
-                      //       height: 50.sp,
-                      //       child: CircularProgressIndicator(
-                      //         value: event == null
-                      //             ? 0
-                      //             : event.cumulativeBytesLoaded / 1.8,
-                      //       ),
-                      //     ),
-                      //   ),
-                      //   backgroundDecoration: BoxDecoration(
-                      //     color: Colors.transparent.withOpacity(0),
-                      //   ),
-                      // )),
-                      Container(
-                    color: Colors.transparent,
-                    //  height: isTablet ? 100.h : 97.h,
-                    width: 100.w,
-                    child: PhotoViewGestureDetectorScope(
-                      axis: Axis.horizontal,
-                      child: CarouselSlider.builder(
-                          carouselController: _controller,
-                          itemCount: widget.media.length,
-                          itemBuilder: (context, ind1, ind2) {
-                            print(
-                                "Path new: ${imgBaseUrl + widget.media[ind1].url}");
-                            return GeneralHelper.isVideo(
-                                    widget.media[_current].url)
-                                ? RotatedBox(
-                                    quarterTurns: kIsWeb
-                                        ? 0
-                                        : orientation ==
-                                                dro.DeviceOrientation
-                                                    .landscapeLeft
-                                            ? 1
-                                            : 0,
-                                    child: VideoViewer(
-                                      key: _key,
-                                      address: widget.media[_current].url,
-                                      orientation: orientation,
-                                    ))
-                                : PhotoView(
-                                    minScale: PhotoViewComputedScale.contained,
-                                    maxScale:
-                                        PhotoViewComputedScale.covered * 2.0,
-                                    scaleStateController: scaleStateController,
-                                    imageProvider: (kIsWeb
-                                        ? CachedNetworkImageProvider(
-                                            imgBaseUrl +
-                                                widget.media[_current].url)
-                                        : widget.media[ind1].url.isDeviceUrl
-                                            ? FileImage(File(widget
-                                                .media[_current].url
-                                                .envRelativePath()))
-                                            : CachedNetworkImageProvider(
-                                                imgBaseUrl +
-                                                    widget.media[_current]
-                                                        .url)) as ImageProvider,
-                                  );
-                          },
-                          options: CarouselOptions(
-                              height: 100.h,
-                              pageSnapping: true,
-                              initialPage: _current,
-                              onPageChanged: (index, reason) {
-                                selectedImage(index);
-                                setState(() {});
-                              },
-                              viewportFraction: 1.0,
-                              // scrollPhysics: _scrollPhysics,
-                              // scrollPhysics:
-                              //     _transformationController.value == Matrix4.identity()
-                              //         ? AlwaysScrollableScrollPhysics()
-                              //         : NeverScrollableScrollPhysics(),
-                              enableInfiniteScroll: false)),
+            body: SizedBox(
+              height: height,
+              width: width,
+              child: Column(
+                children: [
+                  Flexible(
+                    flex: 1,
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: topContainerHeight,
+                      color: Colors.transparent.withOpacity(0.5),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          isOnlyWeb &&
+                                  (GeneralHelper.isVideo(
+                                      widget.media[_current].url))
+                              ? InkWell(
+                                  onTap: () {
+                                    callFullScreen();
+                                  },
+                                  child: Icon(
+                                    Icons.fullscreen,
+                                    size: buttonSize,
+                                    color: ProjectColors.white,
+                                  )
+                                  // SvgPicture.asset(
+                                  //   "assets/svg/clock_icon.svg",
+                                  //   package: "pdf_report_scope",
+                                  //   width: buttonSize,
+                                  //   height: buttonSize,
+                                  //   color: ProjectColors.white,
+                                  // ),
+                                  )
+                              : const SizedBox(),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          isOnlyWeb &&
+                                  !(GeneralHelper.isVideo(
+                                      widget.media[_current].url))
+                              ? Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => {zoomOut()},
+                                      child: SvgPicture.asset(
+                                        "assets/svg/Zoom-out-light.svg",
+                                        package: "pdf_report_scope",
+                                        width: buttonSize,
+                                        height: buttonSize,
+                                        color: ProjectColors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox(),
+                          isOnlyWeb &&
+                                  !(GeneralHelper.isVideo(
+                                      widget.media[_current].url))
+                              ? Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () => {zoomIn()},
+                                      child: SvgPicture.asset(
+                                        "assets/svg/Zoom-in-light.svg",
+                                        package: "pdf_report_scope",
+                                        width: buttonSize,
+                                        height: buttonSize,
+                                        color: ProjectColors.white,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                  ],
+                                )
+                              : const SizedBox(),
+                          InkWell(
+                            onTap: () => {Navigator.pop(context)},
+                            child: SvgPicture.asset(
+                              "assets/svg/Close2.svg",
+                              package: "pdf_report_scope",
+                              width: buttonSize,
+                              height: buttonSize,
+                              color: ProjectColors.white,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: topContainerHeight,
-                  color: Colors.transparent.withOpacity(0.5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      isOnlyWeb &&
-                              (GeneralHelper.isVideo(
-                                  widget.media[_current].url))
-                          ? InkWell(
-                              onTap: () {
-                                callFullScreen();
-                              },
-                              child: Icon(
-                                Icons.fullscreen,
-                                size: buttonSize,
-                                color: ProjectColors.white,
-                              )
-                              // SvgPicture.asset(
-                              //   "assets/svg/clock_icon.svg",
-                              //   package: "pdf_report_scope",
-                              //   width: buttonSize,
-                              //   height: buttonSize,
-                              //   color: ProjectColors.white,
-                              // ),
-                              )
-                          : const SizedBox(),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      isOnlyWeb &&
-                              !(GeneralHelper.isVideo(
-                                  widget.media[_current].url))
-                          ? Row(
-                              children: [
-                                InkWell(
-                                  onTap: () => {zoomOut()},
-                                  child: SvgPicture.asset(
-                                    "assets/svg/Zoom-out-light.svg",
-                                    package: "pdf_report_scope",
-                                    width: buttonSize,
-                                    height: buttonSize,
-                                    color: ProjectColors.white,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            )
-                          : const SizedBox(),
-                      isOnlyWeb &&
-                              !(GeneralHelper.isVideo(
-                                  widget.media[_current].url))
-                          ? Row(
-                              children: [
-                                InkWell(
-                                  onTap: () => {zoomIn()},
-                                  child: SvgPicture.asset(
-                                    "assets/svg/Zoom-in-light.svg",
-                                    package: "pdf_report_scope",
-                                    width: buttonSize,
-                                    height: buttonSize,
-                                    color: ProjectColors.white,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                              ],
-                            )
-                          : const SizedBox(),
-                      InkWell(
-                        onTap: () => {Navigator.pop(context)},
-                        child: SvgPicture.asset(
-                          "assets/svg/Close2.svg",
-                          package: "pdf_report_scope",
-                          width: buttonSize,
-                          height: buttonSize,
-                          color: ProjectColors.white,
+                  Flexible(
+                    flex: 8,
+                    child: Stack(
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width,
+                          height: MediaQuery.of(context).size.height,
+                          child:
+                              // PhotoViewGallery.builder(
+                              //   pageController: _pageController,
+                              //   onPageChanged: (_) {
+                              //     selectedImage(_);
+                              //   },
+                              //   scrollPhysics: const BouncingScrollPhysics(),
+                              //   builder: (BuildContext context, int current) {
+                              //     return GeneralHelper.isVideo(widget.media[current].url)?
+                              //     PhotoViewGalleryPageOptions(
+                              //         imageProvider: GeneralHelper.imageHandlerForPhotoView(
+                              //           widget.media[current],
+                              //           getImageWidthHeight(
+                              //               ImageType.sectionImage, widget.media)[0],
+                              //           getImageWidthHeight(
+                              //               ImageType.sectionImage, widget.media)[1],
+                              //         ),
+                              //         // tightMode: true,
+                              //         basePosition: Alignment.center,
+                              //         initialScale: PhotoViewComputedScale.contained * 0.4,
+                              //         heroAttributes: PhotoViewHeroAttributes(
+                              //             tag: widget.media[current].id),
+                              //         minScale: PhotoViewComputedScale.contained * 1.0,
+                              //         maxScale: PhotoViewComputedScale.covered * 2.0,
+                              //         scaleStateController: scaleStateController);
+                              //   },
+                              //   itemCount: widget.media.length,
+                              //   loadingBuilder: (context, event) => Center(
+                              //     child: SizedBox(
+                              //       width: 50.sp,
+                              //       height: 50.sp,
+                              //       child: CircularProgressIndicator(
+                              //         value: event == null
+                              //             ? 0
+                              //             : event.cumulativeBytesLoaded / 1.8,
+                              //       ),
+                              //     ),
+                              //   ),
+                              //   backgroundDecoration: BoxDecoration(
+                              //     color: Colors.transparent.withOpacity(0),
+                              //   ),
+                              // )),
+                              Container(
+                            color: Colors.transparent,
+                            //  height: isTablet ? 100.h : 97.h,
+                            width: 100.w,
+                            child: PhotoViewGestureDetectorScope(
+                              axis: Axis.horizontal,
+                              child: CarouselSlider.builder(
+                                  carouselController: _controller,
+                                  itemCount: widget.media.length,
+                                  itemBuilder: (context, ind1, ind2) {
+                                    print(
+                                        "Path new: ${imgBaseUrl + widget.media[ind1].url}");
+                                    return GeneralHelper.isVideo(
+                                            widget.media[_current].url)
+                                        ? RotatedBox(
+                                            quarterTurns: kIsWeb || isTablet
+                                                ? 0
+                                                : orientation ==
+                                                        dro.DeviceOrientation
+                                                            .landscapeLeft
+                                                    ? 1
+                                                    : 0,
+                                            child: VideoViewer(
+                                              key: _key,
+                                              address:
+                                                  widget.media[_current].url,
+                                              orientation: orientation,
+                                            ))
+                                        : PhotoView(
+                                            minScale: PhotoViewComputedScale
+                                                .contained,
+                                            maxScale:
+                                                PhotoViewComputedScale.covered *
+                                                    2.0,
+                                            scaleStateController:
+                                                scaleStateController,
+                                            imageProvider: (kIsWeb
+                                                ? CachedNetworkImageProvider(
+                                                    imgBaseUrl +
+                                                        widget.media[_current]
+                                                            .url)
+                                                : widget.media[ind1].url
+                                                        .isDeviceUrl
+                                                    ? FileImage(File(widget
+                                                        .media[_current].url
+                                                        .envRelativePath()))
+                                                    : CachedNetworkImageProvider(
+                                                        imgBaseUrl +
+                                                            widget
+                                                                .media[_current]
+                                                                .url)) as ImageProvider,
+                                          );
+                                  },
+                                  options: CarouselOptions(
+                                      height: height,
+                                      pageSnapping: true,
+                                      initialPage: _current,
+                                      onPageChanged: (index, reason) {
+                                        selectedImage(index);
+                                        setState(() {});
+                                      },
+                                      viewportFraction: 1.0,
+                                      // scrollPhysics: _scrollPhysics,
+                                      // scrollPhysics:
+                                      //     _transformationController.value == Matrix4.identity()
+                                      //         ? AlwaysScrollableScrollPhysics()
+                                      //         : NeverScrollableScrollPhysics(),
+                                      enableInfiniteScroll: false)),
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                    ],
+                        (widget.media.length > 1)
+                            ? Align(
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    isOnlyWeb
+                                        ? InkWell(
+                                            onTap: () {
+                                              selectPrevious();
+                                            },
+                                            child: SvgPicture.asset(
+                                              "assets/svg/left_chevron.svg",
+                                              package: "pdf_report_scope",
+                                              width: arrowSize,
+                                              height: arrowSize,
+                                              // color: ProjectColors.white,
+                                            ))
+                                        : const SizedBox(),
+                                    isOnlyWeb
+                                        ? InkWell(
+                                            onTap: () {
+                                              selectNext();
+                                            },
+                                            child: SvgPicture.asset(
+                                              "assets/svg/right_chevron.svg",
+                                              package: "pdf_report_scope",
+                                              width: arrowSize,
+                                              height: arrowSize,
+                                              // color: ProjectColors.white,
+                                            ))
+                                        : const SizedBox(),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                      ],
+                    ),
                   ),
-                ),
-                (widget.media.length > 1)
-                    ? Align(
-                        alignment: Alignment.center,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            isOnlyWeb
-                                ? InkWell(
-                                    onTap: () {
-                                      selectPrevious();
-                                    },
-                                    child: SvgPicture.asset(
-                                      "assets/svg/left_chevron.svg",
-                                      package: "pdf_report_scope",
-                                      width: arrowSize,
-                                      height: arrowSize,
-                                      // color: ProjectColors.white,
-                                    ))
-                                : const SizedBox(),
-                            isOnlyWeb
-                                ? InkWell(
-                                    onTap: () {
-                                      selectNext();
-                                    },
-                                    child: SvgPicture.asset(
-                                      "assets/svg/right_chevron.svg",
-                                      package: "pdf_report_scope",
-                                      width: arrowSize,
-                                      height: arrowSize,
-                                      // color: ProjectColors.white,
-                                    ))
-                                : const SizedBox(),
-                          ],
-                        ),
-                      )
-                    : const SizedBox(),
-                (widget.media.length > 1)
-                    ? ThumbPhotoNavigation(
-                        media: widget.media,
-                        current: _current,
-                        // selectedImage: selectedImage,
-                        // pageController: _pageController,
-                        navController: _controller,
-                        // setCurrent: selectedImage,
-                      )
-                    : const SizedBox()
-              ],
+                  Flexible(
+                      flex: 1,
+                      child: (widget.media.length > 1)
+                          ? ThumbPhotoNavigation(
+                              media: widget.media,
+                              current: _current,
+                              // selectedImage: selectedImage,
+                              // pageController: _pageController,
+                              navController: _controller,
+                              // setCurrent: selectedImage,
+                            )
+                          : const SizedBox())
+                ],
+              ),
             )
-            //),
+
+            // Stack(
+            //   children: [
+
+            //   ],
+            // )
+            // ),
             );
   }
 }
@@ -1566,6 +1597,8 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
   @override
   Widget build(BuildContext context) {
     log("screenHeight: ${100.h} ");
+    double height = MediaQuery.of(context).size.height;
+    double width = MediaQuery.of(context).size.width;
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
@@ -1577,12 +1610,12 @@ class _ThumbPhotoNavigationState extends State<ThumbPhotoNavigation> {
               Expanded(
                 child: SizedBox(
                   //width:100.w,
-                  height: 10.h,
+                  height: height * 0.1,
                   child: CarouselSlider(
                     carouselController: _thumbController,
                     options: CarouselOptions(
                       aspectRatio: 4 / 3,
-                      viewportFraction: 100.w < 600 ? 0.2 : 0.1,
+                      viewportFraction: width < 600 ? 0.2 : 0.1,
                       //height: 12.h,
 
                       reverse: false,
