@@ -107,97 +107,100 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                           child: ScrollConfiguration(
                             behavior: ScrollConfiguration.of(context)
                                 .copyWith(scrollbars: true),
-                            child: SingleChildScrollView(
-                              child: Padding(
-                                  padding: const EdgeInsets.all(0),
-                                  // top: 16.0, bottom: 20.0, left: 3, right: 3),
-                                  child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        // RadioListTile(
-                                        //   title: Text("${templates[0].name}   -- "),
-                                        //   groupValue: _currVal,
-                                        //   value: 1,
-                                        //   onChanged: (val) {
-                                        //     setState(() {
-                                        //       _currVal = 1;
-                                        //       _currText = "name -- ";
-                                        //     });
-                                        //   },
-                                        // ),
-
-                                        // for (var t in templates)
-                                        for (var i = 0;
-                                            i < templates.length;
-                                            i++)
-                                          RadioListTile(
-                                            dense: true,
-                                            activeColor: ProjectColors.firefly,
-                                            title: Transform.translate(
-                                                offset: const Offset(-20, 0),
-                                                child: Text(
-                                                  templates[i].name,
-                                                  style: b3Regular.copyWith(
-                                                    color:
-                                                        ProjectColors.primary,
-                                                  ),
-                                                )),
-                                            groupValue: _currVal,
-                                            value: i,
-                                            onChanged: (val) {
-                                              setState(() {
-                                                _currVal = i;
-                                                setSelectedRadioTile(i);
-                                                widget.switchServiceMethod
-                                                    ?.call(i);
-                                              });
-                                            },
-                                          ),
-
-                                        // Container(child :
-                                        // if (templates != null) {
-                                        //   templates.map((e){
-                                        //                           Text(e.name);
-                                        //   // return {
-                                        //   //         "name": e.name,
-                                        //   //         "rollno": e.rollno,
-                                        //   //         "age": e.age,
-                                        //   //         "marks": e.marks
-                                        //   //     };
-                                        // }).toList();
-                                        // }
-
-                                        // )
-
-                                        // templates.map((t) => Text(t.name) ).toList();
-
-                                        // templates.map((t) => RadioListTile(
-                                        //       title: Text("${t.name}"),
-                                        //       groupValue: _currVal,
-                                        //       value: t.index,
-                                        //       onChanged: (val) {
-                                        //         setState(() {
-                                        //           _currVal = val.index;
-                                        //           _currText = t.name;
-                                        //         });
-                                        //       },
-                                        //     ))
-                                        // .toList(),
-
-                                        // RadioListTile<InspectionModel>(
-                                        //   title: const Text('Lafayette'),
-                                        //   value: widget.inspection,
-                                        //   groupValue: _character,
-                                        //   onChanged: (SingingCharacter? value) {
-                                        //     setState(() {
-                                        //       // _character = value;
-                                        //     });
-                                        //   },
-                                        // ),
-                                      ])),
+                            child: Scrollbar(
+                              thumbVisibility: true,
+                              child: SingleChildScrollView(
+                                child: Padding(
+                                    padding: const EdgeInsets.all(0),
+                                    // top: 16.0, bottom: 20.0, left: 3, right: 3),
+                                    child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          // RadioListTile(
+                                          //   title: Text("${templates[0].name}   -- "),
+                                          //   groupValue: _currVal,
+                                          //   value: 1,
+                                          //   onChanged: (val) {
+                                          //     setState(() {
+                                          //       _currVal = 1;
+                                          //       _currText = "name -- ";
+                                          //     });
+                                          //   },
+                                          // ),
+                            
+                                          // for (var t in templates)
+                                          for (var i = 0;
+                                              i < templates.length;
+                                              i++)
+                                            RadioListTile(
+                                              dense: true,
+                                              activeColor: ProjectColors.firefly,
+                                              title: Transform.translate(
+                                                  offset: const Offset(-20, 0),
+                                                  child: Text(
+                                                    templates[i].name,
+                                                    style: b3Regular.copyWith(
+                                                      color:
+                                                          ProjectColors.primary,
+                                                    ),
+                                                  )),
+                                              groupValue: _currVal,
+                                              value: i,
+                                              onChanged: (val) {
+                                                setState(() {
+                                                  _currVal = i;
+                                                  setSelectedRadioTile(i);
+                                                  widget.switchServiceMethod
+                                                      ?.call(i);
+                                                });
+                                              },
+                                            ),
+                            
+                                          // Container(child :
+                                          // if (templates != null) {
+                                          //   templates.map((e){
+                                          //                           Text(e.name);
+                                          //   // return {
+                                          //   //         "name": e.name,
+                                          //   //         "rollno": e.rollno,
+                                          //   //         "age": e.age,
+                                          //   //         "marks": e.marks
+                                          //   //     };
+                                          // }).toList();
+                                          // }
+                            
+                                          // )
+                            
+                                          // templates.map((t) => Text(t.name) ).toList();
+                            
+                                          // templates.map((t) => RadioListTile(
+                                          //       title: Text("${t.name}"),
+                                          //       groupValue: _currVal,
+                                          //       value: t.index,
+                                          //       onChanged: (val) {
+                                          //         setState(() {
+                                          //           _currVal = val.index;
+                                          //           _currText = t.name;
+                                          //         });
+                                          //       },
+                                          //     ))
+                                          // .toList(),
+                            
+                                          // RadioListTile<InspectionModel>(
+                                          //   title: const Text('Lafayette'),
+                                          //   value: widget.inspection,
+                                          //   groupValue: _character,
+                                          //   onChanged: (SingingCharacter? value) {
+                                          //     setState(() {
+                                          //       // _character = value;
+                                          //     });
+                                          //   },
+                                          // ),
+                                        ])),
+                              ),
                             ),
                           ),
                         ),
