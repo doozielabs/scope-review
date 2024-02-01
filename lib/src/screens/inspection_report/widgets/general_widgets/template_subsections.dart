@@ -54,15 +54,18 @@ class TemplateSubSection extends StatelessWidget {
               .items
               .any((item) => item.comments.isNotEmpty);
           List<TemplateItem> filterItems = [];
-          filterItems = GeneralHelper.getOnlyValidSectionItems(subSections[subSectionIndex].items);
+          filterItems = GeneralHelper.getOnlyValidSectionItems(
+              subSections[subSectionIndex].items);
           int crossAxisCountItems = 1;
           int crossAxisCountComments = 1;
-          bool hasSubSectionHeader = subSections[subSectionIndex].header!.isNotEmpty;
-          bool hasSubSectionFooter = subSections[subSectionIndex].footer!.isNotEmpty;
+          bool hasSubSectionHeader =
+              subSections[subSectionIndex].header!.isNotEmpty;
+          bool hasSubSectionFooter =
+              subSections[subSectionIndex].footer!.isNotEmpty;
           // if(filterItems.length <  GeneralHelper.getSizeByDevicesForItems()){
           //   crossAxisCountItems = filterItems.length;
           // } else {
-            crossAxisCountItems = GeneralHelper.getSizeByDevicesForItems();
+          crossAxisCountItems = GeneralHelper.getSizeByDevicesForItems();
           // }
           // if(crossAxisCountItems ==0 || crossAxisCountItems==1){
           //   crossAxisCountItems =1;
@@ -71,7 +74,7 @@ class TemplateSubSection extends StatelessWidget {
           // if(subSections[subSectionIndex].comments.length <  GeneralHelper.getSizeByDevicesForComments()){
           //   crossAxisCountComments = subSections[subSectionIndex].comments.length;
           // } else {
-            crossAxisCountComments = GeneralHelper.getSizeByDevicesForComments();
+          crossAxisCountComments = GeneralHelper.getSizeByDevicesForComments();
           // }
           // if(crossAxisCountComments ==0 || crossAxisCountComments ==1){
           //   crossAxisCountComments =1;
@@ -92,11 +95,11 @@ class TemplateSubSection extends StatelessWidget {
                           "${selectedTemplate.sections[sectionIndex].name}: ${subSections[subSectionIndex].name!}",
                       backgroundColor: ProjectColors.firefly),
                 ),
-                hasSubSectionHeader ? SectionHeader(
-                  title:subSections[subSectionIndex].name!,
-                  value:subSections[subSectionIndex].header!
-                )
-                : const Visibility(visible:false, child: SizedBox()),
+                hasSubSectionHeader
+                    ? SectionHeader(
+                        title: subSections[subSectionIndex].name!,
+                        value: subSections[subSectionIndex].header!)
+                    : const Visibility(visible: false, child: SizedBox()),
                 hasSubSectionItems
                     ? Padding(
                         padding: const EdgeInsets.only(bottom: 14.0),
@@ -125,8 +128,7 @@ class TemplateSubSection extends StatelessWidget {
                                 MasonryGridView.count(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
-                                  itemCount:
-                                      filterItems.length,
+                                  itemCount: filterItems.length,
                                   crossAxisCount: crossAxisCountItems,
                                   // isMobile
                                   //     ? 1
@@ -137,10 +139,9 @@ class TemplateSubSection extends StatelessWidget {
                                   crossAxisSpacing: 14,
                                   itemBuilder: (context, itemIndex) {
                                     return SectionItem(
-                                      isSubsectionItem: true,
-                                      item: filterItems[itemIndex],
-                                          media:media
-                                    );
+                                        isSubsectionItem: true,
+                                        item: filterItems[itemIndex],
+                                        media: media);
                                   },
                                 ),
                               ]),
@@ -168,7 +169,7 @@ class TemplateSubSection extends StatelessWidget {
                                             .images
                                             .isNotEmpty
                                         ? SecondaryHeadingTextWithBackground(
-                                            headingText: "Subsection Images",
+                                            headingText: "Subsection Media",
                                             textColor: ProjectColors.firefly,
                                             backgroundColor: ProjectColors
                                                 .mariner
@@ -303,16 +304,16 @@ class TemplateSubSection extends StatelessWidget {
                                     inspection: inspection,
                                     subSectionIndex: subSectionIndex,
                                     media: media,
-                                    selectedTemplate:selectedTemplate,
+                                    selectedTemplate: selectedTemplate,
                                   )
                                 ]))),
                       )
                     : const SizedBox(),
-              hasSubSectionFooter ? SectionHeader(
-                title:subSections[subSectionIndex].name!,
-                value:subSections[subSectionIndex].footer!
-              )
-              : const Visibility(visible:false, child: SizedBox()),      
+                hasSubSectionFooter
+                    ? SectionHeader(
+                        title: subSections[subSectionIndex].name!,
+                        value: subSections[subSectionIndex].footer!)
+                    : const Visibility(visible: false, child: SizedBox()),
               ],
             );
           } else {
@@ -341,12 +342,14 @@ class SubSectionItemComments extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Comment> subSectionItemComments = [];
-    for (var subSectionItem in selectedTemplate.sections[sectionIndex].subSections[subSectionIndex].items) {
+    for (var subSectionItem in selectedTemplate
+        .sections[sectionIndex].subSections[subSectionIndex].items) {
       for (var comment in subSectionItem.comments) {
         subSectionItemComments.add(comment);
       }
     }
-    int crossAxisCountItemComments = GeneralHelper.getSizeByDevicesForComments();
+    int crossAxisCountItemComments =
+        GeneralHelper.getSizeByDevicesForComments();
     // if(subSectionItemComments.length <  GeneralHelper.getSizeByDevicesForComments()){
     //   crossAxisCountItemComments = subSectionItemComments.length;
     // } else {

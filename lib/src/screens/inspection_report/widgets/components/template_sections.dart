@@ -253,13 +253,13 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                       //
                                       //
                                       //
-                                      //=========================== Section Images Start ===========================
+                                      //=========================== Section Media Start ===========================
                                       hasSectionImages
                                           ? const Padding(
                                               padding: EdgeInsets.only(
                                                   top: 19.0, bottom: 10),
                                               child: Text(
-                                                "Section Images",
+                                                "Section Media",
                                                 style: b1Regular,
                                               ),
                                             )
@@ -270,7 +270,7 @@ class _TemplateSectionsState extends State<TemplateSections> {
                                         selectedTemplate: selectedTemplate,
                                         sectionIndex: sectionIndex,
                                       ),
-                                      //=========================== Section Images End ===========================
+                                      //=========================== Section Media End ===========================
                                       //
                                       //
                                       //
