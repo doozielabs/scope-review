@@ -90,7 +90,7 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                       Padding(
                         padding: const EdgeInsets.only(
                             top: 16.0, bottom: 0.0, left: 3, right: 3),
-                        child: Text("Switch Services",
+                        child: Text("Switch Reports",
                             style: h1.copyWith(
                                 color: ProjectColors.black, fontSize: 14)),
                       ),
@@ -130,14 +130,15 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                                           //     });
                                           //   },
                                           // ),
-                            
+
                                           // for (var t in templates)
                                           for (var i = 0;
                                               i < templates.length;
                                               i++)
                                             RadioListTile(
                                               dense: true,
-                                              activeColor: ProjectColors.firefly,
+                                              activeColor:
+                                                  ProjectColors.firefly,
                                               title: Transform.translate(
                                                   offset: const Offset(-20, 0),
                                                   child: Text(
@@ -158,7 +159,7 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                                                 });
                                               },
                                             ),
-                            
+
                                           // Container(child :
                                           // if (templates != null) {
                                           //   templates.map((e){
@@ -171,11 +172,11 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                                           //   //     };
                                           // }).toList();
                                           // }
-                            
+
                                           // )
-                            
+
                                           // templates.map((t) => Text(t.name) ).toList();
-                            
+
                                           // templates.map((t) => RadioListTile(
                                           //       title: Text("${t.name}"),
                                           //       groupValue: _currVal,
@@ -188,7 +189,7 @@ class _MultiTemplatesSelectionState extends State<MultiTemplatesSelection> {
                                           //       },
                                           //     ))
                                           // .toList(),
-                            
+
                                           // RadioListTile<InspectionModel>(
                                           //   title: const Text('Lafayette'),
                                           //   value: widget.inspection,
