@@ -79,6 +79,10 @@ class InspectionDescription extends StatelessWidget {
                     inspection.startDate),
               ),
               const SizedBox(height: 10),
+              Text(selectedTemplate.name.unspecified.toUpperCase() + ' SERVICE',
+                style: primaryHeadingTextStyle.copyWith(color: ProjectColors.pickledBluewood,),
+              ),
+              const SizedBox(height: 10),
               // Text("${selectedTemplate.description.replaceAll('	', '\n')}",
               //     style: secondryHeadingTextStyle.copyWith(
               //       color: ProjectColors.pickledBluewood,

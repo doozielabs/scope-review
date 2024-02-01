@@ -39,12 +39,14 @@ class _VideoThumbAppState extends State<VideoThumbApp> {
       log(widget.path);
       try {
         resultThumb = await VideoThumbnail.thumbnailData(
-          video:
-              widget.path.isDeviceUrl ? widget.path : imgBaseUrl + widget.path,
+          video: widget.path.isDeviceUrl
+              ? widget.path.envRelativePath()
+              : imgBaseUrl + widget.path,
           imageFormat: ImageFormat.JPEG,
+          maxHeight: 0,
           maxWidth:
-              128, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
-          quality: 50,
+              0, // specify the width of the thumbnail, let the height auto-scaled to keep the source aspect ratio
+          quality: 70,
         );
       } catch (e) {
         if (kDebugMode) {

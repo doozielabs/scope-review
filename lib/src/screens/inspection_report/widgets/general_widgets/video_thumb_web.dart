@@ -127,10 +127,10 @@ class _VideoThumbWebState extends State<VideoThumbWeb> {
                       child: Positioned(
                         bottom:
                             //    widget.height != null ? widget.height! / 50 :
-                            10,
+                            8,
                         left:
                             //   widget.width != null ? widget.height! / 50 :
-                            10,
+                            8,
                         child: Container(
                           child: const Icon(
                             CupertinoIcons.video_camera_solid,
@@ -139,10 +139,10 @@ class _VideoThumbWebState extends State<VideoThumbWeb> {
                                 //  widget.height != null
                                 //     ? widget.height! / 2.8
                                 //     :
-                                40,
+                                25,
                             shadows: [
                               Shadow(
-                                  blurRadius: 25,
+                                  blurRadius: 20,
                                   color: Colors.black45,
                                   offset: Offset(0, 0))
                             ],

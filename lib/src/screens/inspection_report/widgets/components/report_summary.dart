@@ -43,7 +43,8 @@ class _ReportSummaryState extends State<ReportSummary> {
   Widget build(BuildContext context) {
     List<Comment> deficiencyComments =
         GeneralHelper().getDeficiencyComments(widget.selectedTemplate);
-
+    var isHeader = widget.selectedTemplate.reportSummaryOptions == null && widget.selectedTemplate.reportSummaryOptions?.summaryHeader == "" ? false : true;
+    var isFooter = widget.selectedTemplate.reportSummaryOptions == null && widget.selectedTemplate.reportSummaryOptions?.summaryFooter == "" ? false : true;
     return Padding(
         padding: const EdgeInsets.all(10),
         child: Container(
@@ -110,9 +111,11 @@ class _ReportSummaryState extends State<ReportSummary> {
                                   style: secondryHeadingTextStyle.copyWith(
                                       color: ProjectColors.pickledBluewood),
                                 ),
-                          const HorizontalDividerWidget(
-                            color: ProjectColors.pickledBluewood,
-                          ),
+                          isHeader
+                              ? const SizedBox()      
+                              : const HorizontalDividerWidget(
+                                  color: ProjectColors.pickledBluewood,
+                                ),
                           MasonryGridView.count(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
@@ -137,9 +140,11 @@ class _ReportSummaryState extends State<ReportSummary> {
                                   media: widget.media!);
                             },
                           ),
-                          const HorizontalDividerWidget(
-                            color: ProjectColors.pickledBluewood,
-                          ),
+                          isFooter
+                              ? const SizedBox()
+                              : const HorizontalDividerWidget(
+                                  color: ProjectColors.pickledBluewood,
+                                ),
                           const SizedBox(height: 10),
                           widget.selectedTemplate.reportSummaryOptions == null
                               ? const SizedBox()
