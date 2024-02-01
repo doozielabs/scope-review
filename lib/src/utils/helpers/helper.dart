@@ -420,7 +420,7 @@ extension TemplateSectionExtension on TemplateSection {
 
   // Future dowloadImages() async {
   //   images = await _downloadMedia(images);
-  //   print("Images: $images");
+  //   print("Media: $images");
   //   await Future.forEach(items, (TemplateItem _) async => _.downloadMedia());
   //   await Future.forEach(
   //     comments,
@@ -653,7 +653,7 @@ extension TemplateItemTypeExtension on TemplateItemType? {
         organization: "Name and Organization",
         phone: "Phone Number",
         website: "Website URL",
-        photo: "Image",
+        photo: "Media",
         currency: "Currency",
       );
   String get value => GeneralHelper.typeValue(this);

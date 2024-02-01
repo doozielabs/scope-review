@@ -47,7 +47,7 @@ bool isSummaryExpanded = false;
 bool expandSummary = false;
 bool isSearchValueChanged = false;
 late List<TemplateSection> filteredSection;
-const INVALID_IMAGE = "invalid image";
+const INVALID_IMAGE = "invalid Media";
 double constraintMaxWidthForNavPop = 0.0;
 StreamController<double> constraintStream =
     StreamController<double>.broadcast(sync: true);
@@ -114,7 +114,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
     case ImageType.commentImage:
       if (isSingleImage) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
-          //Mobile SinlgeImage -- Comment Image
+          //Mobile SinlgeImage -- Comment Media
           imageWidth = 100.w;
           imageHeight = 26.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
@@ -135,15 +135,15 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         }
       } else {
         if (SizerUtil.deviceType == DeviceType.mobile) {
-          //Mobile multiple Images -- Comment Image
+          //Mobile multiple Media -- Comment Media
           imageWidth = 100.w;
           imageHeight = 26.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
-          //Tablet multiple Images -- Comment Image
+          //Tablet multiple Media -- Comment Media
           imageWidth = 100.w;
           imageHeight = 30.h;
         } else {
-          //Web multiple Images -- Comment Image
+          //Web multiple Media -- Comment Media
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
             imageHeight = 26.h;
@@ -160,15 +160,15 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
     case ImageType.sectionImage:
       if (isSingleImage) {
         if (SizerUtil.deviceType == DeviceType.mobile) {
-          //Mobile SinlgeImage -- Section Image
+          //Mobile SinlgeImage -- Section Media
           imageWidth = 100.w;
           imageHeight = 25.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
-          //Tablet SinlgeImage -- Section Image
+          //Tablet SinlgeImage -- Section Media
           imageWidth = 100.w;
           imageHeight = 30.h;
         } else {
-          //Web SinlgeImage -- Section Image
+          //Web SinlgeImage -- Section Media
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
             imageHeight = 25.h;
@@ -184,15 +184,15 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         }
       } else {
         if (SizerUtil.deviceType == DeviceType.mobile) {
-          //Mobile multiple Images -- Section Image
+          //Mobile multiple Media -- Section Media
           imageWidth = 100.w;
           imageHeight = 25.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
-          //Tablet multiple Images -- Section Image
+          //Tablet multiple Media -- Section Media
           imageWidth = 100.w;
           imageHeight = 40.h;
         } else {
-          //Web multiple Images -- Section Image
+          //Web multiple Media -- Section Media
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
             imageHeight = 25.h;
@@ -215,7 +215,7 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
           imageWidth = 100.w;
           imageHeight = 30.h;
         } else {
-          //Web Single Images -- Item Image
+          //Web Single Media -- Item Media
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
             imageHeight = 26.h;
@@ -229,15 +229,15 @@ List getImageWidthHeight(ImageType imageType, List<dynamic>? images) {
         }
       } else {
         if (SizerUtil.deviceType == DeviceType.mobile) {
-          //Mobile multiple Images -- Item Image
+          //Mobile multiple Media -- Item Media
           imageWidth = 100.w;
           imageHeight = 26.h;
         } else if (SizerUtil.deviceType == DeviceType.tablet) {
-          //Tablet multiple Images -- Item Image
+          //Tablet multiple Media -- Item Media
           imageWidth = 100.w;
           imageHeight = 25.h;
         } else {
-          //Web multiple Images -- Item Image
+          //Web multiple Media -- Item Media
           if (globalConstraints.maxWidth < 600) {
             imageWidth = 100.w;
             imageHeight = 26.h;
