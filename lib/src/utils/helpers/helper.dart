@@ -341,7 +341,7 @@ extension IntExtension on int {
   String get regularISODate => inDate.regularISODate;
   String get regularDateFormat => inDate.regularDateFormat;
   bool isLast(List list) => this == list.length - 1;
-  DateTime get inDate => DateTime.fromMillisecondsSinceEpoch(this);
+  DateTime get inDate => DateTime.fromMillisecondsSinceEpoch(this,isUtc: true);
   int get nilDate => isZero ? DateTime.now().toInt : this;
   int get inc => this + 1;
   int get dec => this - 1;
