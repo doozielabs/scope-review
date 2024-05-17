@@ -1,11 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:device_real_orientation/device_orientation.dart' as dro;
 import 'package:device_real_orientation/device_orientation_provider.dart'
     as dop;
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -1421,8 +1422,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                                             scaleStateController:
                                                 scaleStateController,
                                             imageProvider: (kIsWeb
-                                                ? CachedNetworkImageProvider(
-                                                    imgBaseUrl +
+                                                ? FastCachedImage(
+                                                    url:imgBaseUrl +
                                                         widget.media[_current]
                                                             .url)
                                                 : widget.media[ind1].url
@@ -1430,8 +1431,8 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                                                     ? FileImage(File(widget
                                                         .media[_current].url
                                                         .envRelativePath()))
-                                                    : CachedNetworkImageProvider(
-                                                        imgBaseUrl +
+                                                    : FastCachedImage(
+                                                        url:imgBaseUrl +
                                                             widget
                                                                 .media[_current]
                                                                 .url)) as ImageProvider,
