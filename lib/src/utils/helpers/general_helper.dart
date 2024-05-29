@@ -40,6 +40,7 @@ import '../../screens/inspection_report/widgets/general_widgets/rounded_corner_i
 class GeneralHelper {
   static String typeValue(value) => value.toString().split(".").last;
   static int activityIds = 0;
+  static String? userTimeZone;
   // static bool syncInProgress = false;
   // Inspection onRefresh function
 
@@ -76,8 +77,9 @@ class GeneralHelper {
     return addressString;
   }
 
-  static getInspectionDateTimeFormat(timestamp) {
-    var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  static getInspectionDateTimeFormat(int timestamp) {
+    // var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    var dateTime = timestamp.inDateV2;
     var formatter =
         DateFormat('E d\'${getDayOfMonthSuffix(dateTime.day)}\' MMMM - h:mm a');
     return formatter.format(dateTime);
@@ -925,6 +927,44 @@ class GeneralHelper {
     }
     return true;
   }
+
+ static String getUserTimeZone(){
+    return "(UTC${(userTimeZone?? DateTime.now().timeZoneOffset.toString().split('.').first)})";
+  }
+
+static double parseTimeZoneOffsetToHours() {
+  if(userTimeZone == null || userTimeZone!.isEmpty) return 0;
+  String offset = userTimeZone!;
+  // Check if the offset starts with a '+' or '-'
+  bool isPositive = offset.startsWith('+');
+  bool isNegative = offset.startsWith('-');
+
+  // Remove the sign and split the remaining string by ':'
+  String offsetWithoutSign = offset.substring(1);
+  List<String> parts = offsetWithoutSign.split(':');
+
+  // Parse hours and minutes
+  int hours = int.parse(parts[0]);
+  int minutes = int.parse(parts[1]);
+
+  // Convert to total hours (minutes / 60)
+  double totalHours = hours + (minutes / 60.0);
+
+  // Adjust the sign if necessary
+  if (isNegative) {
+    totalHours = -totalHours;
+  }
+
+  return totalHours;
+}
+
+static Duration parseHoursToDuration(double? hours) {
+  if(hours == null)return const Duration();
+  int wholeHours = hours.truncate(); // Get the integer part of the hours
+  int minutes = ((hours - wholeHours) * 60).round(); // Get the minutes part
+
+  return Duration(hours: wholeHours, minutes: minutes);
+}
 }
 
 class Id {

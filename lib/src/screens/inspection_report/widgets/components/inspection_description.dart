@@ -76,7 +76,7 @@ class InspectionDescription extends StatelessWidget {
               SubHeadingOfInspectionDescritpion(
                 primaryText: "${selectedTemplate.inspectionDateAppearance}",
                 secondryText: GeneralHelper.getInspectionDateTimeFormat(
-                    inspection.startDate),
+                    inspection.startDate)+ " ${GeneralHelper.getUserTimeZone()}",
               ),
               const SizedBox(height: 10),
               Text(selectedTemplate.name.unspecified.toUpperCase() + ' SERVICE',
