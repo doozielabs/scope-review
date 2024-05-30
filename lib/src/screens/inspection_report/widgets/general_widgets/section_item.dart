@@ -48,7 +48,7 @@ class SectionItem extends StatelessWidget {
       switch (item.type) {
         case TemplateItemType.timestamp:
           return Text(
-            GeneralHelper.getInspectionDateTimeFormat(value),
+            GeneralHelper.getInspectionDateTimeFormat(value) +" " +GeneralHelper.getUserTimeZone(),
             style: b3Regular.copyWith(color: ProjectColors.pickledBluewood),
           );
         case TemplateItemType.photo:

@@ -24,6 +24,7 @@ import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
+import 'package:pdf_report_scope/src/data/models/time_zones.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/full_screen_video.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb_web.dart';
@@ -929,7 +930,12 @@ class GeneralHelper {
   }
 
  static String getUserTimeZone(){
-    return "(UTC${(userTimeZone?? DateTime.now().timeZoneOffset.toString().split('.').first)})";
+    // return "(UTC${(userTimeZone?? DateTime.now().timeZoneOffset.toString().split('.').first)})";
+    if(userTimeZone==null || userTimeZone!.isEmpty){
+      return "(GMT)";
+    }
+    String abbr = timeZoneList.firstWhere((p0) => p0.offset == userTimeZone).abbr;
+    return abbr;
   }
 
 static double parseTimeZoneOffsetToHours() {
