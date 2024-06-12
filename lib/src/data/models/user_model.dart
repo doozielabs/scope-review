@@ -52,6 +52,8 @@ class User {
 
   String? timezone;
 
+  bool? daylightSaving;
+
   User(
       {this.id,
       this.firstname,
@@ -76,7 +78,8 @@ class User {
       this.licenseExpirationDate = 0,
       this.stripeConnectId,
       this.stripeOnboarded,
-      this.timezone});
+      this.timezone,
+      this.daylightSaving});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json["id"];
@@ -117,6 +120,7 @@ class User {
     // stripeConnectId = json["stripeConnectId"] ?? "";
     // stripeOnboarded = json["stripeOnboarded"] ?? 0;
     timezone = json["timezone"];
+    daylightSaving = json["daylightSaving"]??false;
   }
 
   Map<String, dynamic> toJson([bool deep = true]) {
@@ -148,6 +152,7 @@ class User {
     // data["stripeConnectId"] = stripeConnectId;
     // data["stripeOnboarded"] = stripeOnboarded;
     data['timezone'] = timezone;
+    data['daylightSaving'] = daylightSaving??false;
     print("user data:$data");
     return data;
   }

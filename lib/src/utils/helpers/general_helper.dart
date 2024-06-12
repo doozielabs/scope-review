@@ -42,6 +42,7 @@ class GeneralHelper {
   static String typeValue(value) => value.toString().split(".").last;
   static int activityIds = 0;
   static String? userTimeZone;
+  static bool? daylightSaving;
   // static bool syncInProgress = false;
   // Inspection onRefresh function
 
@@ -934,7 +935,7 @@ class GeneralHelper {
     if(userTimeZone==null || userTimeZone!.isEmpty){
       return "(GMT)";
     }
-    String abbr = timeZoneList.firstWhere((p0) => p0.offset == userTimeZone).abbr;
+    String abbr = getTimeZoneByOffset(userTimeZone,daylightSaving: daylightSaving??false)?.abbr??'GMT';
     return abbr;
   }
 
@@ -971,6 +972,49 @@ static Duration parseHoursToDuration(double? hours) {
 
   return Duration(hours: wholeHours, minutes: minutes);
 }
+
+static  TimeZones? getTimeZoneByOffset(String? offset,
+      {bool daylightSaving = false}) {
+    if (offset == null || offset.isEmpty) return null;
+    return timeZoneList.firstWhere((p0) =>
+        p0.offset ==
+        (daylightSaving ? adjustOffset(offset, revert: true) : offset));
+  }
+
+static String adjustOffset(String offset,{bool revert = false}) {
+  if(offset=='00:00'){
+    offset = '+$offset';
+  }
+  // Check if the offset has the correct format
+  if (!RegExp(r'^[+-]\d{2}:\d{2}$').hasMatch(offset)) {
+    throw FormatException("Invalid offset format. It should be ±HH:MM");
+  }
+  
+  // Extract sign, hours, and minutes
+  String sign = offset[0];
+  int hours = int.parse(offset.substring(1, 3));
+  int minutes = int.parse(offset.substring(4, 6));
+  
+  // Adjust hours based on sign
+  if (sign == '+') {
+    revert? hours -=1 : hours  += 1;
+    // Handle crossing the day boundary
+    if (hours == 24) {
+      hours = 0;
+    }
+  } else if (sign == '-') {
+    revert? hours += 1 : hours -= 1;
+    // Handle crossing the day boundary
+    if (hours == -1) {
+      hours = 23;
+    }
+  }
+  
+  // Format the new offset
+  String newOffset = '$sign${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+  return newOffset;
+}
+
 }
 
 class Id {

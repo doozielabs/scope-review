@@ -69,6 +69,7 @@ class _PDFReportState extends State<PDFReport> {
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
       user = User.fromJson(jsonDecode(widget.user));
       GeneralHelper.userTimeZone = user.timezone;
+      GeneralHelper.daylightSaving = user.daylightSaving;
       updateListOfTemplates();
       getDocumentDirectory();
       setState(() => isLoading = false);
