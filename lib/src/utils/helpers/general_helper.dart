@@ -1512,16 +1512,16 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                                             scaleStateController:
                                                 scaleStateController,
                                             imageProvider: (kIsWeb
-                                                ? FastCachedImage(
-                                                    url:imgBaseUrl +
-                                                        widget.media[_current]
-                                                            .url)
-                                                : widget.media[ind1].url
-                                                        .isDeviceUrl
-                                                    ? FileImage(File(widget
-                                                        .media[_current].url
-                                                        .envRelativePath()))
-                                                    : FastCachedImage(
+                                                    ? NetworkImage(
+                                                        imgBaseUrl +
+                                                            widget.media[_current]
+                                                                .url)
+                                                    : widget.media[ind1].url
+                                                            .isDeviceUrl
+                                                        ? FileImage(File(widget
+                                                            .media[_current].url
+                                                            .envRelativePath()))
+                                                        : FastCachedImage(
                                                         url:imgBaseUrl +
                                                             widget
                                                                 .media[_current]
