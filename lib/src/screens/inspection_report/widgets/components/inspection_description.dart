@@ -76,34 +76,34 @@ class InspectionDescription extends StatelessWidget {
               SubHeadingOfInspectionDescritpion(
                 primaryText: "${selectedTemplate.inspectionDateAppearance}",
                 secondryText: GeneralHelper.getInspectionDateTimeFormat(
-                    inspection.startDate),
+                    inspection.startDate)+ " ${GeneralHelper.getUserTimeZone()}",
               ),
               const SizedBox(height: 10),
               Text(selectedTemplate.name.unspecified.toUpperCase() + ' SERVICE',
                 style: primaryHeadingTextStyle.copyWith(color: ProjectColors.pickledBluewood,),
               ),
-              const SizedBox(height: 10),
+              // const SizedBox(height: 10),
               // Text("${selectedTemplate.description.replaceAll('	', '\n')}",
               //     style: secondryHeadingTextStyle.copyWith(
               //       color: ProjectColors.pickledBluewood,
               //     )),
-              Text(
-                  "Thank you for the opportunity to conduct a home inspection of the property listed above. We understand that the function of this report is to assist you in understanding the condition of the property to assist in making an informed purchase decision.",
-                  style: secondryHeadingTextStyle.copyWith(
-                    color: ProjectColors.pickledBluewood,
-                  )),
-              const SizedBox(height: 10),
-              Text(
-                  "The report contains a review of components in the following basic categories: site, exterior, roofing, structure, electrical, HVAC, plumbing, and interior. Additional categories may or may not be included. The report is designed to be easy to read and comprehend however it is important to read the entire report to obtain a full understanding of the scope, limitations and exclusions of the inspection.",
-                  style: secondryHeadingTextStyle.copyWith(
-                    color: ProjectColors.pickledBluewood,
-                  )),
-              const SizedBox(height: 10),
-              Text(
-                  "In addition to the checklist items of the report there are several comments which are meant to help you further understand certain conditions observed. These are easy to find by looking for their icons along the left side margin. Comments with the blue icon are primarily informational and comments with the orange icon are also displayed on the summary. Please read them all.",
-                  style: secondryHeadingTextStyle.copyWith(
-                    color: ProjectColors.pickledBluewood,
-                  )),
+              // Text(
+              //     "Thank you for the opportunity to conduct a home inspection of the property listed above. We understand that the function of this report is to assist you in understanding the condition of the property to assist in making an informed purchase decision.",
+              //     style: secondryHeadingTextStyle.copyWith(
+              //       color: ProjectColors.pickledBluewood,
+              //     )),
+              // const SizedBox(height: 10),
+              // Text(
+              //     "The report contains a review of components in the following basic categories: site, exterior, roofing, structure, electrical, HVAC, plumbing, and interior. Additional categories may or may not be included. The report is designed to be easy to read and comprehend however it is important to read the entire report to obtain a full understanding of the scope, limitations and exclusions of the inspection.",
+              //     style: secondryHeadingTextStyle.copyWith(
+              //       color: ProjectColors.pickledBluewood,
+              //     )),
+              // const SizedBox(height: 10),
+              // Text(
+              //     "In addition to the checklist items of the report there are several comments which are meant to help you further understand certain conditions observed. These are easy to find by looking for their icons along the left side margin. Comments with the blue icon are primarily informational and comments with the orange icon are also displayed on the summary. Please read them all.",
+              //     style: secondryHeadingTextStyle.copyWith(
+              //       color: ProjectColors.pickledBluewood,
+              //     )),
               const SizedBox(height: 20),
               Text("DEFINITION OF CONDITION TERMS.",
                   style: secondryHeadingTextStyle.copyWith(

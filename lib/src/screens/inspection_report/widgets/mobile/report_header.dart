@@ -100,15 +100,35 @@ class ReportHeaderMobile extends StatelessWidget {
                     style: secondryHeadingTextStyle,
                   ),
                   const SizedBox(height: 10),
-                  Row(
+                  // Row(
+                  //   children: [
+                  //     HeaderInfoItem(
+                  //       iconName: "clock_icon",
+                  //       text:
+                  //           "${inspection.startDate.fulldateV2} - ${inspection.endDate.timeV2}",
+                  //     ),
+                  //   ],
+                  // ),
+                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      HeaderInfoItem(
-                        iconName: "clock_icon",
-                        text:
-                            "${inspection.startDate.fulldate} - ${inspection.endDate.time}",
+                      SvgPicture.asset(
+                        "assets/svg/clock_icon.svg",
+                        package: "pdf_report_scope",
                       ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          "${inspection.startDate.fulldateV2} - ${inspection.endDate.timeV2} ${GeneralHelper.getUserTimeZone()}",
+                          overflow: TextOverflow.visible,
+                          style: secondryHeadingTextStyle.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                      )
                     ],
-                  ),
+                  )
                 ],
               ),
             ),

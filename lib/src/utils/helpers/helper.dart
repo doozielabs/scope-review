@@ -333,8 +333,10 @@ extension CommentExtension on Comment {
 
 extension IntExtension on int {
   String get time => inDate.time;
+  String get timeV2 => inDateV2.time;
   String get smallDate => inDate.smallDate;
   String get fulldate => inDate.fulldate;
+  String get fulldateV2 => inDateV2.fulldate;
   String get fullISODate => inDate.fullISODate;
   String get fullMonth => inDate.fullMonth;
   String get regularDate => inDate.regularDate;
@@ -342,6 +344,10 @@ extension IntExtension on int {
   String get regularDateFormat => inDate.regularDateFormat;
   bool isLast(List list) => this == list.length - 1;
   DateTime get inDate => DateTime.fromMillisecondsSinceEpoch(this);
+  DateTime get inDateV2 =>
+      DateTime.fromMillisecondsSinceEpoch(this, isUtc: true).add(
+          GeneralHelper.parseHoursToDuration(
+              GeneralHelper.parseTimeZoneOffsetToHours()));
   int get nilDate => isZero ? DateTime.now().toInt : this;
   int get inc => this + 1;
   int get dec => this - 1;

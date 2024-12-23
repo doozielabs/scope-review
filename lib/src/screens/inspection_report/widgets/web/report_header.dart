@@ -63,11 +63,10 @@ class ReportHeaderWeb extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width / 5,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20.0, right: 20.0, top: 10.0, bottom: 10.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -99,27 +98,49 @@ class ReportHeaderWeb extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 40.0, right: 20.0, top: 10.0, bottom: 10.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Start Inspection Date",
-                              style: secondryHeadingTextStyle,
-                            ),
-                            const SizedBox(height: 10),
-                            Row(
-                              children: [
-                                HeaderInfoItem(
-                                  iconName: "clock_icon",
-                                  text:
-                                      "${inspection.startDate.fulldate} - ${inspection.endDate.time}",
-                                ),
-                              ],
-                            ),
-                          ],
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 40.0, right: 20.0, top: 10.0, bottom: 10.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                "Start Inspection Date",
+                                style: secondryHeadingTextStyle,
+                              ),
+                              const SizedBox(height: 10),
+                              // Row(
+                              //   children: [
+                              //     HeaderInfoItem(
+                              //       iconName: "clock_icon",
+                              //       text:
+                              //           "${inspection.startDate.fulldate} - ${inspection.endDate.time}",
+                              //     ),
+                              //   ],
+                              // ),
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    SvgPicture.asset(
+                                      "assets/svg/clock_icon.svg",
+                                      package: "pdf_report_scope",
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Expanded(
+                                      child: Text(
+                                        "${inspection.startDate.fulldateV2} - ${inspection.endDate.timeV2} ${GeneralHelper.getUserTimeZone()}",
+                                        overflow: TextOverflow.visible,
+                                        style: secondryHeadingTextStyle.copyWith(
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                )
+                            ],
+                          ),
                         ),
                       ),
                     ],

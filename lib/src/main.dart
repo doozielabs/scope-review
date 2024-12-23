@@ -11,6 +11,7 @@ import 'package:pdf_report_scope/src/data/models/inspection_model.dart';
 import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/inspection_report.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 import 'package:sizer/sizer.dart';
 
 import 'core/constant/typography.dart';
@@ -67,6 +68,8 @@ class _PDFReportState extends State<PDFReport> {
       setState(() => isLoading = true);
       inspection = InspectionModel.fromJson(jsonDecode(widget.inspection));
       user = User.fromJson(jsonDecode(widget.user));
+      GeneralHelper.userTimeZone = user.timezone;
+      GeneralHelper.daylightSaving = user.daylightSaving;
       updateListOfTemplates();
       getDocumentDirectory();
       setState(() => isLoading = false);

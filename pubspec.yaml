@@ -22,7 +22,8 @@ dependencies:
   photo_view: ^0.14.0
   video_player: ^2.7.2
   video_thumbnail: ^0.5.3
-  cached_network_image: ^3.3.0
+  # cached_network_image: ^3.3.0
+  fast_cached_network_image: ^1.2.0
   device_real_orientation: ^0.0.4
   video_player_web: ^2.0.17
   video_thumbnail_imageview: ^0.0.5

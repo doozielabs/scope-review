@@ -1,11 +1,12 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:cached_network_image/cached_network_image.dart';
+// import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:device_real_orientation/device_orientation.dart' as dro;
 import 'package:device_real_orientation/device_orientation_provider.dart'
     as dop;
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ import 'package:pdf_report_scope/src/data/models/template.dart';
 import 'package:pdf_report_scope/src/data/models/template_item.dart';
 import 'package:pdf_report_scope/src/data/models/template_section.dart';
 import 'package:pdf_report_scope/src/data/models/template_subsection.dart';
+import 'package:pdf_report_scope/src/data/models/time_zones.dart';
 import 'package:pdf_report_scope/src/data/models/user_model.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/full_screen_video.dart';
 import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/video_thumb_web.dart';
@@ -39,6 +41,8 @@ import '../../screens/inspection_report/widgets/general_widgets/rounded_corner_i
 class GeneralHelper {
   static String typeValue(value) => value.toString().split(".").last;
   static int activityIds = 0;
+  static String? userTimeZone;
+  static bool? daylightSaving;
   // static bool syncInProgress = false;
   // Inspection onRefresh function
 
@@ -75,8 +79,9 @@ class GeneralHelper {
     return addressString;
   }
 
-  static getInspectionDateTimeFormat(timestamp) {
-    var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+  static getInspectionDateTimeFormat(int timestamp) {
+    // var dateTime = DateTime.fromMillisecondsSinceEpoch(timestamp);
+    var dateTime = timestamp.inDateV2;
     var formatter =
         DateFormat('E d\'${getDayOfMonthSuffix(dateTime.day)}\' MMMM - h:mm a');
     return formatter.format(dateTime);
@@ -924,6 +929,92 @@ class GeneralHelper {
     }
     return true;
   }
+
+ static String getUserTimeZone(){
+    // return "(UTC${(userTimeZone?? DateTime.now().timeZoneOffset.toString().split('.').first)})";
+    if(userTimeZone==null || userTimeZone!.isEmpty){
+      return "(GMT)";
+    }
+    String abbr = getTimeZoneByOffset(userTimeZone,daylightSaving: daylightSaving??false)?.abbr??'GMT';
+    return abbr;
+  }
+
+static double parseTimeZoneOffsetToHours() {
+  if(userTimeZone == null || userTimeZone!.isEmpty) return 0;
+  String offset = userTimeZone!;
+  // Check if the offset starts with a '+' or '-'
+  bool isPositive = offset.startsWith('+');
+  bool isNegative = offset.startsWith('-');
+
+  // Remove the sign and split the remaining string by ':'
+  String offsetWithoutSign = offset.substring(1);
+  List<String> parts = offsetWithoutSign.split(':');
+
+  // Parse hours and minutes
+  int hours = int.parse(parts[0]);
+  int minutes = int.parse(parts[1]);
+
+  // Convert to total hours (minutes / 60)
+  double totalHours = hours + (minutes / 60.0);
+
+  // Adjust the sign if necessary
+  if (isNegative) {
+    totalHours = -totalHours;
+  }
+
+  return totalHours;
+}
+
+static Duration parseHoursToDuration(double? hours) {
+  if(hours == null)return const Duration();
+  int wholeHours = hours.truncate(); // Get the integer part of the hours
+  int minutes = ((hours - wholeHours) * 60).round(); // Get the minutes part
+
+  return Duration(hours: wholeHours, minutes: minutes);
+}
+
+static  TimeZones? getTimeZoneByOffset(String? offset,
+      {bool daylightSaving = false}) {
+    if (offset == null || offset.isEmpty) return null;
+    return timeZoneList.firstWhere((p0) =>
+        p0.offset ==
+        (daylightSaving ? adjustOffset(offset, revert: true) : offset));
+  }
+
+static String adjustOffset(String offset,{bool revert = false}) {
+  if(offset=='00:00'){
+    offset = '+$offset';
+  }
+  // Check if the offset has the correct format
+  if (!RegExp(r'^[+-]\d{2}:\d{2}$').hasMatch(offset)) {
+    throw FormatException("Invalid offset format. It should be ±HH:MM");
+  }
+  
+  // Extract sign, hours, and minutes
+  String sign = offset[0];
+  int hours = int.parse(offset.substring(1, 3));
+  int minutes = int.parse(offset.substring(4, 6));
+  
+  // Adjust hours based on sign
+  if (sign == '+') {
+    revert? hours -=1 : hours  += 1;
+    // Handle crossing the day boundary
+    if (hours == 24) {
+      hours = 0;
+    }
+  } else if (sign == '-') {
+    revert? hours += 1 : hours -= 1;
+    // Handle crossing the day boundary
+    if (hours == -1) {
+      hours = 23;
+    }
+  }
+  
+  // Format the new offset
+  String newOffset = '$sign${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}';
+  return newOffset;
+}
+
 }
 
 class Id {
@@ -1421,17 +1512,17 @@ class _LightBoxPhotoViewState extends State<LightBoxPhotoView> {
                                             scaleStateController:
                                                 scaleStateController,
                                             imageProvider: (kIsWeb
-                                                ? CachedNetworkImageProvider(
-                                                    imgBaseUrl +
-                                                        widget.media[_current]
-                                                            .url)
-                                                : widget.media[ind1].url
-                                                        .isDeviceUrl
-                                                    ? FileImage(File(widget
-                                                        .media[_current].url
-                                                        .envRelativePath()))
-                                                    : CachedNetworkImageProvider(
+                                                    ? NetworkImage(
                                                         imgBaseUrl +
+                                                            widget.media[_current]
+                                                                .url)
+                                                    : widget.media[ind1].url
+                                                            .isDeviceUrl
+                                                        ? FileImage(File(widget
+                                                            .media[_current].url
+                                                            .envRelativePath()))
+                                                        : FastCachedImage(
+                                                        url:imgBaseUrl +
                                                             widget
                                                                 .media[_current]
                                                                 .url)) as ImageProvider,
