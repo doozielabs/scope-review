@@ -1,12 +1,12 @@
-import 'package:inspektify_report/data/models/enum_types.dart';
-import 'package:inspektify_report/utils/helpers/general_helper.dart';
+import 'package:pdf_report_scope/src/data/models/enum_types.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
 
 class Comment {
   late String? id;
   late String comment;
   late CommentType? type;
   late List<String> images;
-  late String level;
+  late String? level;
   late String location;
   late int? serverTimestamp;
   late int? lastModified;
@@ -20,7 +20,7 @@ class Comment {
     this.type,
     this.comment = "",
     this.location = "",
-    this.level = "None",
+    this.level,
   }) : images = [];
 
   Comment.fromJson(Map<String, dynamic> json) {
@@ -33,12 +33,12 @@ class Comment {
       "CommentType",
       json["status"] ?? "",
     );
-  /*  level = GeneralHelper.getType(
-      CommentLevel.values,
-      "CommentLevel",
-      json["level"] ?? "",
-    );*/
-    level = json["level"]??"";
+    // level = GeneralHelper.getType(
+    //   CommentLevel.values,
+    //   "CommentLevel",
+    //   json["level"] ?? "",
+    // );
+    level = json["level"] ?? "Home Buyer";
     location = json["location"] ?? "";
     comment = json["description"] ?? "";
     images = List<String>.from(json["commentPhotos"] ?? []);
@@ -52,7 +52,8 @@ class Comment {
     data['lastModified'] = lastModified;
     data["location"] = location;
     data["description"] = comment;
-    data["level"] = GeneralHelper.typeValue(level);
+    // data["level"] = GeneralHelper.typeValue(level);
+    data["level"] = level ?? "Home Buyer";
     data["status"] = GeneralHelper.typeValue(type);
     data["commentPhotos"] = images;
     return data;

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:inspektify_report/utils/helpers/general_helper.dart';
-import 'package:inspektify_report/core/constant/colors.dart';
-import 'package:inspektify_report/core/constant/globals.dart';
-import 'package:inspektify_report/core/constant/typography.dart';
-import 'package:inspektify_report/data/models/comment_model.dart';
-import 'package:inspektify_report/data/models/image_shape_model.dart';
-import 'package:inspektify_report/screens/inspection_report/widgets/general_widgets/comment_info_card.dart';
-import 'package:inspektify_report/screens/inspection_report/widgets/general_widgets/rounded_corner_image.dart';
+import 'package:pdf_report_scope/src/core/constant/colors.dart';
+import 'package:pdf_report_scope/src/core/constant/globals.dart';
+import 'package:pdf_report_scope/src/core/constant/typography.dart';
+import 'package:pdf_report_scope/src/data/models/comment_model.dart';
+import 'package:pdf_report_scope/src/data/models/image_shape_model.dart';
+import 'package:pdf_report_scope/src/screens/inspection_report/widgets/general_widgets/comment_info_card.dart';
+import 'package:pdf_report_scope/src/utils/helpers/general_helper.dart';
+import 'package:pdf_report_scope/src/utils/helpers/helper.dart';
 
 class SectionCommentCard extends StatelessWidget {
   final String commentTitle;
@@ -22,10 +22,18 @@ class SectionCommentCard extends StatelessWidget {
     required this.media,
   }) : super(key: key);
 
-
   @override
   Widget build(BuildContext context) {
-    var thisCommentKey = commentKeys[comment.id.toString()+comment.uid.toString()];
+    // String getCommentLevelValue() {
+    //   if (comment.level.name == "homeBuyer") {
+    //     return "Home Buyer";
+    //   } else {
+    //     return "Contractor";
+    //   }
+    // }
+
+    var thisCommentKey =
+        commentKeys[comment.id.toString() + comment.uid.toString()];
     return Container(
       decoration: BoxDecoration(
         color: ProjectColors.white,
@@ -52,17 +60,31 @@ class SectionCommentCard extends StatelessWidget {
                   ),
                 ),
                 SvgPicture.asset(
-                    "assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg")
+                  "assets/svg/${getColorAndIconForComment(comment.type!)[1]}.svg",
+                  package: "pdf_report_scope",
+                )
               ],
             ),
             const SizedBox(height: 14),
-            needJumpToSectionButton ? Text(comment.comment) :Text(comment.comment, key: thisCommentKey),
+            needJumpToSectionButton
+                ? Text(comment.comment,
+                    style: secondryHeadingTextStyle.copyWith(
+                      color: ProjectColors.pickledBluewood,
+                    ))
+                : Text(comment.comment,
+                    key: thisCommentKey,
+                    style: secondryHeadingTextStyle.copyWith(
+                      color: ProjectColors.pickledBluewood,
+                    )),
             Padding(
               padding: const EdgeInsets.only(top: 14.0, bottom: 14.0),
               child: Wrap(
                 direction: Axis.horizontal,
                 children: [
-                  GeneralHelper.displayMediaList(comment.images, media, 2, ImageType.commentImage),
+                  comment.images.isNotEmpty
+                      ? GeneralHelper.displayMediaList(
+                          comment.images, media, 2, ImageType.commentImage)
+                      : const SizedBox.shrink()
                   // ...List.generate(comment.images.length, (index) {
                   //   return Padding(
                   //     padding: const EdgeInsets.only(left: 5.0, bottom: 5.0),
@@ -87,22 +109,24 @@ class SectionCommentCard extends StatelessWidget {
                     secondaryText: comment.location,
                   ),
             SizedBox(height: comment.level == "" ? 0 : 14),
-            comment.level == ""
-                ? const SizedBox()
-                : CommentInfoCard(
-                    primaryText: "Remediation Level",
-                    secondaryText: comment.level,
-                  ),
+            if (comment.level != "" || comment.level != null)
+              CommentInfoCard(
+                primaryText: "Remediation Level",
+                secondaryText: comment.level.unspecified,
+              ),
             needJumpToSectionButton
                 ? Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: GestureDetector(
                       onTap: () {
                         controllerStream.add(comment.serverTimestamp!);
-                        Future.delayed(Duration(seconds: 1), () {
-                          Scrollable.ensureVisible(thisCommentKey!.currentContext!, duration: const Duration(milliseconds: 400), curve: Curves.easeInOut, );
+                        Future.delayed(const Duration(milliseconds: 100), () {
+                          Scrollable.ensureVisible(
+                            thisCommentKey!.currentContext!,
+                            duration: const Duration(milliseconds: 400),
+                            curve: Curves.easeInOut,
+                          );
                         });
-                        //TODO: Jump to Section Comment Callback
                       },
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -114,6 +138,7 @@ class SectionCommentCard extends StatelessWidget {
                           const SizedBox(width: 5),
                           SvgPicture.asset(
                             "assets/svg/up.svg",
+                            package: "pdf_report_scope",
                             color: ProjectColors.firefly,
                             height: 18.5,
                           )
